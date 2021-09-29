@@ -18,7 +18,7 @@ public class Controller2D : NetworkBehaviour {
     float horizontalRaySpacing;
     float verticalRaySpacing;
 
-    const float SKIN_WIDTH = 0.15f;
+    const float SKIN_WIDTH = 0.0125f;
 
     private void Awake() {
         collider = GetComponent<BoxCollider2D>();
@@ -34,21 +34,24 @@ public class Controller2D : NetworkBehaviour {
         playerCollisions.Reset();
         if(velocity.x != 0) {
             HorizontalCollisions(ref velocity);
+            HorizontalCollisions_Players(ref velocity);
         }
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
+            VerticalCollisions_Players(ref velocity);
         }
-
-        VerticalCollisions_Players(ref velocity);
-        HorizontalCollisions_Players(ref velocity);
-
 
 
         transform.position += velocity;
+
+
+
+
     }
 
 
     void VerticalCollisions(ref Vector3 velocity) {
+        
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
         for (int i = 0; i < verticalRayCount; i++) {
@@ -65,7 +68,24 @@ public class Controller2D : NetworkBehaviour {
         }
     }
 
+    public bool VerticalCollisions_uncrouch() {
+        float rayLength = 0.5f;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i );
+            RaycastHit2D foundHit = Physics2D.Raycast(rayOrigin, Vector2.up, rayLength, collisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * rayLength, Color.red);
+            if (foundHit) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     void VerticalCollisions_Players(ref Vector3 velocity) {
+
+        Physics2D.IgnoreLayerCollision(3, 3, false);
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
         for (int i = 0; i < verticalRayCount; i++) {
@@ -74,12 +94,14 @@ public class Controller2D : NetworkBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, playerCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
             if (hit && hit.collider != collider) {
-                velocity.y = (hit.distance - SKIN_WIDTH) * directionY;
+                velocity.y += (hit.distance - SKIN_WIDTH) * directionY;
                 rayLength = hit.distance;
                 playerCollisions.below = directionY == -1;
                 playerCollisions.above = directionY == 1;
             }
         }
+
+        Physics2D.IgnoreLayerCollision(3, 3, true);
     }
 
 
@@ -102,6 +124,7 @@ public class Controller2D : NetworkBehaviour {
     }
 
     void HorizontalCollisions_Players(ref Vector3 velocity) {
+        Physics2D.IgnoreLayerCollision(3, 3, false);
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
         for (int i = 0; i < horizontalRayCount; i++) {
@@ -110,17 +133,18 @@ public class Controller2D : NetworkBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, playerCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
             if (hit && hit.collider != collider) {
-                velocity.x = (hit.distance - SKIN_WIDTH) * directionX;
+                velocity.x += (hit.distance - SKIN_WIDTH) * directionX;
                 rayLength = hit.distance;
                 playerCollisions.left = directionX == -1;
                 playerCollisions.right = directionX == 1;
             }
         }
+        Physics2D.IgnoreLayerCollision(3, 3, true);
     }
 
 
 
-    void UpdateRaycastOrigins() {
+    public void UpdateRaycastOrigins() {
         Bounds bounds = collider.bounds;
         bounds.Expand(SKIN_WIDTH * -2);
 
@@ -130,7 +154,7 @@ public class Controller2D : NetworkBehaviour {
         raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
     }
 
-    void CalculateRaySpacing() {
+    public void CalculateRaySpacing() {
         Bounds bounds = collider.bounds;
         bounds.Expand(SKIN_WIDTH * -2);
 

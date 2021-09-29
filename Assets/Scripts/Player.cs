@@ -23,13 +23,14 @@ public class Player : NetworkBehaviour {
     public bool crouching;
     public bool backflip;
     public bool diving;
+    public bool onGround;
     public float coyoteTime;
     public float coyoteTime_Wall;
     public float jumpBuffer;
     public int lastWall;
 
     //unity variables
-    Collider2D collider;
+    BoxCollider2D collider;
     Controller2D controller;
 
     //physics
@@ -37,11 +38,11 @@ public class Player : NetworkBehaviour {
     public float vsp;
 
     const float HSP_FRIC_GROUND = 0.00015f * 500  ;
-    const float HSP_FRIC_SLIDE = 0.000175f * 500 ;
+    const float HSP_FRIC_SLIDE = 0.00014f * 500 ;
     const float HSP_FRIC_AIR = 0.000035f * 500  ;
     const float HSP_FRIC_WALLJUMP = 0.000005f * 500  ;
     const float HSP_MAX = 0.009f  ;
-    const float HSP_MAX_SLIDE = 0.018f;
+    const float HSP_MAX_SLIDE = 0.02f;
     const float HSP_MAX_LONGJUMP = 0.015f;
     const float HSP_MAX_CROUCH = 0.005f;
     const float VSP_MAX = 0.018f  ;
@@ -60,7 +61,14 @@ public class Player : NetworkBehaviour {
     const float DIVE_LENGTH = 0.009f;
     const float DIVE_HEIGHT = 0.006f;
     const float COYOTE_TIME = 0.1f;
-    
+    public const float CROUCH_PERCENT = 0.5f;
+
+    private Vector2 standColliderSize;
+    private Vector2 standColliderOffset;
+    private Vector2 crouchColliderSize;
+    private Vector2 crouchColliderOffset;
+
+
 
 
     const float DEADZONE = 0.2f;
@@ -77,8 +85,18 @@ public class Player : NetworkBehaviour {
 
 
     private void Start() {
+        Physics2D.IgnoreLayerCollision(3, 3, true);
+
         collider = GetComponent<BoxCollider2D>();
         controller = GetComponent<Controller2D>();
+
+        standColliderOffset = collider.offset;
+        standColliderSize = collider.size;
+
+        crouchColliderSize = new Vector2(standColliderSize.x, standColliderSize.y * CROUCH_PERCENT);
+        crouchColliderOffset = new Vector2(standColliderOffset.x, - standColliderSize.y * 0.5f * CROUCH_PERCENT);
+
+
         walljump_lock = 0;
         sliding = false;
         long_jump = false;
@@ -101,12 +119,15 @@ public class Player : NetworkBehaviour {
     void HandleMovement() {
         if (isLocalPlayer) {
             HandleInput();
-            bool onGround = controller.collisions.below;
+
+            onGround = controller.collisions.below;
             int onWall = (controller.collisions.left) ? -1 : 0;
             onWall += (controller.collisions.right) ? 1 : 0;
             if (Math.Sign(onWall) != Math.Sign(horizontalInput) || onGround) {
                 onWall = 0;
             }
+
+
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
                 long_jump = false;
@@ -127,11 +148,13 @@ public class Player : NetworkBehaviour {
 
             if(onGround) {
                 coyoteTime = COYOTE_TIME;
+                backflip = false;
             }
 
             if(onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall)) {
                 coyoteTime_Wall = COYOTE_TIME;
                 lastWall = onWall;
+                backflip = false;
             }
 
             if(!onGround && onWall == 0 && jumpPressed) {
@@ -165,15 +188,32 @@ public class Player : NetworkBehaviour {
 
             if (controller.collisions.above || controller.collisions.below) { vsp = 0; }
             if (controller.collisions.left || controller.collisions.right) { hsp = 0; }
-            //if (controller.playerCollisions.left  && hsp < 0) { hsp = 0; }
-            //if (controller.playerCollisions.right && hsp > 0) { hsp = 0; }
 
+
+            if (controller.playerCollisions.above || controller.playerCollisions.below) { vsp = 0; }
+            if (controller.playerCollisions.left || controller.playerCollisions.right) { hsp = 0; }
+
+            /*
             if (controller.playerCollisions.below) {
                 if (jumpHeld) {
                     vsp = PLAYER_JUMP_HEIGHT;
                 }
                 else {
                     vsp = PLAYER_HOP_HEIGHT;
+                }
+            }
+            */
+            if (!crouching && !sliding && !diving) {
+                if (controller.VerticalCollisions_uncrouch() && onGround) {
+                    collider.size = crouchColliderSize;
+                    collider.offset = crouchColliderOffset;
+                    controller.CalculateRaySpacing();
+                    crouching = true;
+                }
+                else if (collider.size != standColliderSize) {
+                    collider.size = standColliderSize;
+                    collider.offset = standColliderOffset;
+                    controller.CalculateRaySpacing();
                 }
             }
 
@@ -200,8 +240,14 @@ public class Player : NetworkBehaviour {
 
             if (onGround && diveHeld && !sliding) {
                 crouching = true;
+                if (collider.size != crouchColliderSize) {
+                    collider.size = crouchColliderSize;
+                    collider.offset = crouchColliderOffset;
+                    controller.CalculateRaySpacing();
+                }
+            } else {
+                crouching = false;
             }
-            else { crouching = false; }
 
 
 
@@ -273,6 +319,11 @@ public class Player : NetworkBehaviour {
         if(divePressed && onGround && Math.Abs(hsp) > 0.006f && Math.Sign(hsp) == Math.Sign(horizontalInput)) {
             sliding = true;
             hsp = Math.Sign(hsp) * SLIDE_SPEED;
+            if (collider.size != crouchColliderSize) {
+                collider.size = crouchColliderSize;
+                collider.offset = crouchColliderOffset;
+                controller.CalculateRaySpacing();
+            }
         }
 
         if(divePressed && !onGround && Math.Abs(hsp) > 0.0025f) {
@@ -280,6 +331,11 @@ public class Player : NetworkBehaviour {
             hsp += DIVE_LENGTH * Math.Sign(hsp);
             walljump_lock = Math.Sign(hsp);
             diving = true;
+            if (collider.size != crouchColliderSize) {
+                collider.size = crouchColliderSize;
+                collider.offset = crouchColliderOffset;
+                controller.CalculateRaySpacing();
+            }
         }
 
     }
