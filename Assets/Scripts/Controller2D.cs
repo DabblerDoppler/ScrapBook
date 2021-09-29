@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent (typeof (BoxCollider2D))]
 public class Controller2D : NetworkBehaviour {
 
-    BoxCollider2D collider;
+    public BoxCollider2D collider;
     RaycastOrigins raycastOrigins;
     public int horizontalRayCount = 4;
     public int verticalRayCount = 4;
@@ -18,8 +18,11 @@ public class Controller2D : NetworkBehaviour {
 
     const float SKIN_WIDTH = 0.15f;
 
-    private void Start() {
+    private void Awake() {
         collider = GetComponent<BoxCollider2D>();
+    }
+
+    public virtual void Start() {
         CalculateRaySpacing();
     }
 

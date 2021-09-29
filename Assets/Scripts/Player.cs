@@ -8,46 +8,82 @@ using UnityEngine;
 public class Player : NetworkBehaviour {
 
     //input
-    float horizontalInput;
+    public float horizontalInput;
     float verticalInput;
     bool jumpHeld;
     bool jumpPressed;
+    bool divePressed;
+    bool diveHeld;
+
+    //actions
+    public bool sliding;
+    int walljump_lock;
+    int facing;
+    public bool long_jump;
+    public bool crouching;
+    public bool backflip;
+    public bool diving;
+    public float coyoteTime;
+    public float coyoteTime_Wall;
+    public float jumpBuffer;
+    public int lastWall;
 
     //unity variables
     Collider2D collider;
     Controller2D controller;
 
     //physics
-    float hsp;
-    float vsp;
+    public float hsp;
+    public float vsp;
 
-    int walljump_lock;
-
-    const float HSP_FRIC_GROUND = 0.00008f * 500  ;
-    const float HSP_FRIC_AIR = 0.00002f * 500  ;
+    const float HSP_FRIC_GROUND = 0.00015f * 500  ;
+    const float HSP_FRIC_SLIDE = 0.000175f * 500 ;
+    const float HSP_FRIC_AIR = 0.000035f * 500  ;
     const float HSP_FRIC_WALLJUMP = 0.000005f * 500  ;
-    const float HSP_MAX = 0.010f  ;
+    const float HSP_MAX = 0.009f  ;
+    const float HSP_MAX_SLIDE = 0.018f;
+    const float HSP_MAX_LONGJUMP = 0.015f;
+    const float HSP_MAX_CROUCH = 0.005f;
     const float VSP_MAX = 0.018f  ;
     const float VSP_MAX_WALL = 0.006f;
     const float GRAVITY = 0.000075f * 500 ;
     const float GRAVITY_HELD = 0.00005f * 500 ;
-    const float JUMP_HEIGHT = 0.015f  ;
+    const float JUMP_HEIGHT = 0.013f  ;
     const float WALL_JUMP_HEIGHT = 0.01f  ;
-    const float WALL_JUMP_LENGTH = 0.09f  ;
+    const float WALL_JUMP_LENGTH = 0.09f;
+    const float LONG_JUMP_HEIGHT = 0.011f;
+    const float LONG_JUMP_LENGTH = 0.015f;
+    const float BACKFLIP_HEIGHT = 0.0165f;
+    const float BACKFLIP_LENGTH = 0.004f;
+    const float DIVE_LENGTH = 0.009f;
+    const float DIVE_HEIGHT = 0.006f;
+    const float COYOTE_TIME = 0.1f;
+
+
     const float DEADZONE = 0.2f;
-    const float WALK_SPEED = 0.0006f  * 500;
+    const float WALK_SPEED =0.0005f  * 500;
     const float AIR_SPEED = 0.00015f  * 500;
+    const float SLIDE_SPEED = 0.1f * 500;
+    const float CROUCH_SPEED = 0.0003f * 500;
 
 
 
     const int LAYER_FLOOR = 6;
     const int LAYER_WALL = 7;
 
+
+
     private void Start() {
         collider = GetComponent<BoxCollider2D>();
         controller = GetComponent<Controller2D>();
         walljump_lock = 0;
-
+        sliding = false;
+        long_jump = false;
+        diving = false;
+        facing = 1;
+        coyoteTime = 0.0f;
+        coyoteTime_Wall = 0.0f;
+        jumpBuffer = 0.0f;
 
     }
 
@@ -55,21 +91,58 @@ public class Player : NetworkBehaviour {
         HandleMovement();
     }
 
+    private void OnDestroy() {
+        Camera.main.GetComponent<CameraFollow>().hasTarget = false;
+    }
+
     void HandleMovement() {
-        if(isLocalPlayer) {
+        if (isLocalPlayer) {
             HandleInput();
             bool onGround = controller.collisions.below;
             int onWall = (controller.collisions.left) ? -1 : 0;
             onWall += (controller.collisions.right) ? 1 : 0;
-            if(Math.Sign(onWall) != Math.Sign(horizontalInput) || onGround) {
+            if (Math.Sign(onWall) != Math.Sign(horizontalInput) || onGround) {
                 onWall = 0;
             }
-
-
-            
-            if(onWall != 0 || onGround) {
+            if (onWall != 0 || onGround) {
                 walljump_lock = 0;
+                long_jump = false;
             }
+
+            if(diving && onGround) {
+                diving = false;
+                sliding = true;
+            }
+
+            if(diving && onWall != 0) {
+                diving = false;
+            }
+
+            jumpBuffer -= Time.deltaTime;
+            coyoteTime -= Time.deltaTime;
+            coyoteTime_Wall -= Time.deltaTime;
+
+            if(onGround) {
+                coyoteTime = COYOTE_TIME;
+            }
+
+            if(onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall)) {
+                coyoteTime_Wall = COYOTE_TIME;
+                lastWall = onWall;
+            }
+
+            if(!onGround && onWall == 0 && jumpPressed) {
+                jumpBuffer = COYOTE_TIME;
+            }
+
+            if (jumpBuffer > 0) {
+                jumpPressed = true;
+            }
+
+
+
+
+
             if (walljump_lock != 0) {
                 if (vsp > 0) {
                     if (Math.Sign(horizontalInput) == Math.Sign(walljump_lock)) {
@@ -78,7 +151,8 @@ public class Player : NetworkBehaviour {
                     else {
                         horizontalInput *= 0.05f;
                     }
-                } else {
+                }
+                else {
                     if (Math.Sign(horizontalInput) == Math.Sign(walljump_lock)) {
                         horizontalInput *= 0.4f;
                     }
@@ -88,23 +162,38 @@ public class Player : NetworkBehaviour {
                 }
             }
 
-            
-            if(controller.collisions.above || controller.collisions.below) { vsp = 0; }
-            if(controller.collisions.left || controller.collisions.right) { hsp = 0; }
+
+            if (controller.collisions.above || controller.collisions.below) { vsp = 0; }
+            if (controller.collisions.left || controller.collisions.right) { hsp = 0; }
+
 
             float moveSpeed = AIR_SPEED;
             if (onGround) { moveSpeed = WALK_SPEED; }
-            hsp += moveSpeed * horizontalInput * Time.deltaTime;
-
-           if(jumpPressed && onGround) {
-                vsp = JUMP_HEIGHT;
-           }
-
-           if(jumpPressed && onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall) ) {
-                vsp = WALL_JUMP_HEIGHT;
-                hsp = WALL_JUMP_LENGTH * -onWall;
-                walljump_lock = -onWall;
+            if (crouching) { moveSpeed = CROUCH_SPEED; }
+            if (!sliding) {
+                hsp += moveSpeed * horizontalInput * Time.deltaTime;
             }
+
+
+            if (sliding) {
+                SlideState(onGround);
+            }
+            else if (walljump_lock != 0) {
+            }
+            else if (crouching) {
+                CrouchState();
+            } else { 
+            NormalState(onGround, onWall);
+            }
+
+
+            if (onGround && diveHeld && !sliding) {
+                crouching = true;
+            }
+            else { crouching = false; }
+
+
+
 
             //apply gravity
             float gravity = GRAVITY;
@@ -113,16 +202,23 @@ public class Player : NetworkBehaviour {
 
             float vspMaxFinal = VSP_MAX;
             if (onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall) && vsp <= 0) { vspMaxFinal = VSP_MAX_WALL; }
+            float hspMaxFinal = HSP_MAX;
+            if(sliding) {hspMaxFinal = HSP_MAX_SLIDE; }
+            if (crouching) { hspMaxFinal = HSP_MAX_CROUCH; }
+            if (long_jump || diving) { hspMaxFinal = HSP_MAX_LONGJUMP; }
 
             //apply friction
             float friction = HSP_FRIC_AIR;
             if(onGround) {friction = HSP_FRIC_GROUND;}
+            if(sliding) { friction = HSP_FRIC_SLIDE; }
             if(walljump_lock != 0) { friction = HSP_FRIC_WALLJUMP; }
 
             hsp = Approach(hsp, 0, friction);
 
+
+
             //clamp to 
-            hsp = Clamp(hsp, -HSP_MAX, HSP_MAX);
+            hsp = Clamp(hsp, -hspMaxFinal, hspMaxFinal);
             vsp = Clamp(vsp, -vspMaxFinal, vspMaxFinal);
 
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
@@ -142,6 +238,65 @@ public class Player : NetworkBehaviour {
         }
         jumpHeld = Input.GetButton("Jump");
         jumpPressed = Input.GetButtonDown("Jump");
+
+        diveHeld = Input.GetButton("Dive");
+        divePressed = Input.GetButtonDown("Dive");
+    }
+
+
+    void NormalState(bool onGround, int onWall) {
+        if (horizontalInput != 0 && onGround) {
+            facing = Math.Sign(horizontalInput);
+        }
+        //ground jump
+        if (jumpPressed && coyoteTime > 0) {
+            vsp = JUMP_HEIGHT;
+        }
+        //wall jump
+        if (jumpPressed && coyoteTime_Wall > 0) {
+            vsp = WALL_JUMP_HEIGHT;
+            hsp = WALL_JUMP_LENGTH * -lastWall;
+            walljump_lock = -lastWall;
+        }
+        //slide
+        if(divePressed && onGround && Math.Abs(hsp) > 0.006f && Math.Sign(hsp) == Math.Sign(horizontalInput)) {
+            sliding = true;
+            hsp = Math.Sign(hsp) * SLIDE_SPEED;
+        }
+
+        if(divePressed && !onGround && Math.Abs(hsp) > 0.0025f) {
+            vsp = DIVE_HEIGHT;
+            hsp += DIVE_LENGTH * Math.Sign(hsp);
+            walljump_lock = Math.Sign(hsp);
+            diving = true;
+        }
+
+    }
+
+    void SlideState(bool onGround) {
+        if(coyoteTime <= 0.0f || Math.Abs(hsp) < 0.0015f ) {
+            sliding = false;
+            return;
+        }
+        //long jump
+        if(jumpPressed) {
+            long_jump = true;
+            hsp = Math.Sign(hsp) * LONG_JUMP_LENGTH;
+            vsp = LONG_JUMP_HEIGHT;
+            walljump_lock = Math.Sign(hsp);
+        }
+    }
+
+    void CrouchState() {
+        if (hsp != 0) {
+            facing = Math.Sign(hsp);
+        }
+        if (jumpPressed) {
+            backflip = true;
+            hsp = -facing * BACKFLIP_LENGTH;
+            vsp = BACKFLIP_HEIGHT;
+            walljump_lock = Math.Sign(hsp);
+        }
     }
 
 

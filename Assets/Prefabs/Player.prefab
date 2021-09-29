@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2216670722006428613}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,6 +118,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  sliding: 0
+  long_jump: 0
+  crouching: 0
+  backflip: 0
+  diving: 0
+  coyoteTime: 0
+  hsp: 0
+  vsp: 0
 --- !u!114 &2234132032890095562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,6 +195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  collider: {fileID: 0}
   horizontalRayCount: 4
   verticalRayCount: 4
   collisionMask:
