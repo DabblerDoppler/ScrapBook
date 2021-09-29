@@ -15,6 +15,8 @@ public class Player : NetworkBehaviour {
     bool divePressed;
     bool diveHeld;
 
+    public int stars;
+
     //actions
     public bool sliding;
     int walljump_lock;
@@ -85,7 +87,7 @@ public class Player : NetworkBehaviour {
 
 
     private void Start() {
-        Physics2D.IgnoreLayerCollision(3, 3, true);
+        stars = 0;
 
         collider = GetComponent<BoxCollider2D>();
         controller = GetComponent<Controller2D>();

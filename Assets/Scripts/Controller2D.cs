@@ -6,12 +6,14 @@ using UnityEngine;
 [RequireComponent (typeof (BoxCollider2D))]
 public class Controller2D : NetworkBehaviour {
 
+    bool incrementStars;
     public BoxCollider2D collider;
     RaycastOrigins raycastOrigins;
     public int horizontalRayCount = 4;
     public int verticalRayCount = 4;
     public LayerMask collisionMask;
     public LayerMask playerCollisionMask;
+    public LayerMask starCollisionMask;
     public CollisionInfo collisions;
     public CollisionInfo playerCollisions;
 
@@ -26,10 +28,14 @@ public class Controller2D : NetworkBehaviour {
 
     public virtual void Start() {
         CalculateRaySpacing();
+        playerCollisionMask = LayerMask.GetMask("Players");
+        collisionMask = LayerMask.GetMask("Floor");
+        starCollisionMask = LayerMask.GetMask("Star");
     }
 
     public void Move(Vector3 velocity) {
         UpdateRaycastOrigins();
+        incrementStars = false;
         collisions.Reset();
         playerCollisions.Reset();
         if(velocity.x != 0) {
@@ -41,17 +47,19 @@ public class Controller2D : NetworkBehaviour {
             VerticalCollisions_Players(ref velocity);
         }
 
+        VerticalCollisions_Stars(ref velocity);
+        HorizontalCollisions_Stars(ref velocity);
+
+        if(incrementStars) {
+            GetComponentInParent<Player>().stars += 1;
+        }
 
         transform.position += velocity;
-
-
-
 
     }
 
 
     void VerticalCollisions(ref Vector3 velocity) {
-        
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
         for (int i = 0; i < verticalRayCount; i++) {
@@ -82,10 +90,23 @@ public class Controller2D : NetworkBehaviour {
         return false;
     }
 
+    void VerticalCollisions_Stars(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, starCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit) {
+                hit.collider.GetComponentInParent<Star>().playerTouch();
+                incrementStars = true;
+            }
+        }
+    }
+
 
     void VerticalCollisions_Players(ref Vector3 velocity) {
-
-        Physics2D.IgnoreLayerCollision(3, 3, false);
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
         for (int i = 0; i < verticalRayCount; i++) {
@@ -101,10 +122,24 @@ public class Controller2D : NetworkBehaviour {
             }
         }
 
-        Physics2D.IgnoreLayerCollision(3, 3, true);
     }
 
 
+
+    void HorizontalCollisions_Stars(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < horizontalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, starCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit) {
+                hit.collider.GetComponentInParent<Star>().playerTouch();
+                incrementStars = true;
+            }
+        }
+    }
 
     void HorizontalCollisions(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
@@ -124,7 +159,6 @@ public class Controller2D : NetworkBehaviour {
     }
 
     void HorizontalCollisions_Players(ref Vector3 velocity) {
-        Physics2D.IgnoreLayerCollision(3, 3, false);
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
         for (int i = 0; i < horizontalRayCount; i++) {
@@ -139,7 +173,6 @@ public class Controller2D : NetworkBehaviour {
                 playerCollisions.right = directionX == 1;
             }
         }
-        Physics2D.IgnoreLayerCollision(3, 3, true);
     }
 
 
