@@ -55,9 +55,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1480}
     - Class: 114
-      Script: {instanceID: 1728}
+      Script: {instanceID: 1726}
     - Class: 114
-      Script: {instanceID: 3764}
+      Script: {instanceID: 3762}
+    - Class: 114
+      Script: {instanceID: 4252}
     - Class: 114
       Script: {instanceID: 5304}
     - Class: 114
@@ -66,8 +68,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 5712}
     - Class: 114
       Script: {instanceID: 5980}
-    - Class: 114
-      Script: {instanceID: 30202}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -195,7 +195,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 96070fcdf35b0c85fa3d0ff990aefe25
+      Hash: 6be73a63baf576f0116b3fa5d3c623df
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -651,6 +651,12 @@ ScriptsOnlyBuild:
     className: Physics2DRaycaster
   - hash:
       serializedVersion: 2
+      Hash: ae2c32df815557dafd3e7a538712ea9d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CameraFollow
+  - hash:
+      serializedVersion: 2
       Hash: da4cc51a02ce84afe2cecd27cfe6997a
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -1005,7 +1011,7 @@ ScriptsOnlyBuild:
     className: BufferManager
   - hash:
       serializedVersion: 2
-      Hash: 3104bffb9f195bd8039de08681bc35a7
+      Hash: 3240fa1120f19d52d5a4ce07da7b3b83
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Controller2D
@@ -1075,12 +1081,6 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.Examples.dll
     namespaceName: Mirror.Examples.NetworkRoom
     className: NetworkRoomPlayerExt
-  - hash:
-      serializedVersion: 2
-      Hash: ae2c32df815557dafd3e7a538712ea9d
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CameraFollow
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity

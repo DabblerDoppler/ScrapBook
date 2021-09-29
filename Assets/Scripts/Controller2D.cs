@@ -11,7 +11,9 @@ public class Controller2D : NetworkBehaviour {
     public int horizontalRayCount = 4;
     public int verticalRayCount = 4;
     public LayerMask collisionMask;
+    public LayerMask playerCollisionMask;
     public CollisionInfo collisions;
+    public CollisionInfo playerCollisions;
 
     float horizontalRaySpacing;
     float verticalRaySpacing;
@@ -29,17 +31,24 @@ public class Controller2D : NetworkBehaviour {
     public void Move(Vector3 velocity) {
         UpdateRaycastOrigins();
         collisions.Reset();
+        playerCollisions.Reset();
         if(velocity.x != 0) {
             HorizontalCollisions(ref velocity);
         }
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
         }
+
+        VerticalCollisions_Players(ref velocity);
+        HorizontalCollisions_Players(ref velocity);
+
+
+
         transform.position += velocity;
     }
 
 
-void VerticalCollisions(ref Vector3 velocity) {
+    void VerticalCollisions(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
         for (int i = 0; i < verticalRayCount; i++) {
@@ -52,6 +61,23 @@ void VerticalCollisions(ref Vector3 velocity) {
                 rayLength = hit.distance;
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
+            }
+        }
+    }
+
+    void VerticalCollisions_Players(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, playerCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit && hit.collider != collider) {
+                velocity.y = (hit.distance - SKIN_WIDTH) * directionY;
+                rayLength = hit.distance;
+                playerCollisions.below = directionY == -1;
+                playerCollisions.above = directionY == 1;
             }
         }
     }
@@ -74,6 +100,24 @@ void VerticalCollisions(ref Vector3 velocity) {
             }
         }
     }
+
+    void HorizontalCollisions_Players(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < horizontalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, playerCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit && hit.collider != collider) {
+                velocity.x = (hit.distance - SKIN_WIDTH) * directionX;
+                rayLength = hit.distance;
+                playerCollisions.left = directionX == -1;
+                playerCollisions.right = directionX == 1;
+            }
+        }
+    }
+
 
 
     void UpdateRaycastOrigins() {

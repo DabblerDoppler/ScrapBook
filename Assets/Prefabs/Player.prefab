@@ -118,12 +118,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  horizontalInput: 0
   sliding: 0
   long_jump: 0
   crouching: 0
   backflip: 0
   diving: 0
   coyoteTime: 0
+  coyoteTime_Wall: 0
+  jumpBuffer: 0
+  lastWall: 0
   hsp: 0
   vsp: 0
 --- !u!114 &2234132032890095562
@@ -201,3 +205,6 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 64
+  playerCollisionMask:
+    serializedVersion: 2
+    m_Bits: 8

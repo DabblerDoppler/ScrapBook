@@ -55,9 +55,12 @@ public class Player : NetworkBehaviour {
     const float LONG_JUMP_LENGTH = 0.015f;
     const float BACKFLIP_HEIGHT = 0.0165f;
     const float BACKFLIP_LENGTH = 0.004f;
+    const float PLAYER_JUMP_HEIGHT = 0.012f;
+    const float PLAYER_HOP_HEIGHT = 0.0065f;
     const float DIVE_LENGTH = 0.009f;
     const float DIVE_HEIGHT = 0.006f;
     const float COYOTE_TIME = 0.1f;
+    
 
 
     const float DEADZONE = 0.2f;
@@ -140,9 +143,6 @@ public class Player : NetworkBehaviour {
             }
 
 
-
-
-
             if (walljump_lock != 0) {
                 if (vsp > 0) {
                     if (Math.Sign(horizontalInput) == Math.Sign(walljump_lock)) {
@@ -165,6 +165,17 @@ public class Player : NetworkBehaviour {
 
             if (controller.collisions.above || controller.collisions.below) { vsp = 0; }
             if (controller.collisions.left || controller.collisions.right) { hsp = 0; }
+            //if (controller.playerCollisions.left  && hsp < 0) { hsp = 0; }
+            //if (controller.playerCollisions.right && hsp > 0) { hsp = 0; }
+
+            if (controller.playerCollisions.below) {
+                if (jumpHeld) {
+                    vsp = PLAYER_JUMP_HEIGHT;
+                }
+                else {
+                    vsp = PLAYER_HOP_HEIGHT;
+                }
+            }
 
 
             float moveSpeed = AIR_SPEED;
