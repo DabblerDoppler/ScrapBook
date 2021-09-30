@@ -99,8 +99,7 @@ public class Controller2D : NetworkBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, starCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
             if (hit) {
-                hit.collider.GetComponentInParent<Star>().CmdPlayerTouch();
-                GameObject.Find("StarManager").GetComponent<StarManager>().SetNewStar();
+                hit.collider.GetComponentInParent<Star>().playerTouch();
                 incrementStars = true;
             }
         }
@@ -136,8 +135,7 @@ public class Controller2D : NetworkBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, starCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
             if (hit) {
-                hit.collider.GetComponentInParent<Star>().CmdPlayerTouch();
-                GameObject.Find("StarManager").GetComponent<StarManager>().SetNewStar();
+                hit.collider.GetComponentInParent<Star>().playerTouch();
                 incrementStars = true;
             }
         }

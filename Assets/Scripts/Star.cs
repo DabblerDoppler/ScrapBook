@@ -1,17 +1,13 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Mirror;
 using UnityEngine;
 
-public class Star : NetworkBehaviour {
+public class Star : MonoBehaviour {
 
     BoxCollider2D collider;
     ContactFilter2D contactFilter;
 
     Collider2D[] results;
-
 
     // Start is called before the first frame update
     void OnEnable() {
@@ -23,14 +19,11 @@ public class Star : NetworkBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(GameObject.Find("StarManager").GetComponent<StarManager>().currentStar != gameObject) {
-            gameObject.SetActive(false);
-        }
     }
 
-    [ClientRpc]
-    public void CmdPlayerTouch() {
+    public void playerTouch() {
         gameObject.SetActive(false);
+        GameObject.Find("StarManager").GetComponent<StarManager>().currentStar = null;
     }
 
 }

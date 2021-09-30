@@ -4,8 +4,6 @@ ScriptsOnlyBuild:
     - CameraFollow
     - Controller2D
     - Player
-    - Star
-    - StarManager
     Mirror.Components.dll:
     - Mirror.NetworkTransform
     Mirror.dll:
@@ -17,10 +15,13 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
+    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
+    - UnityEditor.Tilemaps.GridPaletteBrushes
+    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
@@ -56,21 +57,17 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1726}
     - Class: 114
-      Script: {instanceID: 3082}
+      Script: {instanceID: 3762}
     - Class: 114
-      Script: {instanceID: 3764}
+      Script: {instanceID: 4252}
     - Class: 114
-      Script: {instanceID: 4254}
+      Script: {instanceID: 5304}
     - Class: 114
-      Script: {instanceID: 5306}
+      Script: {instanceID: 5540}
     - Class: 114
-      Script: {instanceID: 5542}
+      Script: {instanceID: 5712}
     - Class: 114
-      Script: {instanceID: 5714}
-    - Class: 114
-      Script: {instanceID: 5982}
-    - Class: 114
-      Script: {instanceID: 6210}
+      Script: {instanceID: 5980}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -198,7 +195,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 7d32fd35373f9006e99f4a7b486e484b
+      Hash: 67bc9692f8ec85c6977dc7efe881f602
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -424,12 +421,6 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.dll
     namespaceName: Mirror
     className: NetworkStartPosition
-  - hash:
-      serializedVersion: 2
-      Hash: 1b5d39b838bd578bf3760c49c9e81a04
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: StarManager
   - hash:
       serializedVersion: 2
       Hash: f95972dce23eb4bef924cd7984973cfb
@@ -1020,7 +1011,7 @@ ScriptsOnlyBuild:
     className: BufferManager
   - hash:
       serializedVersion: 2
-      Hash: 387ebea4d5c13268445b43a51ca1106f
+      Hash: 3240fa1120f19d52d5a4ce07da7b3b83
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Controller2D
@@ -1090,12 +1081,6 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.Examples.dll
     namespaceName: Mirror.Examples.NetworkRoom
     className: NetworkRoomPlayerExt
-  - hash:
-      serializedVersion: 2
-      Hash: 6fd2bb55b3ee5edb6040a1c5bccd0e07
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Star
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
