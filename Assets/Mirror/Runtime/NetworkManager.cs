@@ -1240,10 +1240,17 @@ namespace Mirror
                 ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
                 : Instantiate(playerPrefab);
 
+
             // instantiating a "Player" prefab gives it the name "Player(clone)"
             // => appending the connectionId is WAY more useful for debugging!
             player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
             NetworkServer.AddPlayerForConnection(conn, player);
+
+            if(GameObject.Find("StarManager") == null) {
+                GameObject starMgr = Instantiate(spawnPrefabs[0]);
+                NetworkServer.Spawn(starMgr);
+                starMgr.name = spawnPrefabs[0].name;
+            }
         }
 
         // Deprecated 2021-02-13

@@ -4,6 +4,8 @@ ScriptsOnlyBuild:
     - CameraFollow
     - Controller2D
     - Player
+    - Star
+    - StarManager
     Mirror.Components.dll:
     - Mirror.NetworkTransform
     Mirror.dll:
@@ -53,21 +55,25 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1480}
+      Script: {instanceID: 1486}
     - Class: 114
-      Script: {instanceID: 1726}
+      Script: {instanceID: 1732}
     - Class: 114
-      Script: {instanceID: 3762}
+      Script: {instanceID: 3088}
     - Class: 114
-      Script: {instanceID: 4252}
+      Script: {instanceID: 3770}
     - Class: 114
-      Script: {instanceID: 5304}
+      Script: {instanceID: 4260}
     - Class: 114
-      Script: {instanceID: 5540}
+      Script: {instanceID: 5312}
     - Class: 114
-      Script: {instanceID: 5712}
+      Script: {instanceID: 5548}
     - Class: 114
-      Script: {instanceID: 5980}
+      Script: {instanceID: 5720}
+    - Class: 114
+      Script: {instanceID: 5988}
+    - Class: 114
+      Script: {instanceID: 6216}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -195,7 +201,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 67bc9692f8ec85c6977dc7efe881f602
+      Hash: 7d32fd35373f9006e99f4a7b486e484b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -421,6 +427,12 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.dll
     namespaceName: Mirror
     className: NetworkStartPosition
+  - hash:
+      serializedVersion: 2
+      Hash: f1048fedac59ce7c3f942b8033b12cef
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StarManager
   - hash:
       serializedVersion: 2
       Hash: f95972dce23eb4bef924cd7984973cfb
@@ -1011,7 +1023,7 @@ ScriptsOnlyBuild:
     className: BufferManager
   - hash:
       serializedVersion: 2
-      Hash: 3240fa1120f19d52d5a4ce07da7b3b83
+      Hash: 387ebea4d5c13268445b43a51ca1106f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Controller2D
@@ -1081,6 +1093,12 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.Examples.dll
     namespaceName: Mirror.Examples.NetworkRoom
     className: NetworkRoomPlayerExt
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Star
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
