@@ -40,7 +40,7 @@ public class Player : NetworkBehaviour {
     public float vsp;
 
     const float HSP_FRIC_GROUND = 0.00015f * 500  ;
-    const float HSP_FRIC_SLIDE = 0.00014f * 500 ;
+    const float HSP_FRIC_SLIDE = 0.00009f * 500 ;
     const float HSP_FRIC_AIR = 0.000035f * 500  ;
     const float HSP_FRIC_WALLJUMP = 0.000005f * 500  ;
     const float HSP_MAX = 0.009f  ;
