@@ -86,7 +86,6 @@ public class Player : NetworkBehaviour {
 
 
 
-
     private void Start() {
         stars = 0;
 
@@ -108,7 +107,6 @@ public class Player : NetworkBehaviour {
         coyoteTime = 0.0f;
         coyoteTime_Wall = 0.0f;
         jumpBuffer = 0.0f;
-
 
     }
 
@@ -392,6 +390,7 @@ public class Player : NetworkBehaviour {
         }
         return value;
     }
+
 
 
 

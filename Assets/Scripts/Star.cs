@@ -23,7 +23,7 @@ public class Star : MonoBehaviour {
 
     public void playerTouch() {
         gameObject.SetActive(false);
-        GameObject.Find("StarManager").GetComponent<StarManager>().pickNewStar();
+        GameObject.Find("StarManager").GetComponent<StarManager>().currentStar = null;
     }
 
 }
