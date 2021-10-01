@@ -18,7 +18,6 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
-    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
@@ -72,11 +71,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 5716}
     - Class: 114
-      Script: {instanceID: 5984}
+      Script: {instanceID: 5966}
     - Class: 114
-      Script: {instanceID: 6212}
+      Script: {instanceID: 5986}
     - Class: 114
-      Script: {instanceID: 31090}
+      Script: {instanceID: 6214}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -432,7 +431,7 @@ ScriptsOnlyBuild:
     className: NetworkStartPosition
   - hash:
       serializedVersion: 2
-      Hash: 98c82e7e12025b2f89ff8b29ca6e638f
+      Hash: 31b1a285119c62d0ddd01b22ceb97c2b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: StarManager
@@ -1032,6 +1031,12 @@ ScriptsOnlyBuild:
     className: BufferManager
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CoroutineManager
+  - hash:
+      serializedVersion: 2
       Hash: 387ebea4d5c13268445b43a51ca1106f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
@@ -1108,12 +1113,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Star
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CoroutineManager
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity

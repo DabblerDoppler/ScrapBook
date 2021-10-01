@@ -13,6 +13,7 @@ public class MyNetworkManager : NetworkManager {
         base.OnStartServer();
 
         startPositions.Add(GameObject.Find("PlayerSpawn").transform);
+        startPositions.Add(GameObject.Find("PlayerSpawn (1)").transform);
     }
 
 
