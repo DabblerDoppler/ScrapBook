@@ -43,25 +43,25 @@ public class Player : NetworkBehaviour {
     const float HSP_FRIC_SLIDE = 0.00009f * 500 ;
     const float HSP_FRIC_AIR = 0.000035f * 500  ;
     const float HSP_FRIC_WALLJUMP = 0.000005f * 500  ;
-    const float HSP_MAX = 0.009f  ;
+    const float HSP_MAX = 0.009f;
     const float HSP_MAX_SLIDE = 0.02f;
     const float HSP_MAX_LONGJUMP = 0.015f;
     const float HSP_MAX_CROUCH = 0.005f;
-    const float VSP_MAX = 0.018f  ;
+    const float VSP_MAX = 0.018f;
     const float VSP_MAX_WALL = 0.006f;
     const float GRAVITY = 0.000075f * 500 ;
     const float GRAVITY_HELD = 0.00005f * 500 ;
-    const float JUMP_HEIGHT = 0.013f  ;
-    const float WALL_JUMP_HEIGHT = 0.01f  ;
+    const float JUMP_HEIGHT = 0.01325f;
+    const float WALL_JUMP_HEIGHT = 0.01025f  ;
     const float WALL_JUMP_LENGTH = 0.09f;
     const float LONG_JUMP_HEIGHT = 0.011f;
     const float LONG_JUMP_LENGTH = 0.015f;
-    const float BACKFLIP_HEIGHT = 0.0165f;
+    const float BACKFLIP_HEIGHT = 0.01675f;
     const float BACKFLIP_LENGTH = 0.004f;
     const float PLAYER_JUMP_HEIGHT = 0.012f;
     const float PLAYER_HOP_HEIGHT = 0.0065f;
     const float DIVE_LENGTH = 0.009f;
-    const float DIVE_HEIGHT = 0.006f;
+    const float DIVE_HEIGHT = 0.00605f;
     const float COYOTE_TIME = 0.1f;
     public const float CROUCH_PERCENT = 0.5f;
 
@@ -121,29 +121,23 @@ public class Player : NetworkBehaviour {
     void HandleMovement() {
         if (isLocalPlayer) {
             HandleInput();
-
             onGround = controller.collisions.below;
             int onWall = (controller.collisions.left) ? -1 : 0;
             onWall += (controller.collisions.right) ? 1 : 0;
             if (Math.Sign(onWall) != Math.Sign(horizontalInput) || onGround) {
                 onWall = 0;
             }
-
-
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
                 long_jump = false;
             }
-
             if(diving && onGround) {
                 diving = false;
                 sliding = true;
             }
-
             if(diving && onWall != 0) {
                 diving = false;
             }
-
             jumpBuffer -= Time.deltaTime;
             coyoteTime -= Time.deltaTime;
             coyoteTime_Wall -= Time.deltaTime;
@@ -272,13 +266,13 @@ public class Player : NetworkBehaviour {
             if(sliding) { friction = HSP_FRIC_SLIDE; }
             if(walljump_lock != 0) { friction = HSP_FRIC_WALLJUMP; }
 
-            hsp = Approach(hsp, 0, friction);
+            hsp = Approach(hsp, 0, friction * Time.deltaTime);
 
 
 
             //clamp to 
-            hsp = Clamp(hsp, -hspMaxFinal, hspMaxFinal);
-            vsp = Clamp(vsp, -vspMaxFinal, vspMaxFinal);
+            hsp = Clamp(hsp, -hspMaxFinal , hspMaxFinal);
+            vsp = Clamp(vsp, -vspMaxFinal , vspMaxFinal);
 
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
         }
@@ -371,11 +365,11 @@ public class Player : NetworkBehaviour {
 
     float Approach(float argument0, float argument1, float argument2) {
         if (argument0 < argument1) {
-            argument0 += argument2 * Time.deltaTime;
+            argument0 += argument2;
             if (argument0 > argument1) { return argument1; }
         }
         else {
-            argument0 -= argument2 * Time.deltaTime;
+            argument0 -= argument2;
             if (argument0 < argument1) { return argument1; }
         }
         return argument0;

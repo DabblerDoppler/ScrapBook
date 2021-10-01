@@ -7,6 +7,7 @@ using UnityEngine;
 public class Controller2D : NetworkBehaviour {
 
     bool incrementStars;
+    RaycastHit2D lastStarHit;
     public BoxCollider2D collider;
     RaycastOrigins raycastOrigins;
     public int horizontalRayCount = 4;
@@ -52,10 +53,9 @@ public class Controller2D : NetworkBehaviour {
 
         if(incrementStars) {
             GetComponentInParent<Player>().stars += 1;
+            lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
         }
-
         transform.position += velocity;
-
     }
 
 
@@ -99,7 +99,7 @@ public class Controller2D : NetworkBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, starCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
             if (hit) {
-                hit.collider.GetComponentInParent<Star>().playerTouch();
+                lastStarHit = hit;
                 incrementStars = true;
             }
         }
@@ -135,7 +135,7 @@ public class Controller2D : NetworkBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, starCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
             if (hit) {
-                hit.collider.GetComponentInParent<Star>().playerTouch();
+                lastStarHit = hit;
                 incrementStars = true;
             }
         }

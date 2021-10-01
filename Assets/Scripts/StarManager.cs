@@ -6,53 +6,29 @@ using Mirror;
 using UnityEngine;
 
 public class StarManager : NetworkBehaviour {
-    public GameObject[] starArray;
     public List<GameObject> starList;
     public GameObject currentStar;
-    public int lastStar;
-    System.Random rnd;
+    public System.Random rnd;
 
-    // Start is called before the first frame update
+    [Server]
     void Start() {
-       rnd = new System.Random();
-
-        starArray = new GameObject[200];
-        starArray = FindObjectsOfType<GameObject>();
-
-        starList = Enumerable.ToList<GameObject>(starArray);
-
-        for(int i = 0; i < starList.Count; i++) {
-            if(starList[i].tag != "Star") {
+        rnd = new System.Random();
+        starList = FindObjectsOfType<GameObject>().ToList<GameObject>();
+        for (int i = 0; i < starList.Count; i++) {
+            if (starList[i].tag != "StarSpawn") {
                 Debug.Log("Removed" + starList[i]);
                 starList.RemoveAt(i);
                 i -= 1;
-            } else {
-                starList[i].SetActive(false);
             }
         }
-
-        lastStar = rnd.Next(0, starList.Count);
-        currentStar = starList[lastStar];
-
-        currentStar.SetActive(true);
-
-
+        currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
+        NetworkServer.Spawn(currentStar);
+        currentStar.transform.position = starList[rnd.Next(0, starList.Count)].GetComponent<Transform>().position;
     }
 
-    // Update is called once per frame
-    void Update() {
-        if(currentStar == null) {
-            int star = rnd.Next(0, starList.Count);
-            currentStar = starList[star];
-            while(lastStar == star) {
-                star = rnd.Next(0, starList.Count);
-                currentStar = starList[star];
-            }
 
-            currentStar.SetActive(true);
-        }
-    
 
-        
-    }
+
+
+
 }

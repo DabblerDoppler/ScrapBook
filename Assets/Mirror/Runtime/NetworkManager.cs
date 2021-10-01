@@ -109,6 +109,7 @@ namespace Mirror
         public List<GameObject> spawnPrefabs = new List<GameObject>();
 
         /// <summary>List of transforms populated by NetworkStartPositions</summary>
+        [Tooltip("The list of transforms that serve as player start positions.")]
         public static List<Transform> startPositions = new List<Transform>();
         public static int startPositionIndex;
 

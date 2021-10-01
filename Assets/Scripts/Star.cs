@@ -1,18 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Mirror;
 using UnityEngine;
 
-public class Star : MonoBehaviour {
-
-    BoxCollider2D collider;
+public class Star : NetworkBehaviour {
     ContactFilter2D contactFilter;
 
-    Collider2D[] results;
+
 
     // Start is called before the first frame update
-    void OnEnable() {
-        results = new Collider2D[10];
-        collider = GetComponent<BoxCollider2D>();
+    void Awake() {
         contactFilter.useLayerMask = true;
         contactFilter.layerMask = 3;
     }
@@ -21,9 +20,21 @@ public class Star : MonoBehaviour {
     void Update() {
     }
 
+    //this might not work networked.
     public void playerTouch() {
-        gameObject.SetActive(false);
-        GameObject.Find("StarManager").GetComponent<StarManager>().currentStar = null;
+        CmdPickNewStar();
     }
+
+    [Command(requiresAuthority=false)] 
+    void CmdPickNewStar() {
+        StarManager starMgr = GameObject.Find("StarManager").GetComponent<StarManager>();
+        Transform temp = starMgr.starList[starMgr.rnd.Next(0, starMgr.starList.Count)].transform;
+        /*
+        while(starMgr.currentStarTransform.transform.position == starMgr.lastStarTransform.transform.position) {
+            starMgr.currentStarTransform = starMgr.starList[starMgr.rnd.Next(0, starMgr.starList.Count)];
+        } */
+        gameObject.transform.position = temp.position;
+    }
+
 
 }

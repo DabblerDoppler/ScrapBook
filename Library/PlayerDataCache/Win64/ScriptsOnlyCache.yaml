@@ -3,6 +3,7 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - CameraFollow
     - Controller2D
+    - CoroutineManager
     - MyNetworkManager
     - Player
     - Star
@@ -55,25 +56,27 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1488}
+      Script: {instanceID: 1480}
     - Class: 114
-      Script: {instanceID: 1732}
+      Script: {instanceID: 1726}
     - Class: 114
-      Script: {instanceID: 3088}
+      Script: {instanceID: 3082}
     - Class: 114
-      Script: {instanceID: 4260}
+      Script: {instanceID: 3726}
     - Class: 114
-      Script: {instanceID: 5312}
+      Script: {instanceID: 4256}
     - Class: 114
-      Script: {instanceID: 5548}
+      Script: {instanceID: 5308}
     - Class: 114
-      Script: {instanceID: 5720}
+      Script: {instanceID: 5544}
     - Class: 114
-      Script: {instanceID: 5988}
+      Script: {instanceID: 5716}
     - Class: 114
-      Script: {instanceID: 6216}
+      Script: {instanceID: 5984}
     - Class: 114
-      Script: {instanceID: 24738}
+      Script: {instanceID: 6212}
+    - Class: 114
+      Script: {instanceID: 31090}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -429,7 +432,7 @@ ScriptsOnlyBuild:
     className: NetworkStartPosition
   - hash:
       serializedVersion: 2
-      Hash: 1b5d39b838bd578bf3760c49c9e81a04
+      Hash: 98c82e7e12025b2f89ff8b29ca6e638f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: StarManager
@@ -583,6 +586,12 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.Components.dll
     namespaceName: Mirror.Discovery
     className: NetworkDiscovery
+  - hash:
+      serializedVersion: 2
+      Hash: 0558fd8cb7e7d0d08ede1688a0940de6
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MyNetworkManager
   - hash:
       serializedVersion: 2
       Hash: fc67f14ea89c506f4f65b0b93f858139
@@ -1095,16 +1104,16 @@ ScriptsOnlyBuild:
     className: NetworkRoomPlayerExt
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: 6fd2bb55b3ee5edb6040a1c5bccd0e07
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Star
   - hash:
       serializedVersion: 2
-      Hash: 0558fd8cb7e7d0d08ede1688a0940de6
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: MyNetworkManager
+    className: CoroutineManager
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
