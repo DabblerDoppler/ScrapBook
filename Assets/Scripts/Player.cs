@@ -15,6 +15,7 @@ public class Player : NetworkBehaviour {
     bool divePressed;
     bool diveHeld;
 
+
     public int stars;
 
     //actions
@@ -25,10 +26,13 @@ public class Player : NetworkBehaviour {
     public bool crouching;
     public bool backflip;
     public bool diving;
+    public bool groundPound;
     public bool onGround;
     public float coyoteTime;
     public float coyoteTime_Wall;
     public float jumpBuffer;
+    public float groundPoundWindup;
+    public float groundPoundLag;
     public int lastWall;
 
     //unity variables
@@ -49,6 +53,7 @@ public class Player : NetworkBehaviour {
     const float HSP_MAX_CROUCH = 0.005f;
     const float VSP_MAX = 0.018f;
     const float VSP_MAX_WALL = 0.006f;
+    const float VSP_GROUNDPOUND = 0.024f;
     const float GRAVITY = 0.000075f * 500 ;
     const float GRAVITY_HELD = 0.00005f * 500 ;
     const float JUMP_HEIGHT = 0.01325f;
@@ -63,6 +68,8 @@ public class Player : NetworkBehaviour {
     const float DIVE_LENGTH = 0.009f;
     const float DIVE_HEIGHT = 0.00605f;
     const float COYOTE_TIME = 0.1f;
+    const float GROUNDPOUND_WINDUP = 0.20f;
+    const float GROUNDPOUND_LAG = 0.20f;
     public const float CROUCH_PERCENT = 0.5f;
 
     private Vector2 standColliderSize;
@@ -103,10 +110,13 @@ public class Player : NetworkBehaviour {
         sliding = false;
         long_jump = false;
         diving = false;
+        groundPound = false;
         facing = 1;
         coyoteTime = 0.0f;
         coyoteTime_Wall = 0.0f;
         jumpBuffer = 0.0f;
+        groundPoundWindup = 0.0f;
+        groundPoundLag = 0.0f;
 
     }
 
@@ -141,6 +151,8 @@ public class Player : NetworkBehaviour {
             jumpBuffer -= Time.deltaTime;
             coyoteTime -= Time.deltaTime;
             coyoteTime_Wall -= Time.deltaTime;
+            groundPoundWindup -= Time.deltaTime;
+            groundPoundLag -= Time.deltaTime;
 
             if(onGround) {
                 coyoteTime = COYOTE_TIME;
@@ -214,27 +226,34 @@ public class Player : NetworkBehaviour {
             }
 
 
-            float moveSpeed = AIR_SPEED;
-            if (onGround) { moveSpeed = WALK_SPEED; }
-            if (crouching) { moveSpeed = CROUCH_SPEED; }
-            if (!sliding) {
-                hsp += moveSpeed * horizontalInput * Time.deltaTime;
-            }
+
 
 
             if (sliding) {
                 SlideState(onGround);
-            }
-            else if (walljump_lock != 0) {
-            }
-            else if (crouching) {
+            } else if (groundPoundWindup > 0) {
+                GroundPoundWindupState();
+            } else if (groundPound) {
+                GroundPoundState();
+            } else if (groundPoundLag > 0) {
+                GroundPoundLagState();
+            } else if (walljump_lock != 0) {
+                WallJumpState();
+            } else if (crouching) {
                 CrouchState();
             } else { 
             NormalState(onGround, onWall);
             }
 
+            float moveSpeed = AIR_SPEED;
+            if (onGround) { moveSpeed = WALK_SPEED; }
+            if (crouching) { moveSpeed = CROUCH_SPEED; }
+            if (!sliding && !groundPound && groundPoundWindup < 0 && groundPoundLag < 0) {
+                hsp += moveSpeed * horizontalInput * Time.deltaTime;
+            }
 
-            if (onGround && diveHeld && !sliding) {
+
+            if (onGround && diveHeld && !sliding && groundPoundLag < 0) {
                 crouching = true;
                 if (collider.size != crouchColliderSize) {
                     collider.size = crouchColliderSize;
@@ -251,10 +270,15 @@ public class Player : NetworkBehaviour {
             //apply gravity
             float gravity = GRAVITY;
             if(jumpHeld && vsp > 0) {gravity = GRAVITY_HELD;}
-            vsp -= gravity * Time.deltaTime;
+            if (groundPoundWindup < 0) {
+                vsp -= gravity * Time.deltaTime;
+            }
 
             float vspMaxFinal = VSP_MAX;
             if (onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall) && vsp <= 0) { vspMaxFinal = VSP_MAX_WALL; }
+            if(groundPound) {
+                vspMaxFinal = VSP_GROUNDPOUND;
+            }
             float hspMaxFinal = HSP_MAX;
             if(sliding) {hspMaxFinal = HSP_MAX_SLIDE; }
             if (crouching) { hspMaxFinal = HSP_MAX_CROUCH; }
@@ -280,15 +304,7 @@ public class Player : NetworkBehaviour {
 
     void HandleInput() {
         horizontalInput = Input.GetAxis("Horizontal");
-        //deadzone
-        if(Math.Abs(horizontalInput) < DEADZONE) {
-            horizontalInput = 0;
-        }
         verticalInput = Input.GetAxis("Vertical");
-        //deadzone
-        if(Math.Abs(verticalInput) < DEADZONE) {
-            verticalInput = 0;
-        }
         jumpHeld = Input.GetButton("Jump");
         jumpPressed = Input.GetButtonDown("Jump");
 
@@ -311,6 +327,7 @@ public class Player : NetworkBehaviour {
             hsp = WALL_JUMP_LENGTH * -lastWall;
             walljump_lock = -lastWall;
         }
+
         //slide
         if(divePressed && onGround && Math.Abs(hsp) > 0.006f && Math.Sign(hsp) == Math.Sign(horizontalInput)) {
             sliding = true;
@@ -321,8 +338,12 @@ public class Player : NetworkBehaviour {
                 controller.CalculateRaySpacing();
             }
         }
-
-        if(divePressed && !onGround && Math.Abs(hsp) > 0.0025f) {
+        if (divePressed && !onGround && verticalInput < -0.25) {
+            vsp = 0;
+            hsp = 0;
+            groundPoundWindup = GROUNDPOUND_WINDUP;
+            groundPound = true;
+        } else if (divePressed && !onGround && Math.Abs(hsp) > 0.0025f) {
             vsp = DIVE_HEIGHT;
             hsp += DIVE_LENGTH * Math.Sign(hsp);
             walljump_lock = Math.Sign(hsp);
@@ -332,8 +353,36 @@ public class Player : NetworkBehaviour {
                 collider.offset = crouchColliderOffset;
                 controller.CalculateRaySpacing();
             }
-        }
+        }  
 
+    }
+
+    void WallJumpState() {
+        if (divePressed && !onGround && verticalInput < -0.25) {
+            vsp = 0;
+            hsp = 0;
+            groundPoundWindup = GROUNDPOUND_WINDUP;
+            groundPound = true;
+        }
+    }
+
+    void GroundPoundWindupState() {
+        //no actions
+    }
+
+    void GroundPoundState() {
+        if (onGround) {
+            groundPoundLag = GROUNDPOUND_LAG;
+            groundPound = false;
+            return;
+        }
+        hsp = 0;
+        vsp = -VSP_GROUNDPOUND;
+
+    }
+
+    void GroundPoundLagState() {
+        //no actions
     }
 
     void SlideState(bool onGround) {
