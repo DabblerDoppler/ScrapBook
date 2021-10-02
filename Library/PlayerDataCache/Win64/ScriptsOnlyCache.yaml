@@ -3,7 +3,6 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - CameraFollow
     - Controller2D
-    - CoroutineManager
     - MyNetworkManager
     - Player
     - Star
@@ -18,6 +17,7 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
+    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
@@ -203,7 +203,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 7d32fd35373f9006e99f4a7b486e484b
+      Hash: 6da7c72e0243fc62f212d3306816f1c7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -1031,13 +1031,7 @@ ScriptsOnlyBuild:
     className: BufferManager
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CoroutineManager
-  - hash:
-      serializedVersion: 2
-      Hash: 387ebea4d5c13268445b43a51ca1106f
+      Hash: 2a70e28f0449a917d615f212f3e14403
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Controller2D

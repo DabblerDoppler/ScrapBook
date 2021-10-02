@@ -15,6 +15,7 @@ public class Controller2D : NetworkBehaviour {
     public LayerMask collisionMask;
     public LayerMask playerCollisionMask;
     public LayerMask starCollisionMask;
+    public LayerMask spikeCollisionMask;
     public CollisionInfo collisions;
     public CollisionInfo playerCollisions;
 
@@ -32,6 +33,7 @@ public class Controller2D : NetworkBehaviour {
         playerCollisionMask = LayerMask.GetMask("Players");
         collisionMask = LayerMask.GetMask("Floor");
         starCollisionMask = LayerMask.GetMask("Star");
+        spikeCollisionMask = LayerMask.GetMask("Spike");
     }
 
     public void Move(Vector3 velocity) {
@@ -42,10 +44,12 @@ public class Controller2D : NetworkBehaviour {
         if(velocity.x != 0) {
             HorizontalCollisions(ref velocity);
             HorizontalCollisions_Players(ref velocity);
+            HorizontalCollisions_Spikes(ref velocity);
         }
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
             VerticalCollisions_Players(ref velocity);
+            VerticalCollisions_Spikes(ref velocity);
         }
 
         VerticalCollisions_Stars(ref velocity);
@@ -55,6 +59,7 @@ public class Controller2D : NetworkBehaviour {
             GetComponentInParent<Player>().stars += 1;
             lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
         }
+
         transform.position += velocity;
     }
 
@@ -72,6 +77,25 @@ public class Controller2D : NetworkBehaviour {
                 rayLength = hit.distance;
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
+            }
+        }
+    }
+
+    void VerticalCollisions_Spikes(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, spikeCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit) {
+                velocity.y = (hit.distance - SKIN_WIDTH) * directionY;
+                rayLength = hit.distance;
+                collisions.below = directionY == -1;
+                collisions.above = directionY == 1;
+                GetComponent<Player>().Death();
+                
             }
         }
     }
@@ -154,6 +178,25 @@ public class Controller2D : NetworkBehaviour {
                 rayLength = hit.distance;
                 collisions.left = directionX == -1;
                 collisions.right = directionX == 1;
+            }
+        }
+    }
+
+    void HorizontalCollisions_Spikes(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < horizontalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, spikeCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit) {
+                velocity.x = (hit.distance - SKIN_WIDTH) * directionX;
+                rayLength = hit.distance;
+                collisions.left = directionX == -1;
+                collisions.right = directionX == 1;
+                GetComponent<Player>().Death();
+
             }
         }
     }

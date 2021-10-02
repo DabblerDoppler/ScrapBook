@@ -28,6 +28,7 @@ public class Player : NetworkBehaviour {
     public bool diving;
     public bool groundPound;
     public bool onGround;
+    public bool isDead;
     public float coyoteTime;
     public float coyoteTime_Wall;
     public float jumpBuffer;
@@ -42,6 +43,15 @@ public class Player : NetworkBehaviour {
     //physics
     public float hsp;
     public float vsp;
+
+    //yo, what do you think is behind that door marked pirate? Do you think a pirate lives in there?
+    private Vector2 standColliderSize;
+    private Vector2 standColliderOffset;
+    private Vector2 crouchColliderSize;
+    private Vector2 crouchColliderOffset;
+
+    private Vector3 spawnPoint;
+
 
     const float HSP_FRIC_GROUND = 0.00015f * 500  ;
     const float HSP_FRIC_SLIDE = 0.00009f * 500 ;
@@ -72,19 +82,16 @@ public class Player : NetworkBehaviour {
     const float GROUNDPOUND_LAG = 0.20f;
     public const float CROUCH_PERCENT = 0.5f;
 
-    private Vector2 standColliderSize;
-    private Vector2 standColliderOffset;
-    private Vector2 crouchColliderSize;
-    private Vector2 crouchColliderOffset;
-
-
-
-
     const float DEADZONE = 0.2f;
-    const float WALK_SPEED =0.0005f  * 500;
-    const float AIR_SPEED = 0.00015f  * 500;
+    const float WALK_SPEED = 0.0005f * 500;
+    const float AIR_SPEED = 0.00015f * 500;
     const float SLIDE_SPEED = 0.1f * 500;
     const float CROUCH_SPEED = 0.0003f * 500;
+
+
+
+
+
 
 
 
@@ -105,12 +112,14 @@ public class Player : NetworkBehaviour {
         crouchColliderSize = new Vector2(standColliderSize.x, standColliderSize.y * CROUCH_PERCENT);
         crouchColliderOffset = new Vector2(standColliderOffset.x, - standColliderSize.y * 0.5f * CROUCH_PERCENT);
 
+        spawnPoint = transform.position;
 
         walljump_lock = 0;
         sliding = false;
         long_jump = false;
         diving = false;
         groundPound = false;
+        isDead = false;
         facing = 1;
         coyoteTime = 0.0f;
         coyoteTime_Wall = 0.0f;
@@ -130,7 +139,12 @@ public class Player : NetworkBehaviour {
 
     void HandleMovement() {
         if (isLocalPlayer) {
+            if(isDead) {
+                return;
+            }
+
             HandleInput();
+
             onGround = controller.collisions.below;
             int onWall = (controller.collisions.left) ? -1 : 0;
             onWall += (controller.collisions.right) ? 1 : 0;
@@ -292,11 +306,16 @@ public class Player : NetworkBehaviour {
 
             hsp = Approach(hsp, 0, friction * Time.deltaTime);
 
-
-
             //clamp to 
             hsp = Clamp(hsp, -hspMaxFinal , hspMaxFinal);
             vsp = Clamp(vsp, -vspMaxFinal , vspMaxFinal);
+
+            if(diving || long_jump) {
+                if (Math.Sign(hsp) != Math.Sign(walljump_lock)) {
+                    hsp *= -1;
+                }
+            }
+
 
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
         }
@@ -378,8 +397,8 @@ public class Player : NetworkBehaviour {
         }
         hsp = 0;
         vsp = -VSP_GROUNDPOUND;
-
     }
+
 
     void GroundPoundLagState() {
         //no actions
@@ -409,6 +428,25 @@ public class Player : NetworkBehaviour {
             vsp = BACKFLIP_HEIGHT;
             walljump_lock = Math.Sign(hsp);
         }
+    }
+
+
+    public void Death() {
+        GetComponent<SpriteRenderer>().enabled = false;
+        stars = 0;
+        isDead = true;
+        StartCoroutine(ExecuteAfterTime(3));
+
+
+    }
+
+    IEnumerator ExecuteAfterTime(float time) {
+        yield return new WaitForSeconds(time);
+        // Code to execute after the delay
+        transform.position = spawnPoint;
+        isDead = false;
+        GetComponent<SpriteRenderer>().enabled = true;
+
     }
 
 
