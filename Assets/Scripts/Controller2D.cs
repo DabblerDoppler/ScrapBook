@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent (typeof (BoxCollider2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Controller2D : NetworkBehaviour {
 
     bool incrementStars;
@@ -16,6 +16,7 @@ public class Controller2D : NetworkBehaviour {
     public LayerMask playerCollisionMask;
     public LayerMask starCollisionMask;
     public LayerMask spikeCollisionMask;
+    public LayerMask teleporterCollisionMask;
     public CollisionInfo collisions;
     public CollisionInfo playerCollisions;
 
@@ -34,6 +35,7 @@ public class Controller2D : NetworkBehaviour {
         collisionMask = LayerMask.GetMask("Floor");
         starCollisionMask = LayerMask.GetMask("Star");
         spikeCollisionMask = LayerMask.GetMask("Spike");
+        teleporterCollisionMask = LayerMask.GetMask("Teleporter");
     }
 
     public void Move(Vector3 velocity) {
@@ -41,21 +43,23 @@ public class Controller2D : NetworkBehaviour {
         incrementStars = false;
         collisions.Reset();
         playerCollisions.Reset();
-        if(velocity.x != 0) {
+        if (velocity.x != 0) {
             HorizontalCollisions(ref velocity);
             HorizontalCollisions_Players(ref velocity);
             HorizontalCollisions_Spikes(ref velocity);
+            HorizontalCollisions_Teleporters(ref velocity);
         }
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
             VerticalCollisions_Players(ref velocity);
             VerticalCollisions_Spikes(ref velocity);
+            HorizontalCollisions_Teleporters(ref velocity);
         }
 
         VerticalCollisions_Stars(ref velocity);
         HorizontalCollisions_Stars(ref velocity);
 
-        if(incrementStars) {
+        if (incrementStars) {
             GetComponentInParent<Player>().stars += 1;
             lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
         }
@@ -72,13 +76,40 @@ public class Controller2D : NetworkBehaviour {
             rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-            if(hit) {
+            if (hit) {
                 velocity.y = (hit.distance - SKIN_WIDTH) * directionY;
                 rayLength = hit.distance;
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
             }
         }
+    }
+
+    void VerticalCollisions_Teleporters(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, teleporterCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit) {
+                TeleportToOtherTeleporter(hit);
+
+            }
+        }
+    }
+
+    void TeleportToOtherTeleporter(RaycastHit2D hit) {
+        GameObject teleportTo;
+        if (hit.transform.name == "Teleporter_Left") {
+            teleportTo = GameObject.Find("Teleporter_Right");
+            transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.min.x - collider.size.x / 2, transform.position.y, transform.position.z);
+        } else {
+            teleportTo = GameObject.Find("Teleporter_Left");
+            transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.max.x + collider.size.x / 2, transform.position.y, transform.position.z);
+        }
+
     }
 
     void VerticalCollisions_Spikes(ref Vector3 velocity) {
@@ -197,6 +228,22 @@ public class Controller2D : NetworkBehaviour {
                 collisions.right = directionX == 1;
                 GetComponent<Player>().Death();
 
+            }
+        }
+    }
+
+    void HorizontalCollisions_Teleporters(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < horizontalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, teleporterCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit) {
+                //velocity.x = (hit.distance - SKIN_WIDTH) * directionX;
+                //rayLength = hit.distance;
+                TeleportToOtherTeleporter(hit);
             }
         }
     }

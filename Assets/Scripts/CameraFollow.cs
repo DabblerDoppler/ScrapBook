@@ -10,6 +10,7 @@ public class CameraFollow : MonoBehaviour {
     public bool hasTarget;
     public Vector2 focusAreaSize;
     public FocusArea focusArea;
+    public float moveStagesRight;
 
     public float lookAheadDistX;
     public float lookSmoothTimeX;
@@ -38,7 +39,7 @@ public class CameraFollow : MonoBehaviour {
         } else {
             focusArea.Update(target.collider.bounds);
             Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
-            transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+            transform.position = (Vector3)focusPosition + Vector3.forward * -10 + Vector3.right * moveStagesRight * 54.99879f;
         }
     }
 
