@@ -7,6 +7,7 @@ ScriptsOnlyBuild:
     - Player
     - Star
     - StarManager
+    - ViewportManager
     Mirror.Components.dll:
     - Mirror.NetworkTransform
     Mirror.dll:
@@ -71,11 +72,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 5716}
     - Class: 114
-      Script: {instanceID: 5966}
+      Script: {instanceID: 5888}
     - Class: 114
       Script: {instanceID: 5986}
     - Class: 114
       Script: {instanceID: 6214}
+    - Class: 114
+      Script: {instanceID: 18068}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -671,7 +674,7 @@ ScriptsOnlyBuild:
     className: Physics2DRaycaster
   - hash:
       serializedVersion: 2
-      Hash: ae2c32df815557dafd3e7a538712ea9d
+      Hash: 7db59b03ddf8b50254f090eb8e4fa129
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraFollow
@@ -1019,6 +1022,12 @@ ScriptsOnlyBuild:
     className: NetworkRigidbody
   - hash:
       serializedVersion: 2
+      Hash: c17dd5f6c426497bd4eea25a69607657
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ViewportManager
+  - hash:
+      serializedVersion: 2
       Hash: 460f1bc7ddb5a5325403b8276116aa4d
     assemblyName: Mirror.Components.dll
     namespaceName: Mirror
@@ -1031,7 +1040,7 @@ ScriptsOnlyBuild:
     className: BufferManager
   - hash:
       serializedVersion: 2
-      Hash: 2a70e28f0449a917d615f212f3e14403
+      Hash: c75ae293681d4f09af9a338f17ca04a0
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Controller2D

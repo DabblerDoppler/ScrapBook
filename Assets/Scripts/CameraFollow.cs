@@ -39,7 +39,10 @@ public class CameraFollow : MonoBehaviour {
         } else {
             focusArea.Update(target.collider.bounds);
             Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
-            transform.position = (Vector3)focusPosition + Vector3.forward * -10 + Vector3.right * moveStagesRight * 54.99879f;
+            transform.position = (Vector3)focusPosition + Vector3.forward * -10 + Vector3.right * moveStagesRight * (54.99879f - 0.9f);
+        }
+        if(transform.root != transform) {
+            transform.position = new Vector3(transform.position.x, transform.parent.position.y, transform.position.z);
         }
     }
 
