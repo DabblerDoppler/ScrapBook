@@ -104,13 +104,28 @@ public class Controller2D : NetworkBehaviour {
         GameObject teleportTo;
         if (hit.transform.name == "Teleporter_Left") {
             teleportTo = GameObject.Find("Teleporter_Right");
+            //Camera.main.GetComponent<CameraFollow>().focusArea.center += Vector2.right * Camera.main.GetComponent<CameraFollow>().levelDistance;
             transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.min.x - collider.size.x / 2, transform.position.y, transform.position.z);
         } else {
             teleportTo = GameObject.Find("Teleporter_Left");
+            //Camera.main.GetComponent<CameraFollow>().focusArea.center += Vector2.left * Camera.main.GetComponent<CameraFollow>().levelDistance;
             transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.max.x + collider.size.x / 2, transform.position.y, transform.position.z);
         }
 
+        //bring the void camera forward for 1 frame
+        StartCoroutine(FreezeCam());
+
     }
+
+    //might need to be space out for client
+    IEnumerator FreezeCam() {
+        Camera.main.clearFlags = CameraClearFlags.Nothing;
+        Camera.main.cullingMask = 0;
+        yield return null;
+        Camera.main.clearFlags = CameraClearFlags.Skybox;
+        Camera.main.cullingMask = -1;
+    }
+
 
     void VerticalCollisions_Spikes(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);

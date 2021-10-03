@@ -14,6 +14,7 @@ public class Player : NetworkBehaviour {
     bool jumpPressed;
     bool divePressed;
     bool diveHeld;
+    bool spinPressed;
 
 
     public int stars;
@@ -22,6 +23,7 @@ public class Player : NetworkBehaviour {
     public bool sliding;
     int walljump_lock;
     int facing;
+    public bool spun;
     public bool long_jump;
     public bool crouching;
     public bool backflip;
@@ -35,6 +37,7 @@ public class Player : NetworkBehaviour {
     public float groundPoundWindup;
     public float groundPoundLag;
     public int lastWall;
+    public float spinning;
 
     //unity variables
     BoxCollider2D collider;
@@ -80,6 +83,7 @@ public class Player : NetworkBehaviour {
     const float COYOTE_TIME = 0.1f;
     const float GROUNDPOUND_WINDUP = 0.20f;
     const float GROUNDPOUND_LAG = 0.20f;
+    const float SPIN_TIME = 0.20f;
     public const float CROUCH_PERCENT = 0.5f;
 
     const float DEADZONE = 0.2f;
@@ -154,6 +158,9 @@ public class Player : NetworkBehaviour {
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
                 long_jump = false;
+                spun = false;
+                spinning = 0.0f;
+
             }
             if(diving && onGround) {
                 diving = false;
@@ -167,6 +174,7 @@ public class Player : NetworkBehaviour {
             coyoteTime_Wall -= Time.deltaTime;
             groundPoundWindup -= Time.deltaTime;
             groundPoundLag -= Time.deltaTime;
+            spinning -= Time.deltaTime;
 
             if(onGround) {
                 coyoteTime = COYOTE_TIME;
@@ -316,6 +324,10 @@ public class Player : NetworkBehaviour {
                 }
             }
 
+            if(spinning > 0) {
+                vsp = 0;
+            }
+
 
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
         }
@@ -326,7 +338,7 @@ public class Player : NetworkBehaviour {
         verticalInput = Input.GetAxis("Vertical");
         jumpHeld = Input.GetButton("Jump");
         jumpPressed = Input.GetButtonDown("Jump");
-
+        spinPressed = Input.GetButtonDown("Spin");
         diveHeld = Input.GetButton("Dive");
         divePressed = Input.GetButtonDown("Dive");
     }
@@ -374,6 +386,11 @@ public class Player : NetworkBehaviour {
             }
         }  
 
+        if (spinPressed && !onGround && !spun && !groundPound && onWall == 0) {
+            spinning = SPIN_TIME;
+            spun = true;
+        }
+
     }
 
     void WallJumpState() {
@@ -382,6 +399,10 @@ public class Player : NetworkBehaviour {
             hsp = 0;
             groundPoundWindup = GROUNDPOUND_WINDUP;
             groundPound = true;
+        }
+        if (spinPressed && !onGround && !spun && !diving) {
+            spinning = SPIN_TIME;
+            spun = true;
         }
     }
 

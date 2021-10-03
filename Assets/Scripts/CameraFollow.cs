@@ -23,10 +23,14 @@ public class CameraFollow : MonoBehaviour {
     float smoothLookVelocityX;
     float smoothVelocityY;
 
+    public float levelDistance;
+
 
 
     private void Start() {
         hasTarget = false;
+        //0.85
+        levelDistance = (54.99879f - 0.875f);
     }
 
     private void LateUpdate() {
@@ -37,9 +41,10 @@ public class CameraFollow : MonoBehaviour {
                 hasTarget = true;
             }
         } else {
-            focusArea.Update(target.collider.bounds);
-            Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
-            transform.position = (Vector3)focusPosition + Vector3.forward * -10 + Vector3.right * moveStagesRight * (54.99879f - 0.9f);
+            //focusArea.Update(target.collider.bounds);
+            //Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
+            Vector2 focusPosition = (Vector2)target.transform.position + Vector2.up * verticalOffset;
+            transform.position = (Vector3)focusPosition + Vector3.forward * -10 + Vector3.right * moveStagesRight * (levelDistance);
         }
         if(transform.root != transform) {
             transform.position = new Vector3(transform.position.x, transform.parent.position.y, transform.position.z);
