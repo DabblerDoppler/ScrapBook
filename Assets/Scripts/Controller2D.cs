@@ -1,6 +1,6 @@
 using System.Collections;
 using Mirror;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -45,7 +45,7 @@ public class Controller2D : NetworkBehaviour {
         playerCollisions.Reset();
         if (velocity.x != 0) {
             HorizontalCollisions(ref velocity);
-            HorizontalCollisions_Players(ref velocity);
+            //HorizontalCollisions_Players(ref velocity);
             HorizontalCollisions_Spikes(ref velocity);
             HorizontalCollisions_Teleporters(ref velocity);
         }
@@ -64,6 +64,7 @@ public class Controller2D : NetworkBehaviour {
             lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
         }
 
+        //GetComponent<Rigidbody2D>().velocity = velocity / Time.deltaTime;
         transform.position += velocity;
     }
 
@@ -84,6 +85,38 @@ public class Controller2D : NetworkBehaviour {
             }
         }
     }
+
+    void VerticalCollisions_Players(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, playerCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red); 
+            if (hit && hit.transform.position != transform.position) {
+                if (hit.collider.GetComponent<Player>().intangibility < 0 && collider.GetComponent<Player>().intangibility < 0) {
+                    playerCollisions.below = directionY == -1;
+                    playerCollisions.above = directionY == 1;
+                    if (playerCollisions.above) {
+                        int direction = -1;
+                        if (transform.position.x > hit.transform.position.x) {
+                            direction = 1;
+                        }
+                        //knockdown
+                        if (isServer) {
+                            hit.collider.GetComponent<Player>().Knockdown(direction);
+                        }
+                        else {
+                            CmdKnockdownPlayer(hit.collider.GetComponent<Player>(), direction);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 
     void VerticalCollisions_Teleporters(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);
@@ -176,23 +209,7 @@ public class Controller2D : NetworkBehaviour {
     }
 
 
-    void VerticalCollisions_Players(ref Vector3 velocity) {
-        float directionY = Mathf.Sign(velocity.y);
-        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
-        for (int i = 0; i < verticalRayCount; i++) {
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, playerCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-            if (hit && hit.collider != collider) {
-                velocity.y += (hit.distance - SKIN_WIDTH) * directionY;
-                rayLength = hit.distance;
-                playerCollisions.below = directionY == -1;
-                playerCollisions.above = directionY == 1;
-            }
-        }
 
-    }
 
 
 
@@ -224,6 +241,23 @@ public class Controller2D : NetworkBehaviour {
                 rayLength = hit.distance;
                 collisions.left = directionX == -1;
                 collisions.right = directionX == 1;
+            }
+        }
+    }
+
+    void HorizontalCollisions_Players(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < horizontalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, playerCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit && hit.transform.position != transform.position) {
+                velocity.x += (hit.distance - SKIN_WIDTH) * directionX;
+                rayLength = hit.distance;
+                playerCollisions.left = directionX == -1;
+                playerCollisions.right = directionX == 1;
             }
         }
     }
@@ -263,21 +297,10 @@ public class Controller2D : NetworkBehaviour {
         }
     }
 
-    void HorizontalCollisions_Players(ref Vector3 velocity) {
-        float directionX = Mathf.Sign(velocity.x);
-        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
-        for (int i = 0; i < horizontalRayCount; i++) {
-            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
-            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, playerCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
-            if (hit && hit.collider != collider) {
-                velocity.x += (hit.distance - SKIN_WIDTH) * directionX;
-                rayLength = hit.distance;
-                playerCollisions.left = directionX == -1;
-                playerCollisions.right = directionX == 1;
-            }
-        }
+
+    [Command(requiresAuthority = false)]
+    public void CmdKnockdownPlayer(Player player, int direction) {
+        player.Knockdown(direction);
     }
 
 

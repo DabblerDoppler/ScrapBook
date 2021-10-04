@@ -49,6 +49,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 50
+      Script: {instanceID: 0}
     - Class: 61
       Script: {instanceID: 0}
     - Class: 81
@@ -78,7 +80,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 6216}
     - Class: 114
-      Script: {instanceID: 18084}
+      Script: {instanceID: 18146}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -206,7 +208,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: bdd1940e522fe5072818afe65a4c85b7
+      Hash: 9987578f0eff2bb0eac093959a6a8310
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player

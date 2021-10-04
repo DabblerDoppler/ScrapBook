@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2234132032890095562}
   - component: {fileID: 7675796780294924182}
   - component: {fileID: 2216670722006428613}
+  - component: {fileID: 8107723427429434423}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -119,15 +120,23 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   horizontalInput: 0
+  stars: 0
   sliding: 0
+  spun: 0
   long_jump: 0
   crouching: 0
   backflip: 0
   diving: 0
+  groundPound: 0
+  onGround: 0
+  isDead: 0
   coyoteTime: 0
   coyoteTime_Wall: 0
   jumpBuffer: 0
+  groundPoundWindup: 0
+  groundPoundLag: 0
   lastWall: 0
+  spinning: 0
   hsp: 0
   vsp: 0
 --- !u!114 &2234132032890095562
@@ -145,9 +154,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   clientAuthority: 1
-  sendInterval: 0.05
+  sendInterval: 0.025
   syncPosition: 1
-  syncRotation: 1
+  syncRotation: 0
   syncScale: 0
   interpolatePosition: 1
   interpolateRotation: 1
@@ -208,3 +217,33 @@ MonoBehaviour:
   playerCollisionMask:
     serializedVersion: 2
     m_Bits: 8
+  starCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  spikeCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  teleporterCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!50 &8107723427429434423
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312475966293565536}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4

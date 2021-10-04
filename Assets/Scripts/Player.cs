@@ -15,6 +15,7 @@ public class Player : NetworkBehaviour {
     bool divePressed;
     bool diveHeld;
     bool spinPressed;
+    
 
 
     public int stars;
@@ -38,6 +39,9 @@ public class Player : NetworkBehaviour {
     public float groundPoundLag;
     public int lastWall;
     public float spinning;
+    public float knockdown;
+    public float intangibility;
+    bool intangibilityEnded;
 
     //unity variables
     BoxCollider2D collider;
@@ -64,9 +68,11 @@ public class Player : NetworkBehaviour {
     const float HSP_MAX_SLIDE = 0.02f;
     const float HSP_MAX_LONGJUMP = 0.015f;
     const float HSP_MAX_CROUCH = 0.005f;
+    const float HSP_KNOCKDOWN = 0.005f;
     const float VSP_MAX = 0.018f;
     const float VSP_MAX_WALL = 0.006f;
     const float VSP_GROUNDPOUND = 0.024f;
+    const float VSP_KNOCKDOWN = 0.004f;
     const float GRAVITY = 0.000075f * 500 ;
     const float GRAVITY_HELD = 0.00005f * 500 ;
     const float JUMP_HEIGHT = 0.01325f;
@@ -77,13 +83,15 @@ public class Player : NetworkBehaviour {
     const float BACKFLIP_HEIGHT = 0.01675f;
     const float BACKFLIP_LENGTH = 0.004f;
     const float PLAYER_JUMP_HEIGHT = 0.012f;
-    const float PLAYER_HOP_HEIGHT = 0.0065f;
+    const float PLAYER_HOP_HEIGHT = 0.0075f;
     const float DIVE_LENGTH = 0.009f;
     const float DIVE_HEIGHT = 0.00605f;
     const float COYOTE_TIME = 0.1f;
     const float GROUNDPOUND_WINDUP = 0.20f;
     const float GROUNDPOUND_LAG = 0.20f;
     const float SPIN_TIME = 0.20f;
+    const float KNOCKDOWN_TIME = 1.50f;
+    const float INTANGIBILITY_TIME = 1.75f;
     public const float CROUCH_PERCENT = 0.5f;
 
     const float DEADZONE = 0.2f;
@@ -91,13 +99,6 @@ public class Player : NetworkBehaviour {
     const float AIR_SPEED = 0.00015f * 500;
     const float SLIDE_SPEED = 0.1f * 500;
     const float CROUCH_SPEED = 0.0003f * 500;
-
-
-
-
-
-
-
 
     const int LAYER_FLOOR = 6;
     const int LAYER_WALL = 7;
@@ -107,8 +108,11 @@ public class Player : NetworkBehaviour {
     private void Start() {
         stars = 0;
 
+
         collider = GetComponent<BoxCollider2D>();
         controller = GetComponent<Controller2D>();
+
+
 
         standColliderOffset = collider.offset;
         standColliderSize = collider.size;
@@ -130,6 +134,8 @@ public class Player : NetworkBehaviour {
         jumpBuffer = 0.0f;
         groundPoundWindup = 0.0f;
         groundPoundLag = 0.0f;
+        intangibility = 0f;
+        knockdown = 0f;
 
     }
 
@@ -148,6 +154,12 @@ public class Player : NetworkBehaviour {
             }
 
             HandleInput();
+
+            //this needs to run on all client's copy of this object.
+            //a command into a ClientRpc method is probably the way to go.
+            if (intangibility < 0 && !intangibilityEnded) {
+                CmdEndIntangibility();
+            }
 
             onGround = controller.collisions.below;
             int onWall = (controller.collisions.left) ? -1 : 0;
@@ -175,6 +187,9 @@ public class Player : NetworkBehaviour {
             groundPoundWindup -= Time.deltaTime;
             groundPoundLag -= Time.deltaTime;
             spinning -= Time.deltaTime;
+            intangibility -= Time.deltaTime;
+            knockdown -= Time.deltaTime;
+
 
             if(onGround) {
                 coyoteTime = COYOTE_TIME;
@@ -215,15 +230,19 @@ public class Player : NetworkBehaviour {
                 }
             }
 
+            if(knockdown > 0) {
+                horizontalInput = 0;
+            }
+
 
             if (controller.collisions.above || controller.collisions.below) { vsp = 0; }
             if (controller.collisions.left || controller.collisions.right) { hsp = 0; }
 
 
-            if (controller.playerCollisions.above || controller.playerCollisions.below) { vsp = 0; }
-            if (controller.playerCollisions.left || controller.playerCollisions.right) { hsp = 0; }
+            //if (controller.playerCollisions.above || controller.playerCollisions.below) { vsp = 0; }
+            //if (controller.playerCollisions.left || controller.playerCollisions.right) { hsp = 0; }
 
-            /*
+            //goomba stomp
             if (controller.playerCollisions.below) {
                 if (jumpHeld) {
                     vsp = PLAYER_JUMP_HEIGHT;
@@ -232,7 +251,7 @@ public class Player : NetworkBehaviour {
                     vsp = PLAYER_HOP_HEIGHT;
                 }
             }
-            */
+
             if (!crouching && !sliding && !diving) {
                 if (controller.VerticalCollisions_uncrouch() && onGround) {
                     collider.size = crouchColliderSize;
@@ -250,8 +269,8 @@ public class Player : NetworkBehaviour {
 
 
 
-
-            if (sliding) {
+            if(knockdown > 0) {
+            } else if (sliding) {
                 SlideState(onGround);
             } else if (groundPoundWindup > 0) {
                 GroundPoundWindupState();
@@ -456,19 +475,41 @@ public class Player : NetworkBehaviour {
         GetComponent<SpriteRenderer>().enabled = false;
         stars = 0;
         isDead = true;
-        StartCoroutine(ExecuteAfterTime(3));
-
-
+        StartCoroutine(RespawnAfterTime(3));
     }
 
-    IEnumerator ExecuteAfterTime(float time) {
+    IEnumerator RespawnAfterTime(float time) {
         yield return new WaitForSeconds(time);
         // Code to execute after the delay
         transform.position = spawnPoint;
         isDead = false;
         GetComponent<SpriteRenderer>().enabled = true;
-
     }
+
+
+    [ClientRpc]
+    public void Knockdown(int direction) {
+        knockdown = KNOCKDOWN_TIME;
+        intangibility = INTANGIBILITY_TIME;
+        vsp = VSP_KNOCKDOWN;
+        hsp = direction * HSP_KNOCKDOWN;
+        GetComponent<Rigidbody2D>().simulated = false;
+        collider.enabled = false;
+        intangibilityEnded = false;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdEndIntangibility() {
+        RpcEndIntangibility();
+    }
+
+    [ClientRpc]
+    public void RpcEndIntangibility() {
+        GetComponent<Rigidbody2D>().simulated = true;
+        collider.enabled = true;
+        intangibilityEnded = true;
+    }
+
 
 
     float Approach(float argument0, float argument1, float argument2) {

@@ -23,6 +23,9 @@ public class Star : NetworkBehaviour {
     //When called (from a player), send a command to the server.
     public void playerTouch() {
         CmdPickNewStar();
+        if (!isServer) {
+            Destroy(gameObject);
+        }
     }
 
 
