@@ -17,7 +17,6 @@ public class Player : NetworkBehaviour {
     bool spinPressed;
     
 
-
     public int stars;
 
     //actions
@@ -90,8 +89,8 @@ public class Player : NetworkBehaviour {
     const float GROUNDPOUND_WINDUP = 0.20f;
     const float GROUNDPOUND_LAG = 0.20f;
     const float SPIN_TIME = 0.20f;
-    const float KNOCKDOWN_TIME = 1.50f;
-    const float INTANGIBILITY_TIME = 1.75f;
+    const float KNOCKDOWN_TIME = 1.0f;
+    const float INTANGIBILITY_TIME = 1.35f;
     public const float CROUCH_PERCENT = 0.5f;
 
     const float DEADZONE = 0.2f;
@@ -144,7 +143,9 @@ public class Player : NetworkBehaviour {
     }
 
     private void OnDestroy() {
-        Camera.main.GetComponent<CameraFollow>().hasTarget = false;
+        if (Camera.main != null) {
+            Camera.main.GetComponent<CameraFollow>().hasTarget = false;
+        }
     }
 
     void HandleMovement() {
@@ -158,7 +159,12 @@ public class Player : NetworkBehaviour {
             //this needs to run on all client's copy of this object.
             //a command into a ClientRpc method is probably the way to go.
             if (intangibility < 0 && !intangibilityEnded) {
-                CmdEndIntangibility();
+                if (isServer) {
+                    RpcEndIntangibility();
+                }
+                else {
+                    CmdEndIntangibility();
+                }
             }
 
             onGround = controller.collisions.below;
@@ -233,7 +239,6 @@ public class Player : NetworkBehaviour {
             if(knockdown > 0) {
                 horizontalInput = 0;
             }
-
 
             if (controller.collisions.above || controller.collisions.below) { vsp = 0; }
             if (controller.collisions.left || controller.collisions.right) { hsp = 0; }
@@ -473,7 +478,7 @@ public class Player : NetworkBehaviour {
 
     public void Death() {
         GetComponent<SpriteRenderer>().enabled = false;
-        stars = 0;
+        CmdSetStars(0);
         isDead = true;
         StartCoroutine(RespawnAfterTime(3));
     }
@@ -488,13 +493,13 @@ public class Player : NetworkBehaviour {
 
 
     [ClientRpc]
-    public void Knockdown(int direction) {
+    public void RpcKnockdown(int direction) {
         knockdown = KNOCKDOWN_TIME;
         intangibility = INTANGIBILITY_TIME;
-        vsp = VSP_KNOCKDOWN;
+        vsp = 0;
+        //vsp = VSP_KNOCKDOWN;
         hsp = direction * HSP_KNOCKDOWN;
         GetComponent<Rigidbody2D>().simulated = false;
-        collider.enabled = false;
         intangibilityEnded = false;
     }
 
@@ -506,9 +511,23 @@ public class Player : NetworkBehaviour {
     [ClientRpc]
     public void RpcEndIntangibility() {
         GetComponent<Rigidbody2D>().simulated = true;
-        collider.enabled = true;
         intangibilityEnded = true;
+        intangibility = -1;
+        knockdown = -1;
     }
+
+
+    
+    [Command(requiresAuthority = false)]
+    public void CmdSetStars(int newStars) {
+        RpcSetStars(newStars);
+    }
+
+    [ClientRpc]
+    void RpcSetStars(int newStars) {
+        stars = newStars;
+    }
+
 
 
 

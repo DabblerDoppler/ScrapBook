@@ -7,6 +7,8 @@ ScriptsOnlyBuild:
     - Player
     - Star
     - StarManager
+    - StarUI
+    - TextChildArray
     - ViewportManager
     Mirror.Components.dll:
     - Mirror.NetworkTransform
@@ -35,6 +37,12 @@ ScriptsOnlyBuild:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
+    UnityEngine.UI.dll:
+    - UnityEngine.EventSystems.EventSystem
+    - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.CanvasScaler
+    - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.Text
   sceneClasses:
     Assets/Scenes/SampleScene.unity:
     - Class: 1
@@ -58,11 +66,21 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
+      Script: {instanceID: 1464}
+    - Class: 114
       Script: {instanceID: 1480}
     - Class: 114
       Script: {instanceID: 1726}
     - Class: 114
+      Script: {instanceID: 2322}
+    - Class: 114
+      Script: {instanceID: 2788}
+    - Class: 114
+      Script: {instanceID: 2964}
+    - Class: 114
       Script: {instanceID: 3082}
+    - Class: 114
+      Script: {instanceID: 3500}
     - Class: 114
       Script: {instanceID: 3726}
     - Class: 114
@@ -81,7 +99,13 @@ ScriptsOnlyBuild:
       Script: {instanceID: 6216}
     - Class: 114
       Script: {instanceID: 18146}
+    - Class: 114
+      Script: {instanceID: 40744}
+    - Class: 114
+      Script: {instanceID: 50642}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
@@ -90,6 +114,12 @@ ScriptsOnlyBuild:
     - Class: 212
       Script: {instanceID: 0}
     - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
   scriptHashData:
   - hash:
@@ -1124,6 +1154,18 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Star
+  - hash:
+      serializedVersion: 2
+      Hash: 9bedee276200fd59c985ec44267dda1e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StarUI
+  - hash:
+      serializedVersion: 2
+      Hash: 4a8d965304125ead843e746a0d52cb7b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TextChildArray
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity

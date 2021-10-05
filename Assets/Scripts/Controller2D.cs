@@ -60,7 +60,7 @@ public class Controller2D : NetworkBehaviour {
         HorizontalCollisions_Stars(ref velocity);
 
         if (incrementStars) {
-            GetComponentInParent<Player>().stars += 1;
+            GetComponentInParent<Player>().CmdSetStars(GetComponentInParent<Player>().stars + 1);
             lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
         }
 
@@ -95,19 +95,21 @@ public class Controller2D : NetworkBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, playerCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red); 
             if (hit && hit.transform.position != transform.position) {
-                if (hit.collider.GetComponent<Player>().intangibility < 0 && collider.GetComponent<Player>().intangibility < 0) {
+                if (hit.collider.GetComponent<Player>().intangibility <= 0 && collider.GetComponent<Player>().intangibility <= 0) {
                     playerCollisions.below = directionY == -1;
                     playerCollisions.above = directionY == 1;
-                    if (playerCollisions.above) {
+                    if (playerCollisions.below && transform.position.y > hit.transform.position.y) {
                         int direction = -1;
                         if (transform.position.x > hit.transform.position.x) {
                             direction = 1;
                         }
                         //knockdown
                         if (isServer) {
-                            hit.collider.GetComponent<Player>().Knockdown(direction);
+                            Debug.Log("Running RpcKnockdown.");
+                            hit.collider.GetComponent<Player>().RpcKnockdown(direction);
                         }
                         else {
+                            Debug.Log("Running CmdKnockdown.");
                             CmdKnockdownPlayer(hit.collider.GetComponent<Player>(), direction);
                         }
                     }
@@ -300,7 +302,8 @@ public class Controller2D : NetworkBehaviour {
 
     [Command(requiresAuthority = false)]
     public void CmdKnockdownPlayer(Player player, int direction) {
-        player.Knockdown(direction);
+        Debug.Log("CmdKnockdownPlayer run. Trying to call RpcKnockdown.");
+        player.RpcKnockdown(direction);
     }
 
 
