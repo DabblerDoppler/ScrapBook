@@ -494,6 +494,13 @@ public class Player : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcKnockdown(int direction) {
+        if(isServer) {
+            RpcSetStars(stars - 1);
+        } else {
+            CmdSetStars(stars - 1);
+        }
+        //drop a star here.
+
         knockdown = KNOCKDOWN_TIME;
         intangibility = INTANGIBILITY_TIME;
         vsp = 0;

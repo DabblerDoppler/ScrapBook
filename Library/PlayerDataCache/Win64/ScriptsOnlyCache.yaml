@@ -80,29 +80,29 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3082}
     - Class: 114
-      Script: {instanceID: 3500}
+      Script: {instanceID: 3258}
     - Class: 114
-      Script: {instanceID: 3726}
+      Script: {instanceID: 3502}
     - Class: 114
-      Script: {instanceID: 4258}
+      Script: {instanceID: 3728}
     - Class: 114
-      Script: {instanceID: 5310}
+      Script: {instanceID: 4260}
     - Class: 114
-      Script: {instanceID: 5546}
+      Script: {instanceID: 5312}
     - Class: 114
-      Script: {instanceID: 5718}
+      Script: {instanceID: 5416}
     - Class: 114
-      Script: {instanceID: 5890}
+      Script: {instanceID: 5550}
     - Class: 114
-      Script: {instanceID: 5988}
+      Script: {instanceID: 5722}
     - Class: 114
-      Script: {instanceID: 6216}
+      Script: {instanceID: 5894}
     - Class: 114
-      Script: {instanceID: 18146}
+      Script: {instanceID: 5992}
     - Class: 114
-      Script: {instanceID: 40744}
+      Script: {instanceID: 6220}
     - Class: 114
-      Script: {instanceID: 50642}
+      Script: {instanceID: 18214}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -488,6 +488,12 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.Components.dll
     namespaceName: Mirror.Experimental
     className: NetworkLerpRigidbody
+  - hash:
+      serializedVersion: 2
+      Hash: 4a8d965304125ead843e746a0d52cb7b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TextChildArray
   - hash:
       serializedVersion: 2
       Hash: 1d12411bfa32d734c4dad798554fe0fa
@@ -982,6 +988,12 @@ ScriptsOnlyBuild:
     className: ChatNetworkManager
   - hash:
       serializedVersion: 2
+      Hash: 9bedee276200fd59c985ec44267dda1e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StarUI
+  - hash:
+      serializedVersion: 2
       Hash: 63bdc2cf3273aa9bf650350f19d2af61
     assemblyName: Unity.2D.PixelPerfect.dll
     namespaceName: UnityEngine.U2D
@@ -1154,18 +1166,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Star
-  - hash:
-      serializedVersion: 2
-      Hash: 9bedee276200fd59c985ec44267dda1e
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: StarUI
-  - hash:
-      serializedVersion: 2
-      Hash: 4a8d965304125ead843e746a0d52cb7b
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: TextChildArray
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
