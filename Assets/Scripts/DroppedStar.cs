@@ -32,6 +32,9 @@ public class DroppedStar : NetworkBehaviour {
         if(transform.position.y < OUT_OF_BOUNDS) {
             Destroy(gameObject);
         }
+        if (isServer) {
+            GetComponent<Teleportable>().CheckTeleporters(GetComponent<Rigidbody2D>().velocity * 0.25f );
+        }
     }
     
     public void playerTouch() {

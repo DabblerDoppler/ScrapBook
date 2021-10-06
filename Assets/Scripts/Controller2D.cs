@@ -66,12 +66,18 @@ public class Controller2D : NetworkBehaviour {
 
         if (knockdownPlayer != null) {
             if (isServer) {
-                Debug.Log("Running RpcKnockdown.");
-                knockdownPlayer.RpcKnockdown();
+                if (GetComponent<Player>().groundPound) {
+                    knockdownPlayer.RpcKnockdown3();
+                } else { 
+                    knockdownPlayer.RpcKnockdown();
+                }
             }
             else {
-                Debug.Log("Running CmdKnockdown.");
-                CmdKnockdownPlayer(knockdownPlayer);
+                if (GetComponent<Player>().groundPound) {
+                    CmdKnockdownPlayer3(knockdownPlayer);
+                } else {
+                    CmdKnockdownPlayer(knockdownPlayer);
+                }
             }
         }
         
@@ -155,38 +161,15 @@ public class Controller2D : NetworkBehaviour {
         GameObject teleportTo;
         if (hit.transform.name == "Teleporter_Left") {
             teleportTo = GameObject.Find("Teleporter_Right");
-            GetComponent<Rigidbody2D>().simulated = false;
-            StartCoroutine(Resimulate());
+            //GetComponent<Rigidbody2D>().simulated = false;
+            //StartCoroutine(Resimulate());
             transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.min.x - collider.size.x / 2, transform.position.y, transform.position.z);
-            /*
-            if (isServer) {
-                RpcUnsimulate();
-                RpcResimulate();
-            }
-            else {
-                CmdUnsimulate();
-                CmdResimulate();
-            }
-            */
         } else {
             teleportTo = GameObject.Find("Teleporter_Left");
-            GetComponent<Rigidbody2D>().simulated = false;
-            StartCoroutine(Resimulate());
+            //GetComponent<Rigidbody2D>().simulated = false;
+            //StartCoroutine(Resimulate());
             transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.max.x + collider.size.x / 2, transform.position.y, transform.position.z);
-            /*
-            if (isServer) {
-                RpcUnsimulate();
-                RpcResimulate();
-            } else {
-                CmdUnsimulate();
-                CmdResimulate();
-            }
-            */
         }
-
-        //bring the void camera forward for 1 frame and stop collisions and player rendering for 1 frame
-        StartCoroutine(FreezeCam());
-
     }
 
 
@@ -272,10 +255,6 @@ public class Controller2D : NetworkBehaviour {
             }
         }
     }
-
-
-
-
 
 
     void HorizontalCollisions_Stars(ref Vector3 velocity) {
@@ -369,7 +348,11 @@ public class Controller2D : NetworkBehaviour {
         player.RpcKnockdown();
     }
 
-
+    [Command(requiresAuthority = false)]
+    public void CmdKnockdownPlayer3(Player player) {
+        Debug.Log("CmdKnockdownPlayer run. Trying to call RpcKnockdown.");
+        player.RpcKnockdown3();
+    }
 
     public void UpdateRaycastOrigins() {
         Bounds bounds = collider.bounds;

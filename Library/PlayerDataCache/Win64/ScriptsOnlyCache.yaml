@@ -9,12 +9,11 @@ ScriptsOnlyBuild:
     - Star
     - StarManager
     - StarUI
+    - Teleportable
     - TextChildArray
     - ViewportManager
     Mirror.Components.dll:
     - Mirror.NetworkTransform
-    Mirror.Editor.dll:
-    - Mirror.NetworkBehaviourInspector
     Mirror.dll:
     - Mirror.NetworkIdentity
     - Mirror.NetworkManagerHUD
@@ -95,6 +94,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 4260}
     - Class: 114
+      Script: {instanceID: 4424}
+    - Class: 114
       Script: {instanceID: 5314}
     - Class: 114
       Script: {instanceID: 5418}
@@ -109,7 +110,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 6222}
     - Class: 114
-      Script: {instanceID: 24708}
+      Script: {instanceID: 18330}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -773,6 +774,12 @@ ScriptsOnlyBuild:
     className: SceneInterestManagement
   - hash:
       serializedVersion: 2
+      Hash: 9216f74ede46cc26f63ce0eef9f67591
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DroppedStar
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
@@ -1175,10 +1182,10 @@ ScriptsOnlyBuild:
     className: Star
   - hash:
       serializedVersion: 2
-      Hash: 9216f74ede46cc26f63ce0eef9f67591
+      Hash: c26a10be4f794bad5596634c2bc302d4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: DroppedStar
+    className: Teleportable
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity

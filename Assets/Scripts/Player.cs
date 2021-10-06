@@ -510,6 +510,20 @@ public class Player : NetworkBehaviour {
         }
     }
 
+    [ClientRpc]
+    public void RpcKnockdown3() {
+        if (intangibility < 0) {
+            DropStars(3);
+            knockdown = KNOCKDOWN_TIME;
+            intangibility = INTANGIBILITY_TIME;
+            vsp = 0;
+            //vsp = VSP_KNOCKDOWN;
+            hsp = HSP_KNOCKDOWN;
+            GetComponent<Rigidbody2D>().simulated = false;
+            intangibilityEnded = false;
+        }
+    }
+
     void DropStars(int numToDrop) {
         Debug.Log("Client " + NetworkConnectionToClient.LocalConnectionId + "calling dropstars.");
         if (stars >= numToDrop) {

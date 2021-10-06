@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5927093148256833503}
   - component: {fileID: -8239757068999828597}
   - component: {fileID: -2122958442002154890}
+  - component: {fileID: 8064700836237753102}
   m_Layer: 11
   m_Name: DroppedStar
   m_TagString: Star
@@ -187,3 +188,20 @@ MonoBehaviour:
   TimeUntilFall: 3.5
   TimeUntilUnignore: 0.4
   ignoredPlayer: {fileID: 0}
+--- !u!114 &8064700836237753102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9117169468707017065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a9b6121879f0f644b529a709ba57b5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalRayCount: 2
+  teleporterCollisionMask:
+    serializedVersion: 2
+    m_Bits: 512
+  collider: {fileID: 0}
