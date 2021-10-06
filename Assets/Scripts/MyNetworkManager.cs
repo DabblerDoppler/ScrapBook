@@ -39,37 +39,9 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnServerConnect(NetworkConnection conn) {
         base.OnServerConnect(conn);
-        StartCoroutine(WaitAndSetUI(0.25f, conn));
     }
 
-    public override void OnClientConnect(NetworkConnection conn) {
-        base.OnClientConnect(conn);
-        StartCoroutine(WaitAndSetUI(0.25f, conn));
-    }
-    //janky as fuck but you know me
 
-    IEnumerator WaitAndSetUI(float seconds, NetworkConnection conn) {
-        yield return new WaitForSeconds(seconds);
-
-        List<GameObject> childList = GameObject.Find("Canvas").GetComponent<TextChildArray>().myChildren;
-        GameObject[] playerArray = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < playerArray.Length; i++) {
-            childList[i].GetComponent<StarUI>().attachedPlayer = playerArray[i].GetComponent<Player>();
-        }
-
-
-        /*
-        GameObject player = conn.identity.gameObject;
-
-        foreach (GameObject child in GameObject.Find("Canvas").GetComponent<TextChildArray>().myChildren) {
-            if (child.GetComponent<StarUI>().attachedPlayer == null) {
-                child.GetComponent<StarUI>().SetPlayer(player.GetComponent<Player>());
-                break;
-            }
-        }
-        */
-
-    }
     
 }
 

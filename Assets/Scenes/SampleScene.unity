@@ -239,6 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b59cf517193c5af45a3ac6c8547ed5db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myChildren: []
 --- !u!1 &64232182
 GameObject:
   m_ObjectHideFlags: 0
@@ -2807,6 +2808,7 @@ MonoBehaviour:
   spawnPrefabs:
   - {fileID: 901124802263979950, guid: 9d45a486e38ffa84f8f880e0e201781d, type: 3}
   - {fileID: 8695228450581917325, guid: 1e62143ed8d303646bdf912d9ef1339e, type: 3}
+  - {fileID: 9117169468707017065, guid: 078fd9ea362faca4d94ef718d6f55210, type: 3}
 --- !u!4 &743076432
 Transform:
   m_ObjectHideFlags: 0

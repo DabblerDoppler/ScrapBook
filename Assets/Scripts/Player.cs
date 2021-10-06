@@ -15,7 +15,8 @@ public class Player : NetworkBehaviour {
     bool divePressed;
     bool diveHeld;
     bool spinPressed;
-    
+
+    private System.Random rand;
 
     public int stars;
 
@@ -107,6 +108,7 @@ public class Player : NetworkBehaviour {
     private void Start() {
         stars = 0;
 
+        rand = new System.Random();
 
         collider = GetComponent<BoxCollider2D>();
         controller = GetComponent<Controller2D>();
@@ -478,7 +480,8 @@ public class Player : NetworkBehaviour {
 
     public void Death() {
         GetComponent<SpriteRenderer>().enabled = false;
-        CmdSetStars(0);
+        GetComponent<Rigidbody2D>().simulated = false;
+        DropStars(3);
         isDead = true;
         StartCoroutine(RespawnAfterTime(3));
     }
@@ -489,26 +492,63 @@ public class Player : NetworkBehaviour {
         transform.position = spawnPoint;
         isDead = false;
         GetComponent<SpriteRenderer>().enabled = true;
+        GetComponent<Rigidbody2D>().simulated = true;
     }
 
 
     [ClientRpc]
-    public void RpcKnockdown(int direction) {
-        if(isServer) {
-            RpcSetStars(stars - 1);
-        } else {
-            CmdSetStars(stars - 1);
+    public void RpcKnockdown() {
+        if (intangibility < 0) {
+            DropStars(1);
+            knockdown = KNOCKDOWN_TIME;
+            intangibility = INTANGIBILITY_TIME;
+            vsp = 0;
+            //vsp = VSP_KNOCKDOWN;
+            hsp = HSP_KNOCKDOWN;
+            GetComponent<Rigidbody2D>().simulated = false;
+            intangibilityEnded = false;
         }
-        //drop a star here.
-
-        knockdown = KNOCKDOWN_TIME;
-        intangibility = INTANGIBILITY_TIME;
-        vsp = 0;
-        //vsp = VSP_KNOCKDOWN;
-        hsp = direction * HSP_KNOCKDOWN;
-        GetComponent<Rigidbody2D>().simulated = false;
-        intangibilityEnded = false;
     }
+
+    void DropStars(int numToDrop) {
+        Debug.Log("Client " + NetworkConnectionToClient.LocalConnectionId + "calling dropstars.");
+        if (stars >= numToDrop) {
+            //CmdSetStars spawns stars.
+            CmdSetStars(stars - numToDrop, transform);
+        }
+        else {
+            DropStars(numToDrop - 1);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetStars(int newStars, Transform t) {
+        int numToDrop = 0;
+        if (newStars < stars) {
+            numToDrop = stars - newStars;
+        }
+        RpcSetStars(newStars);
+        for (int i = 0; i < numToDrop; i++) {
+            GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "DroppedStar"));
+            NetworkServer.Spawn(currentStar);
+            currentStar.transform.position = t.position;
+            currentStar.GetComponent<DroppedStar>().ignoredPlayer = transform.gameObject;
+            currentStar.GetComponent<Rigidbody2D>().velocity = new Vector2((float)((rand.NextDouble() - 0.5) * 20.0), (0.5f + (0.5f * (float)rand.NextDouble())) * 10.0f);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdAddStars(int toAdd) {
+        RpcSetStars(stars + toAdd);
+    }
+
+
+    [ClientRpc]
+    void RpcSetStars(int newStars) {
+        stars = newStars;
+    }
+
+
 
     [Command(requiresAuthority = false)]
     public void CmdEndIntangibility() {
@@ -525,17 +565,34 @@ public class Player : NetworkBehaviour {
 
 
     
+
+
+    public override void OnStartClient() {
+        if (isServer) {
+            RpcSetUI(0.2f);
+        } else {
+            CmdSetUI(0.2f);
+        }
+    }
+
     [Command(requiresAuthority = false)]
-    public void CmdSetStars(int newStars) {
-        RpcSetStars(newStars);
+    void CmdSetUI(float time) {
+        RpcSetUI(time);
     }
 
     [ClientRpc]
-    void RpcSetStars(int newStars) {
-        stars = newStars;
+    void RpcSetUI(float time) {
+        StartCoroutine(WaitAndSetUI(time));
     }
 
-
+    IEnumerator WaitAndSetUI(float seconds) {
+        yield return new WaitForSeconds(seconds);
+        List<GameObject> childList = GameObject.Find("Canvas").GetComponent<TextChildArray>().myChildren;
+        GameObject[] playerArray = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < playerArray.Length; i++) {
+            childList[i].GetComponent<StarUI>().attachedPlayer = playerArray[i].GetComponent<Player>();
+        }
+    }
 
 
     float Approach(float argument0, float argument1, float argument2) {

@@ -137,6 +137,8 @@ MonoBehaviour:
   groundPoundLag: 0
   lastWall: 0
   spinning: 0
+  knockdown: 0
+  intangibility: 0
   hsp: 0
   vsp: 0
 --- !u!114 &2234132032890095562
@@ -154,11 +156,11 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   clientAuthority: 1
-  sendInterval: 0.025
+  sendInterval: 0.01
   syncPosition: 1
   syncRotation: 0
   syncScale: 0
-  interpolatePosition: 1
+  interpolatePosition: 0
   interpolateRotation: 1
   interpolateScale: 1
   bufferTimeMultiplier: 3

@@ -7,6 +7,8 @@ using UnityEngine;
 public class Controller2D : NetworkBehaviour {
 
     bool incrementStars;
+    bool killPlayer;
+    Player knockdownPlayer;
     RaycastHit2D lastStarHit;
     public BoxCollider2D collider;
     RaycastOrigins raycastOrigins;
@@ -33,7 +35,8 @@ public class Controller2D : NetworkBehaviour {
         CalculateRaySpacing();
         playerCollisionMask = LayerMask.GetMask("Players");
         collisionMask = LayerMask.GetMask("Floor");
-        starCollisionMask = LayerMask.GetMask("Star");
+        starCollisionMask = LayerMask.GetMask("Star", "FallenStar");
+
         spikeCollisionMask = LayerMask.GetMask("Spike");
         teleporterCollisionMask = LayerMask.GetMask("Teleporter");
     }
@@ -41,6 +44,8 @@ public class Controller2D : NetworkBehaviour {
     public void Move(Vector3 velocity) {
         UpdateRaycastOrigins();
         incrementStars = false;
+        killPlayer = false;
+        knockdownPlayer = null;
         collisions.Reset();
         playerCollisions.Reset();
         if (velocity.x != 0) {
@@ -59,10 +64,29 @@ public class Controller2D : NetworkBehaviour {
         VerticalCollisions_Stars(ref velocity);
         HorizontalCollisions_Stars(ref velocity);
 
-        if (incrementStars) {
-            GetComponentInParent<Player>().CmdSetStars(GetComponentInParent<Player>().stars + 1);
-            lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
+        if (knockdownPlayer != null) {
+            if (isServer) {
+                Debug.Log("Running RpcKnockdown.");
+                knockdownPlayer.RpcKnockdown();
+            }
+            else {
+                Debug.Log("Running CmdKnockdown.");
+                CmdKnockdownPlayer(knockdownPlayer);
+            }
         }
+        
+        if (incrementStars && GetComponentInParent<Player>().intangibility < 0) {
+            GetComponentInParent<Player>().CmdAddStars(1);
+            if (lastStarHit.collider.GetComponent<Star>() != null) {
+                lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
+            } else {
+                lastStarHit.collider.GetComponentInParent<DroppedStar>().playerTouch();
+            }
+        }
+        if (killPlayer) {
+            GetComponent<Player>().Death();
+        }
+
 
         //GetComponent<Rigidbody2D>().velocity = velocity / Time.deltaTime;
         transform.position += velocity;
@@ -93,7 +117,7 @@ public class Controller2D : NetworkBehaviour {
             Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
             rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, playerCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red); 
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
             if (hit && hit.transform.position != transform.position) {
                 if (hit.collider.GetComponent<Player>().intangibility <= 0 && collider.GetComponent<Player>().intangibility <= 0) {
                     playerCollisions.below = directionY == -1;
@@ -104,14 +128,7 @@ public class Controller2D : NetworkBehaviour {
                             direction = 1;
                         }
                         //knockdown
-                        if (isServer) {
-                            Debug.Log("Running RpcKnockdown.");
-                            hit.collider.GetComponent<Player>().RpcKnockdown(direction);
-                        }
-                        else {
-                            Debug.Log("Running CmdKnockdown.");
-                            CmdKnockdownPlayer(hit.collider.GetComponent<Player>(), direction);
-                        }
+                        knockdownPlayer = hit.collider.GetComponent<Player>();
                     }
                 }
             }
@@ -130,7 +147,6 @@ public class Controller2D : NetworkBehaviour {
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
             if (hit) {
                 TeleportToOtherTeleporter(hit);
-
             }
         }
     }
@@ -139,17 +155,64 @@ public class Controller2D : NetworkBehaviour {
         GameObject teleportTo;
         if (hit.transform.name == "Teleporter_Left") {
             teleportTo = GameObject.Find("Teleporter_Right");
-            //Camera.main.GetComponent<CameraFollow>().focusArea.center += Vector2.right * Camera.main.GetComponent<CameraFollow>().levelDistance;
+            GetComponent<Rigidbody2D>().simulated = false;
+            StartCoroutine(Resimulate());
             transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.min.x - collider.size.x / 2, transform.position.y, transform.position.z);
+            /*
+            if (isServer) {
+                RpcUnsimulate();
+                RpcResimulate();
+            }
+            else {
+                CmdUnsimulate();
+                CmdResimulate();
+            }
+            */
         } else {
             teleportTo = GameObject.Find("Teleporter_Left");
-            //Camera.main.GetComponent<CameraFollow>().focusArea.center += Vector2.left * Camera.main.GetComponent<CameraFollow>().levelDistance;
+            GetComponent<Rigidbody2D>().simulated = false;
+            StartCoroutine(Resimulate());
             transform.position = new Vector3(teleportTo.GetComponent<BoxCollider2D>().bounds.max.x + collider.size.x / 2, transform.position.y, transform.position.z);
+            /*
+            if (isServer) {
+                RpcUnsimulate();
+                RpcResimulate();
+            } else {
+                CmdUnsimulate();
+                CmdResimulate();
+            }
+            */
         }
 
-        //bring the void camera forward for 1 frame
+        //bring the void camera forward for 1 frame and stop collisions and player rendering for 1 frame
         StartCoroutine(FreezeCam());
 
+    }
+
+
+    [Command(requiresAuthority = false)]
+    void CmdResimulate() { RpcResimulate(); }
+
+    [Command(requiresAuthority = false)]
+    void CmdUnsimulate() { RpcUnsimulate(); }
+
+    [ClientRpc]
+    void RpcResimulate() { StartCoroutine(Resimulate()); }
+
+    [ClientRpc]
+    void RpcUnsimulate() {
+        GetComponent<Rigidbody2D>().simulated = false;
+        GetComponent<SpriteRenderer>().forceRenderingOff = true;
+    }
+
+
+
+
+    //might need to be space out for client
+    IEnumerator Resimulate() {
+        yield return new WaitForSeconds(0.1f);
+        GetComponent<Rigidbody2D>().simulated = true;
+        //GetComponent<SpriteRenderer>().forceRenderingOff = false;
     }
 
     //might need to be space out for client
@@ -175,7 +238,7 @@ public class Controller2D : NetworkBehaviour {
                 rayLength = hit.distance;
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
-                GetComponent<Player>().Death();
+                killPlayer = true;
                 
             }
         }
@@ -301,9 +364,9 @@ public class Controller2D : NetworkBehaviour {
 
 
     [Command(requiresAuthority = false)]
-    public void CmdKnockdownPlayer(Player player, int direction) {
+    public void CmdKnockdownPlayer(Player player) {
         Debug.Log("CmdKnockdownPlayer run. Trying to call RpcKnockdown.");
-        player.RpcKnockdown(direction);
+        player.RpcKnockdown();
     }
 
 
