@@ -609,7 +609,7 @@ public class Player : NetworkBehaviour {
     }
 
 
-    float Approach(float argument0, float argument1, float argument2) {
+    public static float Approach(float argument0, float argument1, float argument2) {
         if (argument0 < argument1) {
             argument0 += argument2;
             if (argument0 > argument1) { return argument1; }
@@ -621,7 +621,7 @@ public class Player : NetworkBehaviour {
         return argument0;
     }
 
-    float Clamp(float value, float min, float max) {
+    public static float Clamp(float value, float min, float max) {
         if(value > max) {
             value = max;
         }
