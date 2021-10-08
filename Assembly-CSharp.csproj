@@ -58,15 +58,14 @@
     <Compile Include="Assets\Scripts\TextChildArray.cs" />
     <Compile Include="Assets\Scripts\Teleportable.cs" />
     <Compile Include="Assets\Scripts\MyNetworkManager.cs" />
-    <Compile Include="Assets\Scripts\VoidCamera.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\DroppedStar.cs" />
+    <Compile Include="Assets\Scripts\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\StarUI.cs" />
     <Compile Include="Assets\Scripts\EnemyMove.cs" />
     <Compile Include="Assets\Scripts\ViewportManager.cs" />
     <Compile Include="Assets\Scripts\Controller2D.cs" />
     <Compile Include="Assets\Scripts\Star.cs" />
-    <Compile Include="Assets\Scripts\EnemySpawner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />

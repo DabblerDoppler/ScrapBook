@@ -184,22 +184,10 @@ public class Controller2D : NetworkBehaviour {
     }
 
 
-    void VerticalCollisions_Teleporters(ref Vector3 velocity) {
-        float directionY = Mathf.Sign(velocity.y);
-        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
-        for (int i = 0; i < verticalRayCount; i++) {
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, teleporterCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-            if (hit) {
-                TeleportToOtherTeleporter(hit);
-            }
-        }
-    }
 
     void TeleportToOtherTeleporter(RaycastHit2D hit) {
         GameObject teleportTo;
+        StartCoroutine(FreezeCam());
         if (hit.transform.name == "Teleporter_Left") {
             teleportTo = GameObject.Find("Teleporter_Right");
             //GetComponent<Rigidbody2D>().simulated = false;

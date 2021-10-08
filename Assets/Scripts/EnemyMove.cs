@@ -81,8 +81,8 @@ public class EnemyMove : NetworkBehaviour {
 
         Vector3 velocity = new Vector3(hsp, vsp, 0);
 
-        Move(velocity);
-        GetComponent<Teleportable>().CheckTeleporters(velocity);
+        Move(velocity * Time.deltaTime * 600);
+        GetComponent<Teleportable>().CheckTeleporters(velocity * Time.deltaTime * 600);
 
     }
 
