@@ -8,6 +8,7 @@ using UnityEngine;
 public class MyNetworkManager : NetworkManager {
 
     GameObject starManager;
+    GameObject spawn;
 
     public override void OnStartServer() {
         base.OnStartServer();
@@ -29,11 +30,24 @@ public class MyNetworkManager : NetworkManager {
         NetworkServer.AddPlayerForConnection(conn, player);
 
         //change to 2 when done testing
-        if (numPlayers == 1) {
+        if (numPlayers == 2) {
             starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
             NetworkServer.Spawn(starManager);
             starManager.name = "StarManager";
         }
+
+        GameObject[] enemySpawns = GameObject.FindGameObjectsWithTag("EnemySpawn");
+
+        Debug.Log("Spawn point found: " + enemySpawns[0]);
+
+        foreach(GameObject spawnPoint in enemySpawns) {
+            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
+            spawn.transform.position = spawnPoint.transform.position;
+            NetworkServer.Spawn(spawn);
+        }
+
+
+
 
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using Mirror;
 
 public class EnemyMove : NetworkBehaviour {
@@ -18,6 +19,7 @@ public class EnemyMove : NetworkBehaviour {
     const float SKIN_WIDTH = 0.0125f;
     public CollisionInfo collisions;
 
+    public GameObject associatedSpawner;
     public float hsp;
     public float vsp;
     public const float WALK_SPEED = 0.025f;
@@ -35,13 +37,13 @@ public class EnemyMove : NetworkBehaviour {
 
     void Start() {
         CalculateRaySpacing();
-        facingRight = true;
+        //the ternary operator would be sick af if i didn't keep forgetting how to use it
+        facingRight = (Math.Sign(UnityEngine.Random.Range(-1, 1)) == 1) ? false : true;
         collisionMask_Walls = LayerMask.GetMask("Floor", "EnemyWalls");
     }
 
     // Update is called once per frame
     void Update() {
-
         if(collisions.above || collisions.below) {
             vsp = 0;
         }
@@ -53,7 +55,9 @@ public class EnemyMove : NetworkBehaviour {
 
         onGround = collisions.below;
 
-        hsp += WALK_SPEED * (facingRight?1:-1) * Time.deltaTime;
+        if (onGround) {
+            hsp += WALK_SPEED * (facingRight ? 1 : -1) * Time.deltaTime;
+        }
 
         vsp -= GRAVITY * Time.deltaTime;
 
@@ -89,7 +93,6 @@ public class EnemyMove : NetworkBehaviour {
         }
         transform.position += velocity;
     }
-
 
     void VerticalCollisions(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);
@@ -145,6 +148,12 @@ public class EnemyMove : NetworkBehaviour {
         raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
         raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
         raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
+    }
+
+    private void OnDestroy() {
+        if(isServer) {
+            associatedSpawner.GetComponent<EnemySpawner>().StartCoroutine(associatedSpawner.GetComponent<EnemySpawner>().RespawnAfterWait());
+        }
     }
 
     public struct CollisionInfo {
