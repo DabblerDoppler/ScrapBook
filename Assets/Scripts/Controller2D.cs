@@ -8,6 +8,7 @@ public class Controller2D : NetworkBehaviour {
 
     bool incrementStars;
     bool killPlayer;
+    GameObject destroyEnemy;
     Player knockdownPlayer;
     RaycastHit2D lastStarHit;
     public BoxCollider2D collider;
@@ -19,8 +20,10 @@ public class Controller2D : NetworkBehaviour {
     public LayerMask starCollisionMask;
     public LayerMask spikeCollisionMask;
     public LayerMask teleporterCollisionMask;
+    public LayerMask enemyCollisionMask;
     public CollisionInfo collisions;
     public CollisionInfo playerCollisions;
+    public CollisionInfo enemyCollisions;
 
     float horizontalRaySpacing;
     float verticalRaySpacing;
@@ -36,6 +39,7 @@ public class Controller2D : NetworkBehaviour {
         playerCollisionMask = LayerMask.GetMask("Players");
         collisionMask = LayerMask.GetMask("Floor");
         starCollisionMask = LayerMask.GetMask("Star", "FallenStar");
+        enemyCollisionMask = LayerMask.GetMask("Enemies");
 
         spikeCollisionMask = LayerMask.GetMask("Spike");
         teleporterCollisionMask = LayerMask.GetMask("Teleporter");
@@ -48,6 +52,11 @@ public class Controller2D : NetworkBehaviour {
         knockdownPlayer = null;
         collisions.Reset();
         playerCollisions.Reset();
+        enemyCollisions.Reset();
+
+
+
+
         if (velocity.x != 0) {
             HorizontalCollisions(ref velocity);
             //HorizontalCollisions_Players(ref velocity);
@@ -58,8 +67,10 @@ public class Controller2D : NetworkBehaviour {
             VerticalCollisions(ref velocity);
             VerticalCollisions_Players(ref velocity);
             VerticalCollisions_Spikes(ref velocity);
-            HorizontalCollisions_Teleporters(ref velocity);
+            VerticalCollisions_Enemies(ref velocity);
         }
+
+        HorizontalCollisions_Enemies(ref velocity);
 
         VerticalCollisions_Stars(ref velocity);
         HorizontalCollisions_Stars(ref velocity);
@@ -80,6 +91,15 @@ public class Controller2D : NetworkBehaviour {
                 }
             }
         }
+
+        if(destroyEnemy != null) {
+            if(isServer) {
+                RpcKillEnemy(destroyEnemy);
+            } else {
+                CmdKillEnemy(destroyEnemy);
+            }
+        }
+
         
         if (incrementStars && GetComponentInParent<Player>().intangibility < 0) {
             GetComponentInParent<Player>().CmdAddStars(1);
@@ -129,17 +149,38 @@ public class Controller2D : NetworkBehaviour {
                     playerCollisions.below = directionY == -1;
                     playerCollisions.above = directionY == 1;
                     if (playerCollisions.below && transform.position.y > hit.transform.position.y) {
+                        /*
                         int direction = -1;
                         if (transform.position.x > hit.transform.position.x) {
                             direction = 1;
                         }
+                        */
+
                         //knockdown
                         knockdownPlayer = hit.collider.GetComponent<Player>();
                     }
                 }
             }
         }
+    }
 
+    void VerticalCollisions_Enemies(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, enemyCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit && GetComponent<Player>().intangibility <= 0 && !GetComponent<Player>().onGround) {
+                enemyCollisions.below = directionY == -1;
+                enemyCollisions.above = directionY == 1;
+                if (enemyCollisions.below && transform.position.y > hit.transform.position.y) {
+                    //knockdown
+                    destroyEnemy = hit.collider.gameObject;
+                }
+            }
+        }
     }
 
 
@@ -305,6 +346,23 @@ public class Controller2D : NetworkBehaviour {
             }
         }
     }
+    void HorizontalCollisions_Enemies(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (verticalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength * 2, enemyCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit && GetComponent<Player>().intangibility <= 0 && hit.collider.GetComponent<EnemyMove>().spawnIntangibility < 0) {
+                enemyCollisions.left = directionX == -1;
+                enemyCollisions.right = directionX == 1;
+                if(destroyEnemy == null) {
+                    CmdKnockdownPlayer(GetComponent<Player>());
+                }
+            }
+        }
+    }
 
     void HorizontalCollisions_Spikes(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
@@ -374,6 +432,17 @@ public class Controller2D : NetworkBehaviour {
         horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
         verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
     }
+
+    [Command(requiresAuthority =false)]
+    public void CmdKillEnemy(GameObject enemy) {
+        RpcKillEnemy(enemy);
+    }
+
+    [ClientRpc]
+    public void RpcKillEnemy(GameObject enemy) {
+        Destroy(enemy);
+    }
+
 
     public struct CollisionInfo {
         public bool above, below;

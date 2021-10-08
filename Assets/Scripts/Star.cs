@@ -22,34 +22,24 @@ public class Star : NetworkBehaviour {
 
     //When called (from a player), send a command to the server.
     public void playerTouch() {
-        CmdPickNewStar();
-        if (!isServer) {
+        if (isServer) {
+            GameObject.Find("StarManager").GetComponent<StarManager>().StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(transform.position));
+            DestroySelf();
+        } else {
+            CmdDestroySelf();
             Destroy(gameObject);
         }
     }
 
-
-
-    [Command(requiresAuthority=false)] 
-    void CmdPickNewStar() {
-        StarManager starMgr = GameObject.Find("StarManager").GetComponent<StarManager>();
-        Vector3 temp = starMgr.starList[starMgr.rnd.Next(0, starMgr.starList.Count)].transform.position;
-        while(transform.position == temp) {
-            temp = starMgr.starList[starMgr.rnd.Next(0, starMgr.starList.Count)].transform.position;
-        }
-
-        GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
-        NetworkServer.Spawn(currentStar);
-        //currentStar.transform.position = temp;
-
-        DestroySelf(currentStar, temp);
-
-
+    [Command(requiresAuthority =false)]
+    public void CmdDestroySelf() {
+        GameObject.Find("StarManager").GetComponent<StarManager>().StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(transform.position));
+        DestroySelf();
     }
 
+
     [ClientRpc]
-    private void DestroySelf(GameObject nextStar, Vector3 temp) {
-        nextStar.transform.position = temp;
+    private void DestroySelf() {
         Destroy(gameObject);
     }
 

@@ -113,8 +113,6 @@ public class Player : NetworkBehaviour {
         collider = GetComponent<BoxCollider2D>();
         controller = GetComponent<Controller2D>();
 
-
-
         standColliderOffset = collider.offset;
         standColliderSize = collider.size;
 
@@ -155,9 +153,7 @@ public class Player : NetworkBehaviour {
             if(isDead) {
                 return;
             }
-
             HandleInput();
-
             //this needs to run on all client's copy of this object.
             //a command into a ClientRpc method is probably the way to go.
             if (intangibility < 0 && !intangibilityEnded) {
@@ -250,7 +246,7 @@ public class Player : NetworkBehaviour {
             //if (controller.playerCollisions.left || controller.playerCollisions.right) { hsp = 0; }
 
             //goomba stomp
-            if (controller.playerCollisions.below) {
+            if (controller.playerCollisions.below || controller.enemyCollisions.below) {
                 if (jumpHeld) {
                     vsp = PLAYER_JUMP_HEIGHT;
                 }
@@ -480,7 +476,7 @@ public class Player : NetworkBehaviour {
 
     public void Death() {
         GetComponent<SpriteRenderer>().enabled = false;
-        GetComponent<Rigidbody2D>().simulated = false;
+        //GetComponent<Rigidbody2D>().simulated = false;
         DropStars(3);
         isDead = true;
         StartCoroutine(RespawnAfterTime(3));
@@ -492,7 +488,7 @@ public class Player : NetworkBehaviour {
         transform.position = spawnPoint;
         isDead = false;
         GetComponent<SpriteRenderer>().enabled = true;
-        GetComponent<Rigidbody2D>().simulated = true;
+        //GetComponent<Rigidbody2D>().simulated = true;
     }
 
 
@@ -505,7 +501,7 @@ public class Player : NetworkBehaviour {
             vsp = 0;
             //vsp = VSP_KNOCKDOWN;
             hsp = HSP_KNOCKDOWN;
-            GetComponent<Rigidbody2D>().simulated = false;
+            //GetComponent<Rigidbody2D>().simulated = false;
             intangibilityEnded = false;
         }
     }
@@ -519,7 +515,7 @@ public class Player : NetworkBehaviour {
             vsp = 0;
             //vsp = VSP_KNOCKDOWN;
             hsp = HSP_KNOCKDOWN;
-            GetComponent<Rigidbody2D>().simulated = false;
+            //GetComponent<Rigidbody2D>().simulated = false;
             intangibilityEnded = false;
         }
     }
@@ -547,7 +543,7 @@ public class Player : NetworkBehaviour {
             NetworkServer.Spawn(currentStar);
             currentStar.transform.position = t.position;
             currentStar.GetComponent<DroppedStar>().ignoredPlayer = transform.gameObject;
-            currentStar.GetComponent<Rigidbody2D>().velocity = new Vector2((float)((rand.NextDouble() - 0.5) * 20.0), (0.5f + (0.5f * (float)rand.NextDouble())) * 10.0f);
+            currentStar.GetComponent<Rigidbody2D>().velocity = new Vector2((float)((rand.NextDouble() - 0.5) * 10.0), (0.75f + (0.25f * (float)rand.NextDouble())) * 5.0f);
         }
     }
 
@@ -571,7 +567,7 @@ public class Player : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcEndIntangibility() {
-        GetComponent<Rigidbody2D>().simulated = true;
+        //GetComponent<Rigidbody2D>().simulated = true;
         intangibilityEnded = true;
         intangibility = -1;
         knockdown = -1;

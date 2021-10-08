@@ -15,6 +15,21 @@ public class MyNetworkManager : NetworkManager {
 
         startPositions.Add(GameObject.Find("PlayerSpawn").transform);
         startPositions.Add(GameObject.Find("PlayerSpawn (1)").transform);
+
+        starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
+        NetworkServer.Spawn(starManager);
+        starManager.name = "StarManager";
+
+        GameObject[] enemySpawns = GameObject.FindGameObjectsWithTag("EnemySpawn");
+        Debug.Log("Spawn point found: " + enemySpawns[0]);
+        foreach (GameObject spawnPoint in enemySpawns) {
+            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
+            spawn.transform.position = spawnPoint.transform.position;
+            NetworkServer.Spawn(spawn);
+        }
+
+
+
     }
 
 
@@ -28,24 +43,6 @@ public class MyNetworkManager : NetworkManager {
         // => appending the connectionId is WAY more useful for debugging!
         player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
-
-        //change to 2 when done testing
-        if (numPlayers == 2) {
-            starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
-            NetworkServer.Spawn(starManager);
-            starManager.name = "StarManager";
-        }
-
-        GameObject[] enemySpawns = GameObject.FindGameObjectsWithTag("EnemySpawn");
-
-        Debug.Log("Spawn point found: " + enemySpawns[0]);
-
-        foreach(GameObject spawnPoint in enemySpawns) {
-            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
-            spawn.transform.position = spawnPoint.transform.position;
-            NetworkServer.Spawn(spawn);
-        }
-
 
 
 

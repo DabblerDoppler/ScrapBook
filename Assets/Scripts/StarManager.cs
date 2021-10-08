@@ -28,9 +28,22 @@ public class StarManager : NetworkBehaviour {
         currentStar.transform.position = starList[rnd.Next(0, starList.Count)].GetComponent<Transform>().position;
     }
 
+    public IEnumerator SpawnAfterSeconds(Vector3 position) {
+        yield return new WaitForSeconds(UnityEngine.Random.Range(1.0f, 4.0f));
+        CmdPickNewStar(position);
+    }
 
 
-
+    [Command(requiresAuthority = false)]
+    void CmdPickNewStar(Vector3 position) {
+        Vector3 temp = starList[rnd.Next(0, starList.Count)].transform.position;
+        while (position == temp) {
+            temp = starList[rnd.Next(0, starList.Count)].transform.position;
+        }
+        GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
+        currentStar.transform.position = temp;
+        NetworkServer.Spawn(currentStar);
+    }
 
 
 }

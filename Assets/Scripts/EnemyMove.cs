@@ -10,6 +10,7 @@ public class EnemyMove : NetworkBehaviour {
     public bool facingRight;
     public BoxCollider2D boxCollider;
     public LayerMask collisionMask_Walls;
+    public float spawnIntangibility;
 
     public int horizontalRayCount = 2;
     public int verticalRayCount = 2;
@@ -22,10 +23,10 @@ public class EnemyMove : NetworkBehaviour {
     public GameObject associatedSpawner;
     public float hsp;
     public float vsp;
-    public const float WALK_SPEED = 0.025f;
+    public const float WALK_SPEED = 0.015f;
     public const float GRAVITY = 0.0375f;
     public const float VSP_MAX = 0.018f;
-    public const float HSP_MAX = 0.005f;
+    public const float HSP_MAX = 0.002f;
     public const float FRICTION_GROUND = 0.004f;
     public const float FRICTION_AIR = 0.002f;
 
@@ -33,6 +34,7 @@ public class EnemyMove : NetworkBehaviour {
 
     private void Awake() {
         boxCollider = GetComponent<BoxCollider2D>();
+        spawnIntangibility = 1.0f;
     }
 
     void Start() {
@@ -44,6 +46,8 @@ public class EnemyMove : NetworkBehaviour {
 
     // Update is called once per frame
     void Update() {
+        spawnIntangibility -= Time.deltaTime;
+
         if(collisions.above || collisions.below) {
             vsp = 0;
         }
@@ -55,7 +59,7 @@ public class EnemyMove : NetworkBehaviour {
 
         onGround = collisions.below;
 
-        if (onGround) {
+        if (onGround && spawnIntangibility < 0) {
             hsp += WALK_SPEED * (facingRight ? 1 : -1) * Time.deltaTime;
         }
 
