@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{1724D911-F35E-A3DA-670F-7BDEAD3291BA}</ProjectGuid>
+    <ProjectGuid>{B5EBB9E5-FC7C-4D6F-551A-470C672E88E6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>kcp2k</AssemblyName>
@@ -53,23 +53,23 @@
     <UnityVersion>2020.3.16f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpServerConnection.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\NonAlloc\KcpClientConnectionNonAlloc.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpServer.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpConnection.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\NonAlloc\KcpServerNonAlloc.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpClientConnection.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpClient.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp\Pool.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\NonAlloc\KcpServerConnectionNonAlloc.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp\Utils.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpHeader.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpServerConnection.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\NonAlloc\KcpClientConnectionNonAlloc.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp\AssemblyInfo.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp\Segment.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp\Kcp.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpServer.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpConnection.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpClientConnection.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpClient.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpChannel.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\NonAlloc\KcpClientNonAlloc.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\KcpHeader.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\NonAlloc\KcpServerNonAlloc.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp\Utils.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\highlevel\Log.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp\Kcp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Runtime\Transport\KCP\kcp2k\kcp2k.asmdef" />
@@ -306,8 +306,17 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Editor\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.CecilX.Rocks">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX.Pdb">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll</HintPath>
     </Reference>
     <Reference Include="log4netPlastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
@@ -315,20 +324,11 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="unityplastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Rocks">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.CecilX.Mdb">
       <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Mdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.CecilX.Pdb">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
+    <Reference Include="unityplastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.16f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -684,7 +684,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="where-allocations.csproj">
-      <Project>{06818D4B-5531-E3C1-63E7-F3536537A756}</Project>
+      <Project>{6DB99BCF-85A1-6373-1153-D00D4C528C97}</Project>
       <Name>where-allocations</Name>
     </ProjectReference>
   </ItemGroup>

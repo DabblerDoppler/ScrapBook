@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{61429D96-4564-8E6C-4C31-F91C949B78AC}</ProjectGuid>
+    <ProjectGuid>{1D48FD42-6D8A-6BF5-920A-5E0E423CD190}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -762,43 +762,43 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Mirror.csproj">
-      <Project>{491E1868-19DC-8742-D73A-DD43FB126589}</Project>
+      <Project>{A305A366-5C9A-3147-220C-D0D642683A1A}</Project>
       <Name>Mirror</Name>
     </ProjectReference>
     <ProjectReference Include="kcp2k.csproj">
-      <Project>{1724D911-F35E-A3DA-670F-7BDEAD3291BA}</Project>
+      <Project>{B5EBB9E5-FC7C-4D6F-551A-470C672E88E6}</Project>
       <Name>kcp2k</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.Examples.csproj">
-      <Project>{F102884A-CF54-978C-DB54-AA938DB5C6E5}</Project>
+      <Project>{6F3112DC-0797-F528-EEC1-A885D46E7525}</Project>
       <Name>Mirror.Examples</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.Editor.csproj">
-      <Project>{D4ACA632-7AD7-6233-EA13-C61B0AC84A60}</Project>
+      <Project>{772CDAEC-C496-98E1-34FA-01B48544ADFA}</Project>
       <Name>Mirror.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.CompilerSymbols.csproj">
-      <Project>{F519447C-B652-14B5-9E59-551CACDED4E1}</Project>
+      <Project>{B641B523-DDDB-9375-2AA2-11C838829CDD}</Project>
       <Name>Mirror.CompilerSymbols</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.Authenticators.csproj">
-      <Project>{5838AD29-CEEB-5636-D688-09AB0B5B9D97}</Project>
+      <Project>{FA2AC94F-9F0B-641F-87E8-5111894BC8BA}</Project>
       <Name>Mirror.Authenticators</Name>
     </ProjectReference>
     <ProjectReference Include="Telepathy.csproj">
-      <Project>{32A04DF6-C0E3-92E4-8A8F-C285EE5459C4}</Project>
+      <Project>{35CB73E4-679F-06A5-23EA-193983FD79DD}</Project>
       <Name>Telepathy</Name>
     </ProjectReference>
     <ProjectReference Include="where-allocations.csproj">
-      <Project>{06818D4B-5531-E3C1-63E7-F3536537A756}</Project>
+      <Project>{6DB99BCF-85A1-6373-1153-D00D4C528C97}</Project>
       <Name>where-allocations</Name>
     </ProjectReference>
     <ProjectReference Include="SimpleWebTransport.csproj">
-      <Project>{F5206E87-8B8F-F227-4777-AB1D29C629E3}</Project>
+      <Project>{FBD1893B-2A49-DCB7-A442-470151C868FB}</Project>
       <Name>SimpleWebTransport</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.Components.csproj">
-      <Project>{1A12B643-31B0-1C31-B5BB-7CD8A3983285}</Project>
+      <Project>{70DC3564-F25B-A83B-9853-C34356251AF3}</Project>
       <Name>Mirror.Components</Name>
     </ProjectReference>
   </ItemGroup>

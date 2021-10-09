@@ -151,9 +151,6 @@ public class Player : NetworkBehaviour {
     }
 
     void HandleMovement() {
-
-
-
         if (isLocalPlayer) {
             if(isDead) {
                 return;
@@ -249,13 +246,14 @@ public class Player : NetworkBehaviour {
 
 
             //if (controller.playerCollisions.above || controller.playerCollisions.below) { vsp = 0; }
-            //if (controller.playerCollisions.left || controller.playerCollisions.right) { hsp = 0; }
+            //if ((controller.playerCollisions.left || controller.playerCollisions.right) && !controller.playerCollisions.below) { hsp = 0; }
 
             //goomba stomp
             if (controller.playerCollisions.below || controller.enemyCollisions.below) {
                 spun = false;
                 walljump_lock = 0;
                 diving = false;
+                long_jump = false;
                 goombaJumpCoyoteTime = COYOTE_TIME;
                 if (jumpHeld) {
                     vsp = PLAYER_JUMP_HEIGHT;

@@ -24,10 +24,13 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
+    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
+    - UnityEditor.Tilemaps.GridPaletteBrushes
+    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
@@ -93,27 +96,27 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3730}
     - Class: 114
-      Script: {instanceID: 4262}
+      Script: {instanceID: 4260}
     - Class: 114
-      Script: {instanceID: 4426}
+      Script: {instanceID: 4424}
     - Class: 114
-      Script: {instanceID: 4826}
+      Script: {instanceID: 4824}
     - Class: 114
-      Script: {instanceID: 5318}
+      Script: {instanceID: 5316}
     - Class: 114
-      Script: {instanceID: 5422}
+      Script: {instanceID: 5420}
     - Class: 114
-      Script: {instanceID: 5556}
+      Script: {instanceID: 5554}
     - Class: 114
-      Script: {instanceID: 5702}
+      Script: {instanceID: 5700}
     - Class: 114
-      Script: {instanceID: 5730}
+      Script: {instanceID: 5728}
     - Class: 114
-      Script: {instanceID: 5902}
+      Script: {instanceID: 5900}
     - Class: 114
-      Script: {instanceID: 6000}
+      Script: {instanceID: 5998}
     - Class: 114
-      Script: {instanceID: 6228}
+      Script: {instanceID: 6226}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -249,7 +252,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 9987578f0eff2bb0eac093959a6a8310
+      Hash: c66ad69f250c653b6ed0a50bd72481cc
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -681,12 +684,6 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: VoidCamera
-  - hash:
-      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -1017,7 +1014,7 @@ ScriptsOnlyBuild:
     className: ChatNetworkManager
   - hash:
       serializedVersion: 2
-      Hash: 9bedee276200fd59c985ec44267dda1e
+      Hash: 579208f28f7743b55b58cc202d12d574
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: StarUI

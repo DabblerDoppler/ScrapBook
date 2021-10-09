@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{32A04DF6-C0E3-92E4-8A8F-C285EE5459C4}</ProjectGuid>
+    <ProjectGuid>{35CB73E4-679F-06A5-23EA-193983FD79DD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Telepathy</AssemblyName>
@@ -53,22 +53,22 @@
     <UnityVersion>2020.3.16f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\ThreadFunctions.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Empty\Logger.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\EventType.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Utils.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Pool.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Empty\Message.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Empty\SafeQueue.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Log.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\ConnectionState.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\NetworkStreamExtensions.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Empty\ThreadExtensions.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Empty\Logger.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Common.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\MagnificentSendPipe.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Server.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\NetworkStreamExtensions.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\ConnectionState.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\MagnificentReceivePipe.cs" />
-    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Empty\ThreadExtensions.cs" />
     <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Client.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\ThreadFunctions.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\EventType.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Utils.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Pool.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Empty\SafeQueue.cs" />
+    <Compile Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\MagnificentReceivePipe.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Runtime\Transport\Telepathy\Telepathy\Telepathy.asmdef" />
@@ -305,8 +305,17 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Editor\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.CecilX.Rocks">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX.Pdb">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll</HintPath>
     </Reference>
     <Reference Include="log4netPlastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
@@ -314,20 +323,11 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="unityplastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Rocks">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.CecilX.Mdb">
       <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Mdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.CecilX.Pdb">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
+    <Reference Include="unityplastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.16f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>

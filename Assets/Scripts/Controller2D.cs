@@ -54,9 +54,6 @@ public class Controller2D : NetworkBehaviour {
         playerCollisions.Reset();
         enemyCollisions.Reset();
 
-
-
-
         if (velocity.x != 0) {
             HorizontalCollisions(ref velocity);
             //HorizontalCollisions_Players(ref velocity);
@@ -65,12 +62,14 @@ public class Controller2D : NetworkBehaviour {
         }
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
-            VerticalCollisions_Players(ref velocity);
             VerticalCollisions_Spikes(ref velocity);
             VerticalCollisions_Enemies(ref velocity);
         }
 
+        VerticalCollisions_Players(ref velocity);
+        //HorizontalCollisions_Players(ref velocity);
         HorizontalCollisions_Enemies(ref velocity);
+
 
         VerticalCollisions_Stars(ref velocity);
         HorizontalCollisions_Stars(ref velocity);
@@ -142,22 +141,17 @@ public class Controller2D : NetworkBehaviour {
         for (int i = 0; i < verticalRayCount; i++) {
             Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
             rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, playerCollisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2.75f, playerCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-            if (hit && hit.transform.position != transform.position) {
-                if (hit.collider.GetComponent<Player>().intangibility <= 0 && collider.GetComponent<Player>().intangibility <= 0) {
+            if (hit) {
+                if (hit.transform.GetComponent<Player>().intangibility <= 0 && GetComponent<Player>().intangibility <= 0 && !GetComponent<Player>().onGround) {
                     playerCollisions.below = directionY == -1;
                     playerCollisions.above = directionY == 1;
                     if (playerCollisions.below && transform.position.y > hit.transform.position.y) {
-                        /*
-                        int direction = -1;
-                        if (transform.position.x > hit.transform.position.x) {
-                            direction = 1;
-                        }
-                        */
-
-                        //knockdown
                         knockdownPlayer = hit.collider.GetComponent<Player>();
+                    } else {
+                        playerCollisions.below = false;
+                        playerCollisions.above = false;
                     }
                 }
             }
@@ -318,15 +312,16 @@ public class Controller2D : NetworkBehaviour {
         }
     }
 
+    /*
     void HorizontalCollisions_Players(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
         for (int i = 0; i < horizontalRayCount; i++) {
             Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
             rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, playerCollisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength * 2.0f, playerCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
-            if (hit && hit.transform.position != transform.position) {
+            if (hit) {
                 velocity.x += (hit.distance - SKIN_WIDTH) * directionX;
                 rayLength = hit.distance;
                 playerCollisions.left = directionX == -1;
@@ -334,6 +329,8 @@ public class Controller2D : NetworkBehaviour {
             }
         }
     }
+    */
+
     void HorizontalCollisions_Enemies(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{F102884A-CF54-978C-DB54-AA938DB5C6E5}</ProjectGuid>
+    <ProjectGuid>{6F3112DC-0797-F528-EEC1-A885D46E7525}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Mirror.Examples</AssemblyName>
@@ -712,11 +712,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Mirror.csproj">
-      <Project>{491E1868-19DC-8742-D73A-DD43FB126589}</Project>
+      <Project>{A305A366-5C9A-3147-220C-D0D642683A1A}</Project>
       <Name>Mirror</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.Components.csproj">
-      <Project>{1A12B643-31B0-1C31-B5BB-7CD8A3983285}</Project>
+      <Project>{70DC3564-F25B-A83B-9853-C34356251AF3}</Project>
       <Name>Mirror.Components</Name>
     </ProjectReference>
   </ItemGroup>

@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{E524C946-2146-2D8B-20EF-93B01857FB87}</ProjectGuid>
+    <ProjectGuid>{3FA157B8-E6AE-3E4A-98CF-F3106260B476}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.Mirror.CodeGen</AssemblyName>
@@ -54,45 +54,45 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Mirror\Editor\Weaver\Processors\SyncVarProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\PropertySiteProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Resolvers.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Readers.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPoint\CompilationFinishedLogger.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Processors\SyncObjectInitializer.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorAssemblyResolver.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\ReaderWriterProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPoint\CompilationFinishedHook.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\TypeReferenceComparer.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Processors\TargetRpcProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Empty\SyncListProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\MethodProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Empty\GenericArgumentResolver.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPoint\EnterPlayModeHook.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorReflectionImporterProvider.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorReflectionImporter.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Empty\SyncDictionaryProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\AssemblyInfo.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Weaver.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\WeaverTypes.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Logger.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorFromFile.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Helpers.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\RpcProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\CommandProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\CompiledAssemblyFromFile.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Empty\Program.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorHook.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Processors\ServerClientAttributeProcessor.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorHook.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Extensions.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Processors\NetworkBehaviourProcessor.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\WeaverLists.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Writers.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorAssemblyResolver.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPoint\CompilationFinishedHook.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\MethodProcessor.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\AssemblyInfo.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Weaver.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\WeaverTypes.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\CommandProcessor.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Processors\SyncObjectProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\WeaverExceptions.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorLogger.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Empty\SyncEventProcessor.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Processors\MonoBehaviourProcessor.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\PropertySiteProcessor.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Resolvers.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\ReaderWriterProcessor.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\TypeReferenceComparer.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Empty\SyncListProcessor.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPoint\EnterPlayModeHook.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Logger.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Empty\Program.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorLogger.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPoint\CompilationFinishedLogger.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Empty\GenericArgumentResolver.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorReflectionImporterProvider.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\ILPostProcessorFromFile.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Processors\RpcProcessor.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\Helpers.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\EntryPointILPostProcessor\CompiledAssemblyFromFile.cs" />
+    <Compile Include="Assets\Mirror\Editor\Weaver\WeaverExceptions.cs" />
     <Compile Include="Assets\Mirror\Editor\Weaver\Empty\MessageClassProcessor.cs" />
-    <Compile Include="Assets\Mirror\Editor\Weaver\Writers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Editor\Weaver\Unity.Mirror.CodeGen.asmdef" />
@@ -692,7 +692,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Mirror.csproj">
-      <Project>{491E1868-19DC-8742-D73A-DD43FB126589}</Project>
+      <Project>{A305A366-5C9A-3147-220C-D0D642683A1A}</Project>
       <Name>Mirror</Name>
     </ProjectReference>
   </ItemGroup>

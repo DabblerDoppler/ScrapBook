@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{491E1868-19DC-8742-D73A-DD43FB126589}</ProjectGuid>
+    <ProjectGuid>{A305A366-5C9A-3147-220C-D0D642683A1A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Mirror</AssemblyName>
@@ -753,15 +753,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Mirror.CompilerSymbols.csproj">
-      <Project>{F519447C-B652-14B5-9E59-551CACDED4E1}</Project>
+      <Project>{B641B523-DDDB-9375-2AA2-11C838829CDD}</Project>
       <Name>Mirror.CompilerSymbols</Name>
     </ProjectReference>
     <ProjectReference Include="Telepathy.csproj">
-      <Project>{32A04DF6-C0E3-92E4-8A8F-C285EE5459C4}</Project>
+      <Project>{35CB73E4-679F-06A5-23EA-193983FD79DD}</Project>
       <Name>Telepathy</Name>
     </ProjectReference>
     <ProjectReference Include="kcp2k.csproj">
-      <Project>{1724D911-F35E-A3DA-670F-7BDEAD3291BA}</Project>
+      <Project>{B5EBB9E5-FC7C-4D6F-551A-470C672E88E6}</Project>
       <Name>kcp2k</Name>
     </ProjectReference>
   </ItemGroup>
