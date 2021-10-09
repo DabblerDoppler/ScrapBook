@@ -16,7 +16,7 @@ public class EnemySpawner : NetworkBehaviour {
 
 
     public IEnumerator RespawnAfterWait() {
-        float seconds = Random.RandomRange(1.0f, 4.0f);
+        float seconds = Random.RandomRange(3.0f, 5.0f);
         yield return new WaitForSeconds(seconds);
         SpawnEnemy();
     }

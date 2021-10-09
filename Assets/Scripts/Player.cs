@@ -33,6 +33,7 @@ public class Player : NetworkBehaviour {
     public bool onGround;
     public bool isDead;
     public float coyoteTime;
+    public float goombaJumpCoyoteTime;
     public float coyoteTime_Wall;
     public float jumpBuffer;
     public float groundPoundWindup;
@@ -82,8 +83,8 @@ public class Player : NetworkBehaviour {
     const float LONG_JUMP_LENGTH = 0.015f;
     const float BACKFLIP_HEIGHT = 0.01675f;
     const float BACKFLIP_LENGTH = 0.004f;
-    const float PLAYER_JUMP_HEIGHT = 0.012f;
-    const float PLAYER_HOP_HEIGHT = 0.0075f;
+    const float PLAYER_JUMP_HEIGHT = 0.015f;
+    const float PLAYER_HOP_HEIGHT = 0.008f;
     const float DIVE_LENGTH = 0.009f;
     const float DIVE_HEIGHT = 0.00605f;
     const float COYOTE_TIME = 0.1f;
@@ -193,6 +194,7 @@ public class Player : NetworkBehaviour {
             spinning -= Time.deltaTime;
             intangibility -= Time.deltaTime;
             knockdown -= Time.deltaTime;
+            goombaJumpCoyoteTime -= Time.deltaTime;
 
 
             if(onGround) {
@@ -247,8 +249,13 @@ public class Player : NetworkBehaviour {
 
             //goomba stomp
             if (controller.playerCollisions.below || controller.enemyCollisions.below) {
+                spun = false;
+                walljump_lock = 0;
+                diving = false;
+                goombaJumpCoyoteTime = COYOTE_TIME;
                 if (jumpHeld) {
                     vsp = PLAYER_JUMP_HEIGHT;
+                    goombaJumpCoyoteTime = 0;
                 }
                 else {
                     vsp = PLAYER_HOP_HEIGHT;
@@ -380,6 +387,12 @@ public class Player : NetworkBehaviour {
             hsp = WALL_JUMP_LENGTH * -lastWall;
             walljump_lock = -lastWall;
         }
+
+        if(jumpPressed && goombaJumpCoyoteTime > 0) {
+            vsp = PLAYER_JUMP_HEIGHT - (PLAYER_HOP_HEIGHT * 0.1f);
+            goombaJumpCoyoteTime = 0;
+        }
+
 
         //slide
         if(divePressed && onGround && Math.Abs(hsp) > 0.006f && Math.Sign(hsp) == Math.Sign(horizontalInput)) {

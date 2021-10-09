@@ -33,7 +33,7 @@ public class DroppedStar : NetworkBehaviour {
             Destroy(gameObject);
         }
         if (isServer) {
-            GetComponent<Teleportable>().CheckTeleporters(GetComponent<Rigidbody2D>().velocity * 0.25f );
+            GetComponent<Teleportable>().CheckTeleporters(GetComponent<Rigidbody2D>().velocity * 0.1f );
         }
     }
     
