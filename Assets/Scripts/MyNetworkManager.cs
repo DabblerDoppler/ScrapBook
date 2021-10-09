@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MyNetworkManager : NetworkManager {
 
@@ -30,6 +31,7 @@ public class MyNetworkManager : NetworkManager {
 
 
 
+
     }
 
 
@@ -50,6 +52,7 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnServerConnect(NetworkConnection conn) {
         base.OnServerConnect(conn);
+        GameObject.Find("WinScreen").GetComponent<Text>().text = "";
     }
 
 

@@ -8,6 +8,7 @@ public class StarUI : MonoBehaviour {
     public bool isYours;
     public Player attachedPlayer;
     public string myText;
+    public int playerNumber;
     string myText_Final;
 
 
@@ -39,6 +40,9 @@ public class StarUI : MonoBehaviour {
             GetComponent<Text>().text = "";
             myText_Final = "";
         } else {
+            if (GetComponent<Text>().text.Equals("10")) {
+                GameObject.Find("WinScreen").GetComponent<Text>().text = "Player " + playerNumber + " Wins!";
+            }
             GetComponent<Text>().text = myText_Final + attachedPlayer.stars.ToString();
         }
     }

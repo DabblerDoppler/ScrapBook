@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Controller2D))]
 public class Player : NetworkBehaviour {
@@ -150,6 +151,9 @@ public class Player : NetworkBehaviour {
     }
 
     void HandleMovement() {
+
+
+
         if (isLocalPlayer) {
             if(isDead) {
                 return;
