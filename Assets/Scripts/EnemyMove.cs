@@ -4,20 +4,13 @@ using UnityEngine;
 using System;
 using Mirror;
 
-public class EnemyMove : NetworkBehaviour {
+public class EnemyMove : RaycastController {
 
     public bool onGround;
     public bool facingRight;
-    public BoxCollider2D boxCollider;
     public LayerMask collisionMask_Walls;
     public float spawnIntangibility;
 
-    public int horizontalRayCount = 2;
-    public int verticalRayCount = 2;
-    RaycastOrigins raycastOrigins;
-    float horizontalRaySpacing;
-    float verticalRaySpacing;
-    const float SKIN_WIDTH = 0.0125f;
     public CollisionInfo collisions;
 
     public GameObject associatedSpawner;
@@ -32,13 +25,13 @@ public class EnemyMove : NetworkBehaviour {
 
 
 
-    private void Awake() {
-        boxCollider = GetComponent<BoxCollider2D>();
+    public override void Awake() {
+        base.Awake();
         spawnIntangibility = 1.0f;
     }
 
-    void Start() {
-        CalculateRaySpacing();
+    public override void Start() {
+        base.Start();
         //the ternary operator would be sick af if i didn't keep forgetting how to use it
         facingRight = (Math.Sign(UnityEngine.Random.Range(-1, 1)) == 1) ? false : true;
         collisionMask_Walls = LayerMask.GetMask("Floor", "EnemyWalls");
@@ -133,46 +126,10 @@ public class EnemyMove : NetworkBehaviour {
     }
 
 
-    public void CalculateRaySpacing() {
-        Bounds bounds = boxCollider.bounds;
-        bounds.Expand(SKIN_WIDTH * -2);
-
-        horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-        verticalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-
-        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-    }
-
-    public void UpdateRaycastOrigins() {
-        Bounds bounds = boxCollider.bounds;
-        bounds.Expand(SKIN_WIDTH * -2);
-
-        raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-        raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-        raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
-        raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
-    }
-
     private void OnDestroy() {
         if(isServer) {
             associatedSpawner.GetComponent<EnemySpawner>().StartCoroutine(associatedSpawner.GetComponent<EnemySpawner>().RespawnAfterWait());
         }
-    }
-
-    public struct CollisionInfo {
-        public bool above, below;
-        public bool left, right;
-
-        public void Reset() {
-            above = below = left = right = false;
-        }
-
-    }
-
-    struct RaycastOrigins {
-        public Vector2 topLeft, topRight;
-        public Vector2 bottomLeft, bottomRight;
     }
 
 

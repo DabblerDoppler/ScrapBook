@@ -3,18 +3,13 @@ using Mirror;
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
-public class Controller2D : NetworkBehaviour {
+public class Controller2D : RaycastController {
 
     bool incrementStars;
     bool killPlayer;
     GameObject destroyEnemy;
     Player knockdownPlayer;
     RaycastHit2D lastStarHit;
-    public BoxCollider2D collider;
-    RaycastOrigins raycastOrigins;
-    public int horizontalRayCount = 4;
-    public int verticalRayCount = 4;
     public LayerMask collisionMask;
     public LayerMask playerCollisionMask;
     public LayerMask starCollisionMask;
@@ -25,17 +20,12 @@ public class Controller2D : NetworkBehaviour {
     public CollisionInfo playerCollisions;
     public CollisionInfo enemyCollisions;
 
-    float horizontalRaySpacing;
-    float verticalRaySpacing;
 
-    const float SKIN_WIDTH = 0.0125f;
 
-    private void Awake() {
-        collider = GetComponent<BoxCollider2D>();
-    }
 
-    public virtual void Start() {
-        CalculateRaySpacing();
+
+    public override void Start() {
+        base.Start();
         playerCollisionMask = LayerMask.GetMask("Players");
         collisionMask = LayerMask.GetMask("Floor");
         starCollisionMask = LayerMask.GetMask("Star", "FallenStar");
@@ -293,6 +283,15 @@ public class Controller2D : NetworkBehaviour {
                 incrementStars = true;
             }
         }
+        rayLength = SKIN_WIDTH * 2;
+        for (int j = 0; j < verticalRayCount; j++) {
+            Vector2 rayOrigin = raycastOrigins.topLeft + Vector2.right * (verticalRaySpacing * j);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, rayLength, starCollisionMask);
+            if (hit) {
+                lastStarHit = hit;
+                incrementStars = true;
+            }
+        }
     }
 
     void HorizontalCollisions(ref Vector3 velocity) {
@@ -397,26 +396,6 @@ public class Controller2D : NetworkBehaviour {
         player.RpcKnockdown3();
     }
 
-    public void UpdateRaycastOrigins() {
-        Bounds bounds = collider.bounds;
-        bounds.Expand(SKIN_WIDTH * -2);
-
-        raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-        raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-        raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
-        raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
-    }
-
-    public void CalculateRaySpacing() {
-        Bounds bounds = collider.bounds;
-        bounds.Expand(SKIN_WIDTH * -2);
-
-        horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-        verticalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-
-        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-    }
 
     [Command(requiresAuthority =false)]
     public void CmdKillEnemy(GameObject enemy) {
@@ -429,20 +408,6 @@ public class Controller2D : NetworkBehaviour {
     }
 
 
-    public struct CollisionInfo {
-        public bool above, below;
-        public bool left, right;
 
-        public void Reset() {
-            above = below = left = right = false;
-        }
-
-    }
-
-
-    struct RaycastOrigins {
-        public Vector2 topLeft, topRight;
-        public Vector2 bottomLeft, bottomRight;
-    } 
 
 }
