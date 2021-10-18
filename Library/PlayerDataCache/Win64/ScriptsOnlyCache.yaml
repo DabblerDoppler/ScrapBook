@@ -6,6 +6,7 @@ ScriptsOnlyBuild:
     - DroppedStar
     - EnemyMove
     - EnemySpawner
+    - MovingPlatformController
     - MyNetworkManager
     - Player
     - Star
@@ -80,43 +81,45 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1726}
     - Class: 114
-      Script: {instanceID: 2322}
+      Script: {instanceID: 2324}
     - Class: 114
-      Script: {instanceID: 2788}
+      Script: {instanceID: 2790}
     - Class: 114
-      Script: {instanceID: 2964}
+      Script: {instanceID: 2938}
     - Class: 114
-      Script: {instanceID: 3082}
+      Script: {instanceID: 2968}
     - Class: 114
-      Script: {instanceID: 3258}
+      Script: {instanceID: 3086}
     - Class: 114
-      Script: {instanceID: 3334}
+      Script: {instanceID: 3262}
     - Class: 114
-      Script: {instanceID: 3504}
+      Script: {instanceID: 3338}
     - Class: 114
-      Script: {instanceID: 3730}
+      Script: {instanceID: 3508}
     - Class: 114
-      Script: {instanceID: 4260}
+      Script: {instanceID: 3734}
     - Class: 114
-      Script: {instanceID: 4424}
+      Script: {instanceID: 4264}
     - Class: 114
-      Script: {instanceID: 4824}
+      Script: {instanceID: 4428}
     - Class: 114
-      Script: {instanceID: 5316}
+      Script: {instanceID: 4828}
     - Class: 114
-      Script: {instanceID: 5420}
+      Script: {instanceID: 5320}
     - Class: 114
-      Script: {instanceID: 5554}
+      Script: {instanceID: 5424}
     - Class: 114
-      Script: {instanceID: 5700}
+      Script: {instanceID: 5558}
     - Class: 114
-      Script: {instanceID: 5728}
+      Script: {instanceID: 5704}
     - Class: 114
-      Script: {instanceID: 5900}
+      Script: {instanceID: 5732}
     - Class: 114
-      Script: {instanceID: 5998}
+      Script: {instanceID: 5904}
     - Class: 114
-      Script: {instanceID: 6226}
+      Script: {instanceID: 6002}
+    - Class: 114
+      Script: {instanceID: 6230}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -324,6 +327,12 @@ ScriptsOnlyBuild:
     className: RandomColor
   - hash:
       serializedVersion: 2
+      Hash: 8a14b4a784fe9e2f561d4b1aaa8a8fea
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: RaycastController
+  - hash:
+      serializedVersion: 2
       Hash: 93827904d1237a324c550ba2fe498ea8
     assemblyName: Mirror.Authenticators.dll
     namespaceName: Mirror.Authenticators
@@ -430,6 +439,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: AspectRatioFitter
+  - hash:
+      serializedVersion: 2
+      Hash: 6bcc7f2306ce5da1f8738d7e8bc66f56
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MovingPlatformController
   - hash:
       serializedVersion: 2
       Hash: cc4274b586df3c02688bac01b88bd16c
@@ -1086,7 +1101,7 @@ ScriptsOnlyBuild:
     className: NetworkRoomManager
   - hash:
       serializedVersion: 2
-      Hash: 67e3a805743097f288a629f9d70e6525
+      Hash: 7cc5f34e3fdad9bf176d15535c6b5c83
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EnemyMove
@@ -1122,7 +1137,7 @@ ScriptsOnlyBuild:
     className: BufferManager
   - hash:
       serializedVersion: 2
-      Hash: 525c26b2ce0184599b1cf66c0277dc63
+      Hash: bf78b3b58f1392e9abf11810e9bd5788
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Controller2D

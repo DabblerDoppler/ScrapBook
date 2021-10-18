@@ -186,7 +186,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   TimeUntilFall: 3.5
-  TimeUntilUnignore: 0.4
+  TimeUntilUnignore: 0.25
   ignoredPlayer: {fileID: 0}
 --- !u!114 &8064700836237753102
 MonoBehaviour:

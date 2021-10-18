@@ -29,8 +29,17 @@ public class MyNetworkManager : NetworkManager {
             NetworkServer.Spawn(spawn);
         }
 
+        GameObject[] platformSpawns = GameObject.FindGameObjectsWithTag("PlatformSpawn");
 
-
+        foreach(GameObject spawnPoint in platformSpawns) {
+            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "MovingPlatform"));
+            spawn.transform.position = spawnPoint.transform.position;
+            spawn.GetComponent<MovingPlatformController>().startWaypoint = spawnPoint.transform.position;
+            spawn.GetComponent<MovingPlatformController>().startWaypoint = new Vector3(spawn.GetComponent<MovingPlatformController>().startWaypoint.x, spawn.GetComponent<MovingPlatformController>().startWaypoint.y, 0);
+            spawn.GetComponent<MovingPlatformController>().endWaypoint = spawnPoint.transform.GetChild(0).position;
+            spawn.GetComponent<MovingPlatformController>().endWaypoint = new Vector3(spawn.GetComponent<MovingPlatformController>().endWaypoint.x, spawn.GetComponent<MovingPlatformController>().endWaypoint.y, 0);
+            NetworkServer.Spawn(spawn);
+        }
 
     }
 
@@ -45,9 +54,6 @@ public class MyNetworkManager : NetworkManager {
         // => appending the connectionId is WAY more useful for debugging!
         player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
-
-
-
     }
 
     public override void OnServerConnect(NetworkConnection conn) {

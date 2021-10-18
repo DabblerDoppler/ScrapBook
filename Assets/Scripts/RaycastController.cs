@@ -13,7 +13,7 @@ public class RaycastController : NetworkBehaviour {
     public BoxCollider2D collider;
     public int horizontalRayCount = 4;
     public int verticalRayCount = 4;
-    public const float SKIN_WIDTH = 0.0125f;
+    public const float SKIN_WIDTH = 0.025f;
 
 
 
