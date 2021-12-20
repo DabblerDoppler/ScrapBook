@@ -49,6 +49,10 @@ public class Player : NetworkBehaviour {
     BoxCollider2D collider;
     Controller2D controller;
 
+    //map object variables
+    public GameObject playerMapObject;
+    private GameObject myMapObject;
+
     //physics
     public float hsp;
     public float vsp;
@@ -105,7 +109,10 @@ public class Player : NetworkBehaviour {
     const int LAYER_FLOOR = 6;
     const int LAYER_WALL = 7;
 
-
+    private void Awake() {
+        myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
+        myMapObject.GetComponent<MapObject>().associatedTransform = transform;
+    }
 
     private void Start() {
         stars = 0;

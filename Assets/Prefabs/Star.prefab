@@ -101,6 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  starMapObject: {fileID: 0}
 --- !u!61 &8695228450581917314
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -187,3 +188,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  starMapObject: {fileID: 5961935444989564973, guid: 7b4a47a92686761458d3dc8a0ba9d7ea, type: 3}

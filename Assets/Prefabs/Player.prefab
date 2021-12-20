@@ -130,6 +130,7 @@ MonoBehaviour:
   onGround: 0
   isDead: 0
   coyoteTime: 0
+  goombaJumpCoyoteTime: 0
   coyoteTime_Wall: 0
   jumpBuffer: 0
   groundPoundWindup: 0
@@ -138,6 +139,7 @@ MonoBehaviour:
   spinning: 0
   knockdown: 0
   intangibility: 0
+  playerMapObject: {fileID: 5961935444989564973, guid: ed5f2b29582478d49ae1006399330fde, type: 3}
   hsp: 0
   vsp: 0
 --- !u!114 &2234132032890095562
@@ -209,6 +211,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  horizontalRaySpacing: 0
+  verticalRaySpacing: 0
   collider: {fileID: 0}
   horizontalRayCount: 4
   verticalRayCount: 4
@@ -225,5 +229,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   teleporterCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  enemyCollisionMask:
     serializedVersion: 2
     m_Bits: 0
