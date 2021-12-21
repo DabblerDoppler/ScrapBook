@@ -109,6 +109,8 @@ public class Player : NetworkBehaviour {
     const int LAYER_FLOOR = 6;
     const int LAYER_WALL = 7;
 
+    public Animator animator;
+
     private void Awake() {
         myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
         myMapObject.GetComponent<MapObject>().associatedTransform = transform;
@@ -301,7 +303,7 @@ public class Player : NetworkBehaviour {
                 WallJumpState();
             } else if (crouching) {
                 CrouchState();
-            } else { 
+            } else {
             NormalState(onGround, onWall);
             }
 
@@ -352,7 +354,7 @@ public class Player : NetworkBehaviour {
 
             hsp = Approach(hsp, 0, friction * Time.deltaTime);
 
-            //clamp to 
+            //clamp to
             hsp = Clamp(hsp, -hspMaxFinal , hspMaxFinal);
             vsp = Clamp(vsp, -vspMaxFinal , vspMaxFinal);
 
@@ -368,6 +370,9 @@ public class Player : NetworkBehaviour {
 
 
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
+            animator.SetFloat("Player_hsp", Mathf.Abs(hsp));
+            animator.SetFloat("Player_vsp", Mathf.Abs(vsp));
+
         }
     }
 
@@ -428,7 +433,7 @@ public class Player : NetworkBehaviour {
                 collider.offset = crouchColliderOffset;
                 controller.CalculateRaySpacing();
             }
-        }  
+        }
 
         if (spinPressed && !onGround && !spun && !groundPound && onWall == 0) {
             spinning = SPIN_TIME;
@@ -596,7 +601,7 @@ public class Player : NetworkBehaviour {
     }
 
 
-    
+
 
 
     public override void OnStartClient() {
