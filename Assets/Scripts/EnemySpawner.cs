@@ -5,7 +5,9 @@ using Mirror;
 
 public class EnemySpawner : NetworkBehaviour {
 
-    GameObject associatedEnemy;
+    public GameObject associatedEnemy;
+
+    public Vector3 endPoint;
 
     public string enemyName;
 
@@ -23,8 +25,16 @@ public class EnemySpawner : NetworkBehaviour {
 
     private void SpawnEnemy() {
         associatedEnemy = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == enemyName));
+
+        if (enemyName == "EnemyFlying") {
+            associatedEnemy.GetComponent<EnemyFly>().startWaypoint = transform.position;
+            associatedEnemy.GetComponent<EnemyFly>().endWaypoint = endPoint;
+        }
+
+        associatedEnemy.GetComponent<EnemyVariables>().associatedSpawner = gameObject;
+
         associatedEnemy.transform.position = transform.position;
-        associatedEnemy.GetComponent<EnemyMove>().associatedSpawner = gameObject;
+
         NetworkServer.Spawn(associatedEnemy);
     }
 

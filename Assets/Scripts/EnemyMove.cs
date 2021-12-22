@@ -9,11 +9,10 @@ public class EnemyMove : RaycastController {
     public bool onGround;
     public bool facingRight;
     public LayerMask collisionMask_Walls;
-    public float spawnIntangibility;
 
     public CollisionInfo collisions;
 
-    public GameObject associatedSpawner;
+
     public float hsp;
     public float vsp;
     public const float WALK_SPEED = 0.015f;
@@ -27,7 +26,6 @@ public class EnemyMove : RaycastController {
 
     public override void Awake() {
         base.Awake();
-        spawnIntangibility = 1.0f;
     }
 
     public override void Start() {
@@ -39,7 +37,6 @@ public class EnemyMove : RaycastController {
 
     // Update is called once per frame
     void Update() {
-        spawnIntangibility -= Time.deltaTime;
 
         if(collisions.above || collisions.below) {
             vsp = 0;
@@ -52,7 +49,7 @@ public class EnemyMove : RaycastController {
 
         onGround = collisions.below;
 
-        if (onGround && spawnIntangibility < 0) {
+        if (onGround && GetComponent<EnemyVariables>().spawnIntangibility < 0) {
             hsp += WALK_SPEED * (facingRight ? 1 : -1) * Time.deltaTime;
         }
 
@@ -126,11 +123,6 @@ public class EnemyMove : RaycastController {
     }
 
 
-    private void OnDestroy() {
-        if(isServer) {
-            associatedSpawner.GetComponent<EnemySpawner>().StartCoroutine(associatedSpawner.GetComponent<EnemySpawner>().RespawnAfterWait());
-        }
-    }
 
 
 }

@@ -82,12 +82,17 @@ public class Controller2D : RaycastController {
         }
 
         if(destroyEnemy != null) {
+            Debug.Log("destroyEnemy is :" + destroyEnemy);
+            GameObject enemy = destroyEnemy;
             if(isServer) {
-                RpcKillEnemy(destroyEnemy);
+                Debug.Log("enemy is: " + enemy);
+                RpcKillEnemy(enemy);
             } else {
-                CmdKillEnemy(destroyEnemy);
+                CmdKillEnemy(enemy);
             }
         }
+
+        destroyEnemy = null;
 
         
         if (incrementStars && GetComponentInParent<Player>().intangibility < 0) {
@@ -161,6 +166,7 @@ public class Controller2D : RaycastController {
                 enemyCollisions.above = directionY == 1;
                 if (enemyCollisions.below && transform.position.y > hit.transform.position.y) {
                     //knockdown
+                    Debug.Log("enemy hit: " + hit.collider.gameObject);
                     destroyEnemy = hit.collider.gameObject;
                 }
             }
@@ -338,13 +344,16 @@ public class Controller2D : RaycastController {
             rayOrigin += Vector2.up * (verticalRaySpacing * i);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength * 2, enemyCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
-            if (hit && GetComponent<Player>().intangibility <= 0 && hit.collider.GetComponent<EnemyMove>().spawnIntangibility < 0) {
+
+            if (hit && GetComponent<Player>().intangibility <= 0 && hit.collider.GetComponent<EnemyVariables>().spawnIntangibility < 0) {
                 enemyCollisions.left = directionX == -1;
                 enemyCollisions.right = directionX == 1;
-                if(destroyEnemy == null) {
+                if (destroyEnemy == null) {
                     CmdKnockdownPlayer(GetComponent<Player>());
                 }
             }
+        
+
         }
     }
 
@@ -397,13 +406,14 @@ public class Controller2D : RaycastController {
     }
 
 
-    [Command(requiresAuthority =false)]
+    [Command(requiresAuthority = false)]
     public void CmdKillEnemy(GameObject enemy) {
         RpcKillEnemy(enemy);
     }
 
     [ClientRpc]
     public void RpcKillEnemy(GameObject enemy) {
+        Debug.Log("Server Destroying: " + enemy);
         Destroy(enemy);
     }
 

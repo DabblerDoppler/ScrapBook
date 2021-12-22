@@ -10,6 +10,7 @@ TagManager:
   - EnemySpawn
   - PlatformSpawn
   - Map
+  - FlySpawn
   layers:
   - Default
   - TransparentFX

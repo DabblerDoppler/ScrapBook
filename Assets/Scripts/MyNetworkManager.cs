@@ -25,6 +25,7 @@ public class MyNetworkManager : NetworkManager {
         Debug.Log("Spawn point found: " + enemySpawns[0]);
         foreach (GameObject spawnPoint in enemySpawns) {
             spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
+            spawn.GetComponent<EnemySpawner>().enemyName = "Enemy1";
             spawn.transform.position = spawnPoint.transform.position;
             NetworkServer.Spawn(spawn);
         }
@@ -40,6 +41,21 @@ public class MyNetworkManager : NetworkManager {
             spawn.GetComponent<MovingPlatformController>().endWaypoint = new Vector3(spawn.GetComponent<MovingPlatformController>().endWaypoint.x, spawn.GetComponent<MovingPlatformController>().endWaypoint.y, 0);
             NetworkServer.Spawn(spawn);
         }
+
+
+        GameObject[] flySpawns = GameObject.FindGameObjectsWithTag("FlySpawn");
+
+        foreach (GameObject spawnPoint in flySpawns) {
+            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
+            spawn.GetComponent<EnemySpawner>().enemyName = "EnemyFlying";
+            spawn.transform.position = spawnPoint.transform.position;
+
+            spawn.GetComponent<EnemySpawner>().endPoint = spawnPoint.transform.GetChild(0).position;
+            spawn.GetComponent<EnemySpawner>().endPoint = new Vector3(spawn.GetComponent<EnemySpawner>().endPoint.x, spawn.GetComponent<EnemySpawner>().endPoint.y, 0);
+            NetworkServer.Spawn(spawn);
+        }
+
+
 
     }
 

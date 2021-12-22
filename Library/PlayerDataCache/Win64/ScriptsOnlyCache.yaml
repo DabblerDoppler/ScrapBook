@@ -4,6 +4,7 @@ ScriptsOnlyBuild:
     - CameraFollow
     - Controller2D
     - DroppedStar
+    - EnemyFly
     - EnemyMove
     - EnemySpawner
     - MapObject
@@ -87,51 +88,53 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1466}
     - Class: 114
-      Script: {instanceID: 2366}
+      Script: {instanceID: 1482}
     - Class: 114
-      Script: {instanceID: 2610}
+      Script: {instanceID: 1728}
     - Class: 114
-      Script: {instanceID: 3096}
+      Script: {instanceID: 2216}
     - Class: 114
-      Script: {instanceID: 3208}
+      Script: {instanceID: 2328}
     - Class: 114
-      Script: {instanceID: 3674}
+      Script: {instanceID: 2794}
     - Class: 114
-      Script: {instanceID: 3822}
+      Script: {instanceID: 2942}
     - Class: 114
-      Script: {instanceID: 3852}
+      Script: {instanceID: 2972}
     - Class: 114
-      Script: {instanceID: 3970}
+      Script: {instanceID: 3090}
     - Class: 114
-      Script: {instanceID: 4144}
+      Script: {instanceID: 3266}
     - Class: 114
-      Script: {instanceID: 4220}
+      Script: {instanceID: 3342}
     - Class: 114
-      Script: {instanceID: 4390}
+      Script: {instanceID: 3512}
     - Class: 114
-      Script: {instanceID: 4616}
+      Script: {instanceID: 3738}
     - Class: 114
-      Script: {instanceID: 5144}
+      Script: {instanceID: 3786}
     - Class: 114
-      Script: {instanceID: 5308}
+      Script: {instanceID: 4270}
     - Class: 114
-      Script: {instanceID: 5706}
+      Script: {instanceID: 4434}
     - Class: 114
-      Script: {instanceID: 6198}
+      Script: {instanceID: 4834}
     - Class: 114
-      Script: {instanceID: 6302}
+      Script: {instanceID: 5326}
     - Class: 114
-      Script: {instanceID: 6436}
+      Script: {instanceID: 5430}
     - Class: 114
-      Script: {instanceID: 6582}
+      Script: {instanceID: 5564}
     - Class: 114
-      Script: {instanceID: 6610}
+      Script: {instanceID: 5710}
     - Class: 114
-      Script: {instanceID: 6780}
+      Script: {instanceID: 5738}
     - Class: 114
-      Script: {instanceID: 6878}
+      Script: {instanceID: 5910}
     - Class: 114
-      Script: {instanceID: 7106}
+      Script: {instanceID: 6008}
+    - Class: 114
+      Script: {instanceID: 6236}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -705,6 +708,12 @@ ScriptsOnlyBuild:
     className: NetworkManager
   - hash:
       serializedVersion: 2
+      Hash: 6108c341df7e3956298fd723cbb05ce1
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: EnemyFly
+  - hash:
+      serializedVersion: 2
       Hash: 8aa3d6ccbcb54ee8db6c1229854adaaa
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -909,7 +918,7 @@ ScriptsOnlyBuild:
     className: MonsterMovement
   - hash:
       serializedVersion: 2
-      Hash: 1369798ad3dddb3a6462e66579c01aea
+      Hash: eda36a115ffc436753143857e439f6c0
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EnemySpawner

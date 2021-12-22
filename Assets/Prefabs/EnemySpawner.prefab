@@ -46,7 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  enemyName: Enemy1
+  associatedEnemy: {fileID: 0}
+  endPoint: {fileID: 0}
+  enemyName: 
 --- !u!114 &6985785903241285131
 MonoBehaviour:
   m_ObjectHideFlags: 0

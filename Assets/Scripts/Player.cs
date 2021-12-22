@@ -182,13 +182,14 @@ public class Player : NetworkBehaviour {
             if (Math.Sign(onWall) != Math.Sign(horizontalInput) || onGround) {
                 onWall = 0;
             }
+
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
                 long_jump = false;
                 spun = false;
                 spinning = 0.0f;
-
             }
+
             if(diving && onGround) {
                 diving = false;
                 sliding = true;
@@ -196,6 +197,7 @@ public class Player : NetworkBehaviour {
             if(diving && onWall != 0) {
                 diving = false;
             }
+
             jumpBuffer -= Time.deltaTime;
             coyoteTime -= Time.deltaTime;
             coyoteTime_Wall -= Time.deltaTime;

@@ -42,7 +42,6 @@ public class MapObject : MonoBehaviour {
     void Update()  {
         if(associatedTransform != null) {
             float newXPosition = (mapStart + ((associatedTransform.position.x - leftTellyBound) / levelSize) * mapSize);
-            Debug.Log("position of starMapObject: " + newXPosition);
             Vector3 localPosition = GetComponent<RectTransform>().localPosition;
             GetComponent<RectTransform>().localPosition =  new Vector3(newXPosition  , localPosition.y , localPosition.z)  ;
         }
