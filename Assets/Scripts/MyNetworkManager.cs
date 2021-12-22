@@ -11,11 +11,19 @@ public class MyNetworkManager : NetworkManager {
     GameObject starManager;
     GameObject spawn;
 
+    public int teams = 1;
+
+
     public override void OnStartServer() {
         base.OnStartServer();
 
-        startPositions.Add(GameObject.Find("PlayerSpawn").transform);
-        startPositions.Add(GameObject.Find("PlayerSpawn (1)").transform);
+
+
+        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("Respawn");
+
+        foreach (GameObject spawn in playerSpawns) {
+            startPositions.Add(spawn.transform);
+        }
 
         starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
         NetworkServer.Spawn(starManager);
@@ -66,11 +74,15 @@ public class MyNetworkManager : NetworkManager {
             ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
             : Instantiate(playerPrefab);
 
+
+
         // instantiating a "Player" prefab gives it the name "Player(clone)"
         // => appending the connectionId is WAY more useful for debugging!
         player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
     }
+
+    
 
     public override void OnServerConnect(NetworkConnection conn) {
         base.OnServerConnect(conn);

@@ -65,6 +65,12 @@ public class Player : NetworkBehaviour {
 
     private Vector3 spawnPoint;
 
+    public int team;
+
+    Color[] colors;
+
+
+
 
     const float HSP_FRIC_GROUND = 0.00015f * 500  ;
     const float HSP_FRIC_SLIDE = 0.00009f * 500 ;
@@ -114,9 +120,26 @@ public class Player : NetworkBehaviour {
     private void Awake() {
         myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
         myMapObject.GetComponent<MapObject>().associatedTransform = transform;
+
+        /*
+        setTeam(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4);
+        if (isServer) {
+            GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
+        } else {
+            CmdIncrementTeams();
+        }
+        */
+
     }
 
     private void Start() {
+        Color[] colors = new Color[4];
+
+        colors[0] = Color.green;
+        colors[1] = Color.red;
+        colors[2] = Color.yellow;
+        colors[3] = Color.cyan;
+
         stars = 0;
 
         rand = new System.Random();
@@ -158,6 +181,12 @@ public class Player : NetworkBehaviour {
             Camera.main.GetComponent<CameraFollow>().hasTarget = false;
         }
     }
+
+    public void setTeam(int toSet) {
+        GetComponent<SpriteRenderer>().color = colors[toSet];
+        team = toSet;
+    }
+
 
     void HandleMovement() {
         if (isLocalPlayer) {
@@ -608,6 +637,7 @@ public class Player : NetworkBehaviour {
     public void CmdAddStars(int toAdd) {
         RpcSetStars(stars + toAdd);
     }
+
 
 
     [ClientRpc]
