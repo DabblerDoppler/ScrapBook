@@ -6,6 +6,7 @@ ScriptsOnlyBuild:
     - DroppedStar
     - EnemyMove
     - EnemySpawner
+    - MapObject
     - MovingPlatformController
     - MyNetworkManager
     - Player
@@ -47,6 +48,7 @@ ScriptsOnlyBuild:
     - UnityEngine.EventSystems.StandaloneInputModule
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.Image
     - UnityEngine.UI.Text
   sceneClasses:
     Assets/Scenes/SampleScene.unity:
@@ -70,56 +72,66 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 62
       Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
     - Class: 81
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
       Script: {instanceID: 1464}
     - Class: 114
-      Script: {instanceID: 1480}
+      Script: {instanceID: 1466}
     - Class: 114
-      Script: {instanceID: 1726}
+      Script: {instanceID: 2366}
     - Class: 114
-      Script: {instanceID: 2324}
+      Script: {instanceID: 2610}
     - Class: 114
-      Script: {instanceID: 2790}
+      Script: {instanceID: 3096}
     - Class: 114
-      Script: {instanceID: 2938}
+      Script: {instanceID: 3208}
     - Class: 114
-      Script: {instanceID: 2968}
+      Script: {instanceID: 3674}
     - Class: 114
-      Script: {instanceID: 3086}
+      Script: {instanceID: 3822}
     - Class: 114
-      Script: {instanceID: 3262}
+      Script: {instanceID: 3852}
     - Class: 114
-      Script: {instanceID: 3338}
+      Script: {instanceID: 3970}
     - Class: 114
-      Script: {instanceID: 3508}
+      Script: {instanceID: 4144}
     - Class: 114
-      Script: {instanceID: 3734}
+      Script: {instanceID: 4220}
     - Class: 114
-      Script: {instanceID: 4264}
+      Script: {instanceID: 4390}
     - Class: 114
-      Script: {instanceID: 4428}
+      Script: {instanceID: 4616}
     - Class: 114
-      Script: {instanceID: 4828}
+      Script: {instanceID: 5144}
     - Class: 114
-      Script: {instanceID: 5320}
+      Script: {instanceID: 5308}
     - Class: 114
-      Script: {instanceID: 5424}
+      Script: {instanceID: 5706}
     - Class: 114
-      Script: {instanceID: 5558}
+      Script: {instanceID: 6198}
     - Class: 114
-      Script: {instanceID: 5704}
+      Script: {instanceID: 6302}
     - Class: 114
-      Script: {instanceID: 5732}
+      Script: {instanceID: 6436}
     - Class: 114
-      Script: {instanceID: 5904}
+      Script: {instanceID: 6582}
     - Class: 114
-      Script: {instanceID: 6002}
+      Script: {instanceID: 6610}
     - Class: 114
-      Script: {instanceID: 6230}
+      Script: {instanceID: 6780}
+    - Class: 114
+      Script: {instanceID: 6878}
+    - Class: 114
+      Script: {instanceID: 7106}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -255,7 +267,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: c66ad69f250c653b6ed0a50bd72481cc
+      Hash: 6392802c08d48324ef24c09a26ed9623
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -343,6 +355,12 @@ ScriptsOnlyBuild:
     assemblyName: Mirror.Examples.dll
     namespaceName: Mirror.Examples.MultipleAdditiveScenes
     className: MultiSceneNetManager
+  - hash:
+      serializedVersion: 2
+      Hash: 5292c3f5e87272bcd036d30c34605f34
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MapObject
   - hash:
       serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
@@ -1209,7 +1227,7 @@ ScriptsOnlyBuild:
     className: NetworkRoomPlayerExt
   - hash:
       serializedVersion: 2
-      Hash: 6fd2bb55b3ee5edb6040a1c5bccd0e07
+      Hash: 1a202beacbe008bb6a4a1821d74c3e53
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Star

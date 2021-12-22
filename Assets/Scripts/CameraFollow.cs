@@ -29,8 +29,8 @@ public class CameraFollow : MonoBehaviour {
 
     private void Start() {
         hasTarget = false;
-        //0.85
-        levelDistance = (54.99879f - 0.875f);
+        //0.71
+        levelDistance = (54.99879f - 0.71f);
     }
 
     private void LateUpdate() {

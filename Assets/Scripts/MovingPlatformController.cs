@@ -10,17 +10,22 @@ public class MovingPlatformController : RaycastController {
 
     [SyncVar]
     public Vector3 endWaypoint;
-
+    [SyncVar]
     public bool movingToEnd;
+    [SyncVar]
     float distanceBetweenWaypoints;
+    [SyncVar]
     float percentMoved;
+    [SyncVar]
     float nextMoveTime;
 
+    [SyncVar]
     public float waitTime;
 
+    [SyncVar]
     public float speed;
 
-    [Range(0,2)]
+    [Range(0,2)] [SyncVar]
     public float easeAmount;
 
     public LayerMask passengerMask;
@@ -36,12 +41,12 @@ public class MovingPlatformController : RaycastController {
 
     // Update is called once per frame
     void Update() {
-            UpdateRaycastOrigins();
 
-            Vector3 velocity = CalculatePlatformMovement();
-            MovePassengers(velocity);
 
         if (isServer) {
+            UpdateRaycastOrigins();
+            Vector3 velocity = CalculatePlatformMovement();
+            MovePassengers(velocity);
             transform.Translate(velocity);
         }
     }
@@ -96,7 +101,7 @@ public class MovingPlatformController : RaycastController {
                     if (!movedPassengers.Contains(hit.transform)) {
                         float pushX = (directionY == 1) ? velocity.x : 0;
                         float pushY = velocity.y - (hit.distance - SKIN_WIDTH) * directionY;
-                        hit.transform.Translate(new Vector3(pushX, pushY));
+                        RpcMovePlayer(hit.transform, pushX, pushY);
                         movedPassengers.Add(hit.transform);
                     }
                 }
@@ -114,7 +119,7 @@ public class MovingPlatformController : RaycastController {
                     if (!movedPassengers.Contains(hit.transform)) {
                         float pushX = velocity.x - (hit.distance - SKIN_WIDTH) * directionX;
                         float pushY = 0;
-                        hit.transform.Translate(new Vector3(pushX, pushY));
+                        RpcMovePlayer(hit.transform, pushX, pushY);
                         movedPassengers.Add(hit.transform);
                     }
                 }
@@ -132,7 +137,7 @@ public class MovingPlatformController : RaycastController {
                     if (!movedPassengers.Contains(hit.transform)) {
                         float pushX = velocity.x;
                         float pushY = velocity.y;
-                        hit.transform.Translate(new Vector3(pushX, pushY));
+                        RpcMovePlayer(hit.transform, pushX, pushY);
                         movedPassengers.Add(hit.transform);
                     }
                 }
@@ -141,5 +146,11 @@ public class MovingPlatformController : RaycastController {
 
 
     }
+
+    [ClientRpc]
+    private void RpcMovePlayer(Transform player, float pushX, float pushY) {
+        player.Translate(new Vector3(pushX, pushY));
+    }
+
 
 }
