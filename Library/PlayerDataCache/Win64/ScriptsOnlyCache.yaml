@@ -7,6 +7,7 @@ ScriptsOnlyBuild:
     - EnemyFly
     - EnemyMove
     - EnemySpawner
+    - EnemyVariables
     - MapObject
     - MovingPlatformController
     - MyNetworkManager
@@ -27,19 +28,22 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
-    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
-    - UnityEditor.Tilemaps.GridPaletteBrushes
-    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
     - UnityEditor.Tilemaps.TilemapPrefabStageHelper
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
+    UnityEditor.Graphs.dll:
+    - UnityEditor.Graphs.AnimationBlendTree.Graph
+    - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.Graph
+    - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -88,25 +92,27 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1466}
     - Class: 114
-      Script: {instanceID: 1482}
+      Script: {instanceID: 1480}
     - Class: 114
-      Script: {instanceID: 1728}
+      Script: {instanceID: 1726}
     - Class: 114
-      Script: {instanceID: 2216}
+      Script: {instanceID: 2214}
     - Class: 114
-      Script: {instanceID: 2328}
+      Script: {instanceID: 2326}
     - Class: 114
-      Script: {instanceID: 2794}
+      Script: {instanceID: 2792}
     - Class: 114
-      Script: {instanceID: 2942}
+      Script: {instanceID: 2940}
     - Class: 114
-      Script: {instanceID: 2972}
+      Script: {instanceID: 2970}
     - Class: 114
-      Script: {instanceID: 3090}
+      Script: {instanceID: 3088}
     - Class: 114
-      Script: {instanceID: 3266}
+      Script: {instanceID: 3264}
     - Class: 114
-      Script: {instanceID: 3342}
+      Script: {instanceID: 3340}
+    - Class: 114
+      Script: {instanceID: 3462}
     - Class: 114
       Script: {instanceID: 3512}
     - Class: 114
@@ -270,7 +276,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 6392802c08d48324ef24c09a26ed9623
+      Hash: 07e0cd686352f234db4d9690c5a21ea6
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -600,6 +606,12 @@ ScriptsOnlyBuild:
     className: AdditiveNetworkManager
   - hash:
       serializedVersion: 2
+      Hash: 9f1cf29ba208a797b82625cfc45e1005
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: EnemyVariables
+  - hash:
+      serializedVersion: 2
       Hash: 4e0c63e49a9e2ef70afb47e3a0e28bc2
     assemblyName: Mirror.Examples.dll
     namespaceName: Mirror.Examples.Pong
@@ -684,7 +696,7 @@ ScriptsOnlyBuild:
     className: NetworkDiscovery
   - hash:
       serializedVersion: 2
-      Hash: 0558fd8cb7e7d0d08ede1688a0940de6
+      Hash: 40f37772769193bce38343f3ee3e4425
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MyNetworkManager
@@ -708,7 +720,7 @@ ScriptsOnlyBuild:
     className: NetworkManager
   - hash:
       serializedVersion: 2
-      Hash: 6108c341df7e3956298fd723cbb05ce1
+      Hash: 4789865f79ab97ba819281a967f348fa
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EnemyFly
@@ -1128,7 +1140,7 @@ ScriptsOnlyBuild:
     className: NetworkRoomManager
   - hash:
       serializedVersion: 2
-      Hash: 7cc5f34e3fdad9bf176d15535c6b5c83
+      Hash: c68ac4e056441fdd29fb674e24ec665e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EnemyMove

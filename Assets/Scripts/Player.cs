@@ -121,24 +121,28 @@ public class Player : NetworkBehaviour {
         myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
         myMapObject.GetComponent<MapObject>().associatedTransform = transform;
 
-        /*
-        setTeam(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4);
-        if (isServer) {
-            GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
-        } else {
-            CmdIncrementTeams();
-        }
-        */
+
 
     }
 
     private void Start() {
-        Color[] colors = new Color[4];
+        List<Color> colors = new List<Color>();
 
-        colors[0] = Color.green;
-        colors[1] = Color.red;
-        colors[2] = Color.yellow;
-        colors[3] = Color.cyan;
+        colors.Add(Color.green);
+        colors.Add(Color.red);
+        colors.Add(Color.yellow);
+        colors.Add(Color.cyan);
+
+        Debug.Log(colors);
+
+
+        if (isServer) {
+            RpcSetTeams(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4, colors[GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4]);
+        }
+        else {
+            CmdSetTeams(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4, colors[GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4]);
+        }
+
 
         stars = 0;
 
@@ -182,10 +186,7 @@ public class Player : NetworkBehaviour {
         }
     }
 
-    public void setTeam(int toSet) {
-        GetComponent<SpriteRenderer>().color = colors[toSet];
-        team = toSet;
-    }
+
 
 
     void HandleMovement() {
@@ -636,6 +637,21 @@ public class Player : NetworkBehaviour {
     [Command(requiresAuthority = false)]
     public void CmdAddStars(int toAdd) {
         RpcSetStars(stars + toAdd);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetTeams(int toSet, Color color) {
+        RpcSetTeams(toSet, color);
+    }
+
+    [ClientRpc]
+    public void RpcSetTeams(int toSet, Color color) {
+        if (toSet < 4) {
+           GetComponent<SpriteRenderer>().color = color;
+            team = toSet;
+            GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
+        }
+
     }
 
 

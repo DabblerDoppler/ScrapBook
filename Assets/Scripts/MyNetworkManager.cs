@@ -17,8 +17,6 @@ public class MyNetworkManager : NetworkManager {
     public override void OnStartServer() {
         base.OnStartServer();
 
-
-
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("Respawn");
 
         foreach (GameObject spawn in playerSpawns) {
@@ -73,8 +71,6 @@ public class MyNetworkManager : NetworkManager {
         GameObject player = startPos != null
             ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
             : Instantiate(playerPrefab);
-
-
 
         // instantiating a "Player" prefab gives it the name "Player(clone)"
         // => appending the connectionId is WAY more useful for debugging!
