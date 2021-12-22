@@ -183,6 +183,8 @@ public class Player : NetworkBehaviour {
                 onWall = 0;
             }
 
+            
+
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
                 long_jump = false;
@@ -292,6 +294,7 @@ public class Player : NetworkBehaviour {
 
 
 
+
             if(knockdown > 0) {
             } else if (sliding) {
                 SlideState(onGround);
@@ -392,9 +395,14 @@ public class Player : NetworkBehaviour {
 
 
     void NormalState(bool onGround, int onWall) {
+        if (onWall != 0) {
+            facing = -onWall;
+        }
+
         if (horizontalInput != 0 && onGround) {
             facing = Math.Sign(horizontalInput);
         }
+
 
         if (facing > 0) {
             GetComponent<SpriteRenderer>().flipX = false;
