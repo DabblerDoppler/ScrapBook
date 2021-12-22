@@ -23,7 +23,6 @@ public class Controller2D : RaycastController {
 
 
 
-
     public override void Start() {
         base.Start();
         playerCollisionMask = LayerMask.GetMask("Players");
@@ -44,12 +43,11 @@ public class Controller2D : RaycastController {
         playerCollisions.Reset();
         enemyCollisions.Reset();
 
-        if (velocity.x != 0) {
-            HorizontalCollisions(ref velocity);
-            //HorizontalCollisions_Players(ref velocity);
-            HorizontalCollisions_Spikes(ref velocity);
-            HorizontalCollisions_Teleporters(ref velocity);
-        }
+        HorizontalCollisions(ref velocity);
+        //HorizontalCollisions_Players(ref velocity);
+        //HorizontalCollisions_Spikes(ref velocity);
+        HorizontalCollisions_Teleporters(ref velocity);
+        
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
             VerticalCollisions_Spikes(ref velocity);

@@ -13,7 +13,7 @@ public class DroppedStar : NetworkBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-
+        GetComponent<Rigidbody2D>().angularVelocity = Random.Range(-190f, 190f);
     }
 
     // Update is called once per frame

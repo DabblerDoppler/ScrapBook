@@ -65,7 +65,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0.0001
   - m_ConditionMode: 3
     m_ConditionEvent: Player_hsp
-    m_EventTreshold: -0.001
+    m_EventTreshold: -0.0001
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3398085134156498461}
   m_Solo: 0

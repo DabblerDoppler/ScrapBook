@@ -177,13 +177,27 @@ public class Player : NetworkBehaviour {
             }
 
             onGround = controller.collisions.below;
-            int onWall = (controller.collisions.left) ? -1 : 0;
-            onWall += (controller.collisions.right) ? 1 : 0;
+            int onWall;
+
+            if(controller.collisions.left) {
+                onWall = -1;
+            } else if (controller.collisions.right) {
+                onWall = 1;
+            } else {
+                onWall = 0;
+            }
+
+
             if (Math.Sign(onWall) != Math.Sign(horizontalInput) || onGround) {
                 onWall = 0;
             }
 
-            
+            if (facing > 0) {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
 
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
@@ -404,11 +418,8 @@ public class Player : NetworkBehaviour {
         }
 
 
-        if (facing > 0) {
-            GetComponent<SpriteRenderer>().flipX = false;
-        } else {
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
+
+
         //ground jump
         if (jumpPressed && coyoteTime > 0) {
             vsp = JUMP_HEIGHT;
@@ -441,11 +452,12 @@ public class Player : NetworkBehaviour {
             hsp = 0;
             groundPoundWindup = GROUNDPOUND_WINDUP;
             groundPound = true;
-        } else if (divePressed && !onGround && Math.Abs(hsp) > 0.0025f) {
+        } else if (divePressed && !onGround && Math.Abs(hsp) > 0.0025) {
             vsp = DIVE_HEIGHT;
             hsp += DIVE_LENGTH * Math.Sign(hsp);
             walljump_lock = Math.Sign(hsp);
             diving = true;
+            facing = Math.Sign(hsp);
             if (collider.size != crouchColliderSize) {
                 collider.size = crouchColliderSize;
                 collider.offset = crouchColliderOffset;

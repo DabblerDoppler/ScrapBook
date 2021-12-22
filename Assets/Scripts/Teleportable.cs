@@ -55,7 +55,7 @@ public class Teleportable : MonoBehaviour {
             // -> else if (collider.GetType() == typeof(CircleCollider2D)) i'm sorry little one
             // this will error if collider is not a boxcollider or circle collider theoretically
         } else {
-            sizeX = 2 * GetComponent<CircleCollider2D>().radius;
+            sizeX = GetComponent<CircleCollider2D>().bounds.size.x;
         }
 
         if (hit.transform.name == "Teleporter_Left") {
