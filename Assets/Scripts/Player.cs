@@ -372,8 +372,10 @@ public class Player : NetworkBehaviour {
 
 
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
-            animator.SetFloat("Player_hsp", Mathf.Abs(hsp));
-            animator.SetFloat("Player_vsp", Mathf.Abs(vsp));
+
+            animator.SetFloat("Player_hsp", hsp);
+            animator.SetFloat("Player_vsp", vsp);
+
 
         }
     }
@@ -392,6 +394,12 @@ public class Player : NetworkBehaviour {
     void NormalState(bool onGround, int onWall) {
         if (horizontalInput != 0 && onGround) {
             facing = Math.Sign(horizontalInput);
+        }
+
+        if (facing > 0) {
+            GetComponent<SpriteRenderer>().flipX = false;
+        } else {
+            GetComponent<SpriteRenderer>().flipX = true;
         }
         //ground jump
         if (jumpPressed && coyoteTime > 0) {

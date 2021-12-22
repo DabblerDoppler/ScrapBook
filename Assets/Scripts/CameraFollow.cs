@@ -25,7 +25,8 @@ public class CameraFollow : MonoBehaviour {
 
     public float levelDistance;
 
-
+    const float LOWEST_Y = 7.25f;
+    const float HIGHEST_Y = -1.0f;
 
     private void Start() {
         hasTarget = false;
@@ -46,8 +47,18 @@ public class CameraFollow : MonoBehaviour {
             Vector2 focusPosition = (Vector2)target.transform.position + Vector2.up * verticalOffset;
             transform.position = (Vector3)focusPosition + Vector3.forward * -10 + Vector3.right * moveStagesRight * (levelDistance);
         }
+
+
         if(transform.root != transform) {
             transform.position = new Vector3(transform.position.x, transform.parent.position.y, transform.position.z);
+        }
+
+        if (transform.position.y >= LOWEST_Y) {
+            transform.position = new Vector3(transform.position.x, LOWEST_Y, transform.position.z);
+        }
+
+        if (transform.position.y <= HIGHEST_Y) {
+            transform.position = new Vector3(transform.position.x, HIGHEST_Y, transform.position.z);
         }
     }
 
