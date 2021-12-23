@@ -126,6 +126,7 @@ public class Player : NetworkBehaviour {
     }
 
     private void Start() {
+
         List<Color> colors = new List<Color>();
 
         colors.Add(Color.green);
@@ -133,14 +134,17 @@ public class Player : NetworkBehaviour {
         colors.Add(Color.yellow);
         colors.Add(Color.cyan);
 
-        Debug.Log(colors);
 
 
-        if (isServer) {
-            RpcSetTeams(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4, colors[GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4]);
-        }
-        else {
-            CmdSetTeams(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4, colors[GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4]);
+        if (isLocalPlayer) {
+            if (isServer) {
+                int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4) - 1;
+                RpcSetTeams(toSet, colors);
+                GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
+            }
+            else {
+                CmdSetTeams(colors);
+            }
         }
 
 
@@ -640,18 +644,21 @@ public class Player : NetworkBehaviour {
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdSetTeams(int toSet, Color color) {
-        RpcSetTeams(toSet, color);
+    public void CmdSetTeams(List<Color> colors) {
+        int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4) - 1;
+        GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
+        RpcSetTeams(toSet, colors);
     }
 
     [ClientRpc]
-    public void RpcSetTeams(int toSet, Color color) {
-        if (toSet < 4) {
-           GetComponent<SpriteRenderer>().color = color;
-            team = toSet;
-            GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
-        }
+    public void RpcSetTeams(int toSet, List<Color> colors) {
 
+        Debug.Log("toSet is: " + toSet);
+
+        if (toSet < colors.Count && toSet > -1) {
+            GetComponent<SpriteRenderer>().color = colors[toSet];
+            team = toSet;
+        }
     }
 
 

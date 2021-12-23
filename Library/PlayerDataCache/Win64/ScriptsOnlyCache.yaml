@@ -19,6 +19,7 @@ ScriptsOnlyBuild:
     - TextChildArray
     - ViewportManager
     Mirror.Components.dll:
+    - Mirror.NetworkAnimator
     - Mirror.NetworkTransform
     Mirror.dll:
     - Mirror.NetworkIdentity
@@ -28,10 +29,13 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
+    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
+    - UnityEditor.Tilemaps.GridPaletteBrushes
+    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
@@ -137,6 +141,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 5738}
     - Class: 114
       Script: {instanceID: 5910}
+    - Class: 114
+      Script: {instanceID: 5912}
     - Class: 114
       Script: {instanceID: 6008}
     - Class: 114

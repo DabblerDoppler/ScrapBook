@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7675796780294924182}
   - component: {fileID: 2216670722006428613}
   - component: {fileID: 4672524869821813398}
+  - component: {fileID: 745140530466681795}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -143,6 +144,7 @@ MonoBehaviour:
   playerMapObject: {fileID: 5961935444989564973, guid: ed5f2b29582478d49ae1006399330fde, type: 3}
   hsp: 0
   vsp: 0
+  team: 0
   animator: {fileID: 4672524869821813398}
 --- !u!114 &2234132032890095562
 MonoBehaviour:
@@ -255,3 +257,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &745140530466681795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312475966293565536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  animator: {fileID: 4672524869821813398}
