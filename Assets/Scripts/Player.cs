@@ -24,7 +24,10 @@ public class Player : NetworkBehaviour {
     //actions
     public bool sliding;
     int walljump_lock;
+
+    [SyncVar]
     int facing;
+
     public bool spun;
     public bool long_jump;
     public bool crouching;
@@ -65,9 +68,10 @@ public class Player : NetworkBehaviour {
 
     private Vector3 spawnPoint;
 
+    [SyncVar]
     public int team;
 
-    Color[] colors;
+    List<Color> colors;
 
 
 
@@ -127,7 +131,7 @@ public class Player : NetworkBehaviour {
 
     private void Start() {
 
-        List<Color> colors = new List<Color>();
+        colors = new List<Color>();
 
         colors.Add(Color.green);
         colors.Add(Color.red);
@@ -181,10 +185,29 @@ public class Player : NetworkBehaviour {
     }
 
     private void Update() {
+
+        SyncAnimations();
         HandleMovement();
     }
 
+
+    private void SyncAnimations() {
+        if (facing > 0) {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+
+        if (0 <= team  && team <= 3) {
+            GetComponent<SpriteRenderer>().color = colors[team];
+        }
+    }
+
     private void OnDestroy() {
+        if (myMapObject != null) {
+            Destroy(myMapObject);
+        }
         if (Camera.main != null) {
             Camera.main.GetComponent<CameraFollow>().hasTarget = false;
         }
@@ -226,12 +249,7 @@ public class Player : NetworkBehaviour {
                 onWall = 0;
             }
 
-            if (facing > 0) {
-                GetComponent<SpriteRenderer>().flipX = false;
-            }
-            else {
-                GetComponent<SpriteRenderer>().flipX = true;
-            }
+
 
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
@@ -444,11 +462,11 @@ public class Player : NetworkBehaviour {
 
     void NormalState(bool onGround, int onWall) {
         if (onWall != 0) {
-            facing = -onWall;
+            UpdateFacing(-onWall);
         }
 
         if (horizontalInput != 0 && onGround) {
-            facing = Math.Sign(horizontalInput);
+            UpdateFacing(Math.Sign(horizontalInput));
         }
 
 
@@ -491,7 +509,7 @@ public class Player : NetworkBehaviour {
             hsp += DIVE_LENGTH * Math.Sign(hsp);
             walljump_lock = Math.Sign(hsp);
             diving = true;
-            facing = Math.Sign(hsp);
+            UpdateFacing(Math.Sign(hsp));
             if (collider.size != crouchColliderSize) {
                 collider.size = crouchColliderSize;
                 collider.offset = crouchColliderOffset;
@@ -554,7 +572,7 @@ public class Player : NetworkBehaviour {
 
     void CrouchState() {
         if (hsp != 0) {
-            facing = Math.Sign(hsp);
+            UpdateFacing(Math.Sign(hsp));
         }
         if (jumpPressed) {
             backflip = true;
@@ -642,6 +660,21 @@ public class Player : NetworkBehaviour {
     public void CmdAddStars(int toAdd) {
         RpcSetStars(stars + toAdd);
     }
+
+    private void UpdateFacing (int newFacing) {
+         if(isServer) {
+            facing = newFacing;
+        } else {
+            CmdUpdateFacing(newFacing);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdUpdateFacing(int newFacing) {
+        facing = newFacing;
+    }
+
+
 
     [Command(requiresAuthority = false)]
     public void CmdSetTeams(List<Color> colors) {
