@@ -35,6 +35,7 @@ public class CameraFollow : MonoBehaviour {
     }
 
     private void LateUpdate() {
+        hasTarget = (target != null);
         if (!hasTarget) {
             if (!(GameObject.FindGameObjectsWithTag("Player").Length == 0)) {
                 target = NetworkClient.localPlayer.gameObject.GetComponent<Controller2D>();

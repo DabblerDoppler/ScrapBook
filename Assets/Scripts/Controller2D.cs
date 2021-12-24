@@ -19,8 +19,9 @@ public class Controller2D : RaycastController {
     public CollisionInfo collisions;
     public CollisionInfo playerCollisions;
     public CollisionInfo enemyCollisions;
+    public Boolean wallAbove;
 
-
+    const float WALL_ABOVE_RAY_LENGTH = 0.5f;
 
 
     public override void Start() {
@@ -53,6 +54,12 @@ public class Controller2D : RaycastController {
             VerticalCollisions_Spikes(ref velocity);
             VerticalCollisions_Enemies(ref velocity);
         }
+
+        wallAbove = false;
+        if(GetComponent<Player>().crouching || GetComponent<Player>().sliding) {
+            CrouchCollisions(ref velocity);
+        }
+
 
         VerticalCollisions_Players(ref velocity);
         //HorizontalCollisions_Players(ref velocity);
@@ -171,7 +178,19 @@ public class Controller2D : RaycastController {
         }
     }
 
-
+    void CrouchCollisions(ref Vector3 velocity) {
+        float directionY = 1;
+        float rayLength = WALL_ABOVE_RAY_LENGTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit) {
+                wallAbove = true;
+            }
+        }
+    }
 
     void TeleportToOtherTeleporter(RaycastHit2D hit) {
         GameObject teleportTo;

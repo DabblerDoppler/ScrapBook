@@ -142,7 +142,7 @@ public class Player : NetworkBehaviour {
 
         if (isLocalPlayer) {
             if (isServer) {
-                int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4) - 1;
+                int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4);
                 RpcSetTeams(toSet, colors);
                 GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
             }
@@ -344,6 +344,7 @@ public class Player : NetworkBehaviour {
                 }
             }
 
+            //come back to this, not sure what it does
             if (!crouching && !sliding && !diving) {
                 if (controller.VerticalCollisions_uncrouch() && onGround) {
                     collider.size = crouchColliderSize;
@@ -394,7 +395,7 @@ public class Player : NetworkBehaviour {
                     collider.offset = crouchColliderOffset;
                     controller.CalculateRaySpacing();
                 }
-            } else {
+            } else if (!GetComponent<Controller2D>().wallAbove) {
                 crouching = false;
             }
 
@@ -561,10 +562,15 @@ public class Player : NetworkBehaviour {
     void SlideState(bool onGround) {
         if(coyoteTime <= 0.0f || Math.Abs(hsp) < 0.0015f ) {
             sliding = false;
+
+            if(GetComponent<Controller2D>().wallAbove) {
+                crouching = true;
+            }
+
             return;
         }
         //long jump
-        if(jumpPressed) {
+        if(jumpPressed && !GetComponent<Controller2D>().wallAbove) {
             long_jump = true;
             hsp = Math.Sign(hsp) * LONG_JUMP_LENGTH;
             vsp = LONG_JUMP_HEIGHT;
@@ -576,12 +582,15 @@ public class Player : NetworkBehaviour {
         if (hsp != 0) {
             UpdateFacing(Math.Sign(hsp));
         }
-        if (jumpPressed) {
+
+        if (jumpPressed && !GetComponent<Controller2D>().wallAbove ) {
             backflip = true;
             hsp = -facing * BACKFLIP_LENGTH;
             vsp = BACKFLIP_HEIGHT;
             walljump_lock = Math.Sign(hsp);
         }
+
+
     }
 
 
@@ -680,7 +689,7 @@ public class Player : NetworkBehaviour {
 
     [Command(requiresAuthority = false)]
     public void CmdSetTeams(List<Color> colors) {
-        int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4) - 1;
+        int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4);
         GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
         RpcSetTeams(toSet, colors);
     }
