@@ -133,10 +133,14 @@ public class Player : NetworkBehaviour {
 
         colors = new List<Color>();
 
-        colors.Add(Color.green);
-        colors.Add(Color.red);
-        colors.Add(Color.yellow);
-        colors.Add(Color.cyan);
+        //green
+        colors.Add(Color.HSVToRGB(0.280555f, 0.45f, 0.77f));
+        //red
+        colors.Add(Color.HSVToRGB(0.02222222222f, 0.64f, 0.81f));
+        //yellow
+        colors.Add(Color.HSVToRGB(0.136111111f, 0.50f, 0.85f));
+        //blue
+        colors.Add(Color.HSVToRGB(0.55833333333f, 0.60f, 0.85f));
 
 
 
@@ -444,9 +448,11 @@ public class Player : NetworkBehaviour {
 
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
 
+
+            //david animation stuff
             animator.SetFloat("Player_hsp", hsp);
             animator.SetFloat("Player_vsp", vsp);
-            animator.SetBool("isSlide", sliding);
+            animator.SetBool("isSliding", sliding);
             animator.SetFloat("knockdownTimer", knockdown);
 
 
@@ -700,9 +706,11 @@ public class Player : NetworkBehaviour {
 
         Debug.Log("toSet is: " + toSet);
 
+
         if (toSet < colors.Count && toSet > -1) {
             GetComponent<SpriteRenderer>().color = colors[toSet];
-            team = toSet;
+            myMapObject.GetComponent<Image>().color = colors[toSet];
+                team = toSet;
         }
     }
 
