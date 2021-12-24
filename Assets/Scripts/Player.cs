@@ -447,6 +447,7 @@ public class Player : NetworkBehaviour {
             animator.SetFloat("Player_hsp", hsp);
             animator.SetFloat("Player_vsp", vsp);
             animator.SetBool("isSlide", sliding);
+            animator.SetFloat("knockdownTimer", knockdown);
 
 
         }
