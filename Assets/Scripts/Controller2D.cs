@@ -100,7 +100,7 @@ public class Controller2D : RaycastController {
         destroyEnemy = null;
 
         
-        if (incrementStars && GetComponentInParent<Player>().intangibility < 0) {
+        if (incrementStars && lastStarHit != null && GetComponentInParent<Player>().intangibility < 0) {
             GetComponentInParent<Player>().CmdAddStars(1);
 
             if (lastStarHit.GetComponent<Star>() != null) {
@@ -321,7 +321,6 @@ public class Controller2D : RaycastController {
             }
         }
     }
-    */
 
     private void OnCollisionEnter2D(Collision2D col) {
         if(collider.gameObject.tag == "Star") {
@@ -329,9 +328,10 @@ public class Controller2D : RaycastController {
             incrementStars = true;
         }
     }
+    */
 
 
-   void OnTriggerEnter2D(Collider2D col) {
+    void OnTriggerEnter2D(Collider2D col) {
         if (col.gameObject.tag == "Star") {
             Debug.Log("Trigger");
             lastStarHit = col;
