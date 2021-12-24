@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2681774738377815226}
   - component: {fileID: -7844623996726273287}
   - component: {fileID: -9050003351089117059}
+  - component: {fileID: -4544966070470690174}
   m_Layer: 7
   m_Name: Star
   m_TagString: Star
@@ -112,7 +113,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.008499384, y: -0.01701355}
@@ -189,3 +190,24 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   starMapObject: {fileID: 5961935444989564973, guid: 7b4a47a92686761458d3dc8a0ba9d7ea, type: 3}
+--- !u!50 &-4544966070470690174
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8695228450581917325}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

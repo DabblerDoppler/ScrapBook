@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Controller2D : RaycastController {
 
-    bool incrementStars;
+    public bool incrementStars;
     bool killPlayer;
     GameObject destroyEnemy;
     Player knockdownPlayer;
-    RaycastHit2D lastStarHit;
+    Collider2D lastStarHit;
     public LayerMask collisionMask;
     public LayerMask playerCollisionMask;
     public LayerMask starCollisionMask;
@@ -37,7 +37,6 @@ public class Controller2D : RaycastController {
 
     public void Move(Vector3 velocity) {
         UpdateRaycastOrigins();
-        incrementStars = false;
         killPlayer = false;
         knockdownPlayer = null;
         collisions.Reset();
@@ -66,8 +65,9 @@ public class Controller2D : RaycastController {
         HorizontalCollisions_Enemies(ref velocity);
 
 
-        VerticalCollisions_Stars(ref velocity);
-        HorizontalCollisions_Stars(ref velocity);
+        //VerticalCollisions_Stars(ref velocity);
+        //HorizontalCollisions_Stars(ref velocity);
+
 
         if (knockdownPlayer != null) {
             if (isServer) {
@@ -102,11 +102,14 @@ public class Controller2D : RaycastController {
         
         if (incrementStars && GetComponentInParent<Player>().intangibility < 0) {
             GetComponentInParent<Player>().CmdAddStars(1);
-            if (lastStarHit.collider.GetComponent<Star>() != null) {
-                lastStarHit.collider.GetComponentInParent<Star>().playerTouch();
+
+            if (lastStarHit.GetComponent<Star>() != null) {
+                lastStarHit.GetComponentInParent<Star>().playerTouch();
             } else {
-                lastStarHit.collider.GetComponentInParent<DroppedStar>().playerTouch();
+                lastStarHit.GetComponentInParent<DroppedStar>().playerTouch();
             }
+
+            incrementStars = false;
         }
         if (killPlayer) {
             GetComponent<Player>().Death();
@@ -277,6 +280,8 @@ public class Controller2D : RaycastController {
         return false;
     }
 
+    /*
+
     void VerticalCollisions_Stars(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
@@ -314,6 +319,23 @@ public class Controller2D : RaycastController {
                 lastStarHit = hit;
                 incrementStars = true;
             }
+        }
+    }
+    */
+
+    private void OnCollisionEnter2D(Collision2D col) {
+        if(collider.gameObject.tag == "Star") {
+            lastStarHit = col.collider;
+            incrementStars = true;
+        }
+    }
+
+
+   void OnTriggerEnter2D(Collider2D col) {
+        if (col.gameObject.tag == "Star") {
+            Debug.Log("Trigger");
+            lastStarHit = col;
+            incrementStars = true;
         }
     }
 

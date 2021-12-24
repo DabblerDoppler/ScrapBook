@@ -11,6 +11,8 @@ TagManager:
   - PlatformSpawn
   - Map
   - FlySpawn
+  - Flying Enemy
+  - Collider
   layers:
   - Default
   - TransparentFX
