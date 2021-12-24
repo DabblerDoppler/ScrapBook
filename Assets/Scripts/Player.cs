@@ -445,6 +445,7 @@ public class Player : NetworkBehaviour {
 
             animator.SetFloat("Player_hsp", hsp);
             animator.SetFloat("Player_vsp", vsp);
+            animator.SetBool("isSlide", sliding);
 
 
         }
@@ -493,7 +494,6 @@ public class Player : NetworkBehaviour {
         //slide
         if(divePressed && onGround && Math.Abs(hsp) > 0.006f && Math.Sign(hsp) == Math.Sign(horizontalInput)) {
             sliding = true;
-            animator.SetBool("isSlide", sliding);
             hsp = Math.Sign(hsp) * SLIDE_SPEED;
             if (collider.size != crouchColliderSize) {
                 collider.size = crouchColliderSize;
@@ -561,7 +561,6 @@ public class Player : NetworkBehaviour {
     void SlideState(bool onGround) {
         if(coyoteTime <= 0.0f || Math.Abs(hsp) < 0.0015f ) {
             sliding = false;
-            animator.SetBool("isSlide", sliding);
             return;
         }
         //long jump
