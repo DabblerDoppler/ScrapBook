@@ -69,7 +69,7 @@ public class Controller2D : RaycastController {
         //HorizontalCollisions_Stars(ref velocity);
 
 
-        if (knockdownPlayer != null) {
+        if (knockdownPlayer != null && knockdownPlayer.team != GetComponent<Player>().team) {
             if (isServer) {
                 if (GetComponent<Player>().groundPound) {
                     knockdownPlayer.RpcKnockdown3();
