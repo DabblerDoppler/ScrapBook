@@ -30,7 +30,6 @@ public class Controller2D : RaycastController {
         collisionMask = LayerMask.GetMask("Floor");
         starCollisionMask = LayerMask.GetMask("Star", "FallenStar");
         enemyCollisionMask = LayerMask.GetMask("Enemies");
-
         spikeCollisionMask = LayerMask.GetMask("Spike");
         teleporterCollisionMask = LayerMask.GetMask("Teleporter");
     }
@@ -54,20 +53,15 @@ public class Controller2D : RaycastController {
             VerticalCollisions_Enemies(ref velocity);
         }
 
+        //if the player is crouching, test to see if they're allowed to stand up or jump.
         wallAbove = false;
         if(GetComponent<Player>().crouching || GetComponent<Player>().sliding) {
             CrouchCollisions(ref velocity);
         }
 
-
         VerticalCollisions_Players(ref velocity);
         //HorizontalCollisions_Players(ref velocity);
         HorizontalCollisions_Enemies(ref velocity);
-
-
-        //VerticalCollisions_Stars(ref velocity);
-        //HorizontalCollisions_Stars(ref velocity);
-
 
         if (knockdownPlayer != null && knockdownPlayer.team != GetComponent<Player>().team) {
             if (isServer) {
@@ -76,8 +70,7 @@ public class Controller2D : RaycastController {
                 } else { 
                     knockdownPlayer.RpcKnockdown();
                 }
-            }
-            else {
+            } else {
                 if (GetComponent<Player>().groundPound) {
                     CmdKnockdownPlayer3(knockdownPlayer);
                 } else {
@@ -98,25 +91,22 @@ public class Controller2D : RaycastController {
         }
 
         destroyEnemy = null;
-
         
         if (incrementStars && lastStarHit != null && GetComponentInParent<Player>().intangibility < 0) {
             GetComponentInParent<Player>().CmdAddStars(1);
-
             if (lastStarHit.GetComponent<Star>() != null) {
                 lastStarHit.GetComponentInParent<Star>().playerTouch();
             } else {
                 lastStarHit.GetComponentInParent<DroppedStar>().playerTouch();
             }
-
             incrementStars = false;
         }
+
+        //this is to kill the associated player if you step in lava.
         if (killPlayer) {
             GetComponent<Player>().Death();
         }
 
-
-        //GetComponent<Rigidbody2D>().velocity = velocity / Time.deltaTime;
         transform.position += velocity;
     }
 
@@ -227,9 +217,6 @@ public class Controller2D : RaycastController {
         GetComponent<SpriteRenderer>().forceRenderingOff = true;
     }
 
-
-
-
     //might need to be space out for client
     IEnumerator Resimulate() {
         yield return new WaitForSeconds(0.1f);
@@ -245,7 +232,6 @@ public class Controller2D : RaycastController {
         Camera.main.clearFlags = CameraClearFlags.Skybox;
         Camera.main.cullingMask = -1;
     }
-
 
     void VerticalCollisions_Spikes(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);
@@ -280,64 +266,6 @@ public class Controller2D : RaycastController {
         return false;
     }
 
-    /*
-
-    void VerticalCollisions_Stars(ref Vector3 velocity) {
-        float directionY = Mathf.Sign(velocity.y);
-        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
-        for (int i = 0; i < verticalRayCount; i++) {
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, starCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-            if (hit) {
-                lastStarHit = hit;
-                incrementStars = true;
-            }
-        }
-    }
-
-
-    void HorizontalCollisions_Stars(ref Vector3 velocity) {
-        float directionX = Mathf.Sign(velocity.x);
-        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
-        for (int i = 0; i < horizontalRayCount; i++) {
-            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
-            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, starCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
-            if (hit) {
-                lastStarHit = hit;
-                incrementStars = true;
-            }
-        }
-        rayLength = SKIN_WIDTH * 2;
-        for (int j = 0; j < verticalRayCount; j++) {
-            Vector2 rayOrigin = raycastOrigins.topLeft + Vector2.right * (verticalRaySpacing * j);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, rayLength, starCollisionMask);
-            if (hit) {
-                lastStarHit = hit;
-                incrementStars = true;
-            }
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D col) {
-        if(collider.gameObject.tag == "Star") {
-            lastStarHit = col.collider;
-            incrementStars = true;
-        }
-    }
-    */
-
-
-    void OnTriggerEnter2D(Collider2D col) {
-        if (col.gameObject.tag == "Star") {
-            Debug.Log("Trigger");
-            lastStarHit = col;
-            incrementStars = true;
-        }
-    }
 
     void HorizontalCollisions(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
@@ -391,8 +319,6 @@ public class Controller2D : RaycastController {
                     CmdKnockdownPlayer(GetComponent<Player>());
                 }
             }
-        
-
         }
     }
 
@@ -410,7 +336,6 @@ public class Controller2D : RaycastController {
                 collisions.left = directionX == -1;
                 collisions.right = directionX == 1;
                 GetComponent<Player>().Death();
-
             }
         }
     }
@@ -424,13 +349,18 @@ public class Controller2D : RaycastController {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, teleporterCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
             if (hit) {
-                //velocity.x = (hit.distance - SKIN_WIDTH) * directionX;
-                //rayLength = hit.distance;
                 TeleportToOtherTeleporter(hit);
             }
         }
     }
 
+    void OnTriggerEnter2D(Collider2D col) {
+        if (col.gameObject.tag == "Star") {
+            Debug.Log("Trigger");
+            lastStarHit = col;
+            incrementStars = true;
+        }
+    }
 
     [Command(requiresAuthority = false)]
     public void CmdKnockdownPlayer(Player player) {
@@ -455,8 +385,4 @@ public class Controller2D : RaycastController {
         Debug.Log("Server Destroying: " + enemy);
         Destroy(enemy);
     }
-
-
-
-
 }

@@ -73,13 +73,10 @@ public class Player : NetworkBehaviour {
 
     List<Color> colors;
 
-
-
-
-    const float HSP_FRIC_GROUND = 0.00015f * 500  ;
-    const float HSP_FRIC_SLIDE = 0.00009f * 500 ;
-    const float HSP_FRIC_AIR = 0.000035f * 500  ;
-    const float HSP_FRIC_WALLJUMP = 0.000005f * 500  ;
+    const float HSP_FRIC_GROUND = 0.00015f * 500;
+    const float HSP_FRIC_SLIDE = 0.00009f * 500;
+    const float HSP_FRIC_AIR = 0.000035f * 500;
+    const float HSP_FRIC_WALLJUMP = 0.000005f * 500;
     const float HSP_MAX = 0.009f;
     const float HSP_MAX_SLIDE = 0.02f;
     const float HSP_MAX_LONGJUMP = 0.015f;
@@ -89,10 +86,10 @@ public class Player : NetworkBehaviour {
     const float VSP_MAX_WALL = 0.006f;
     const float VSP_GROUNDPOUND = 0.024f;
     const float VSP_KNOCKDOWN = 0.004f;
-    const float GRAVITY = 0.000075f * 500 ;
-    const float GRAVITY_HELD = 0.00005f * 500 ;
+    const float GRAVITY = 0.000075f * 500;
+    const float GRAVITY_HELD = 0.00005f * 500;
     const float JUMP_HEIGHT = 0.01325f;
-    const float WALL_JUMP_HEIGHT = 0.01025f  ;
+    const float WALL_JUMP_HEIGHT = 0.01025f;
     const float WALL_JUMP_LENGTH = 0.09f;
     const float LONG_JUMP_HEIGHT = 0.011f;
     const float LONG_JUMP_LENGTH = 0.015f;
@@ -131,6 +128,7 @@ public class Player : NetworkBehaviour {
 
     private void Start() {
 
+        //create a list of colors containing the colors from the 4 teams.
         colors = new List<Color>();
 
         //green
@@ -143,7 +141,7 @@ public class Player : NetworkBehaviour {
         colors.Add(Color.HSVToRGB(0.55833333333f, 0.60f, 0.85f));
 
 
-
+        //set team with appropraite networking
         if (isLocalPlayer) {
             if (isServer) {
                 int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4);
@@ -154,7 +152,6 @@ public class Player : NetworkBehaviour {
                 CmdSetTeams(colors);
             }
         }
-
 
         stars = 0;
 
@@ -167,7 +164,7 @@ public class Player : NetworkBehaviour {
         standColliderSize = collider.size;
 
         crouchColliderSize = new Vector2(standColliderSize.x, standColliderSize.y * CROUCH_PERCENT);
-        crouchColliderOffset = new Vector2(standColliderOffset.x, - standColliderSize.y * 0.5f * CROUCH_PERCENT);
+        crouchColliderOffset = new Vector2(standColliderOffset.x, -standColliderSize.y * 0.5f * CROUCH_PERCENT);
 
         spawnPoint = transform.position;
 
@@ -189,7 +186,7 @@ public class Player : NetworkBehaviour {
     }
 
     private void Update() {
-
+        //SyncAnimations happens here so it works on clients.
         SyncAnimations();
         HandleMovement();
     }
@@ -203,29 +200,128 @@ public class Player : NetworkBehaviour {
             GetComponent<SpriteRenderer>().flipX = true;
         }
 
-        if (0 <= team  && team <= 3) {
+        if (0 <= team && team <= 3) {
             GetComponent<SpriteRenderer>().color = colors[team];
         }
     }
 
-    private void OnDestroy() {
-        if (myMapObject != null) {
-            Destroy(myMapObject);
-        }
-        if (Camera.main != null) {
-            Camera.main.GetComponent<CameraFollow>().hasTarget = false;
-        }
-    }
-
-
-
 
     void HandleMovement() {
         if (isLocalPlayer) {
-            if(isDead) {
+            if (isDead) {
                 return;
             }
             HandleInput();
+
+            int onWall = StateBasedActions();
+
+            if (knockdown > 0) {
+            }
+            else if (sliding) {
+                SlideState(onGround);
+            }
+            else if (groundPoundWindup > 0) {
+                GroundPoundWindupState();
+            }
+            else if (groundPound) {
+                GroundPoundState();
+            }
+            else if (groundPoundLag > 0) {
+                GroundPoundLagState();
+            }
+            else if (walljump_lock != 0) {
+                WallJumpState();
+            }
+            else if (crouching) {
+                CrouchState();
+            }
+            else {
+                NormalState(onGround, onWall);
+            }
+
+            float moveSpeed = AIR_SPEED;
+            if (onGround) { moveSpeed = WALK_SPEED; }
+            if (crouching) { moveSpeed = CROUCH_SPEED; }
+            if (!sliding && !groundPound && groundPoundWindup < 0 && groundPoundLag < 0) {
+                hsp += moveSpeed * horizontalInput * Time.deltaTime;
+            }
+
+
+            if (onGround && diveHeld && !sliding && groundPoundLag < 0) {
+                crouching = true;
+                if (collider.size != crouchColliderSize) {
+                    collider.size = crouchColliderSize;
+                    collider.offset = crouchColliderOffset;
+                    controller.CalculateRaySpacing();
+                }
+            }
+            else if (!GetComponent<Controller2D>().wallAbove) {
+                crouching = false;
+            }
+
+
+            //apply gravity
+            float gravity = GRAVITY;
+            if (jumpHeld && vsp > 0) { gravity = GRAVITY_HELD; }
+            if (groundPoundWindup < 0) {
+                vsp -= gravity * Time.deltaTime;
+            }
+
+            float vspMaxFinal = VSP_MAX;
+            if (onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall) && vsp <= 0) { vspMaxFinal = VSP_MAX_WALL; }
+            if (groundPound) {
+                vspMaxFinal = VSP_GROUNDPOUND;
+            }
+            float hspMaxFinal = HSP_MAX;
+            if (sliding) { hspMaxFinal = HSP_MAX_SLIDE; }
+            if (crouching) { hspMaxFinal = HSP_MAX_CROUCH; }
+            if (long_jump || diving) { hspMaxFinal = HSP_MAX_LONGJUMP; }
+
+            //apply friction
+            float friction = HSP_FRIC_AIR;
+            if (onGround) { friction = HSP_FRIC_GROUND; }
+            if (sliding) { friction = HSP_FRIC_SLIDE; }
+            if (walljump_lock != 0) { friction = HSP_FRIC_WALLJUMP; }
+
+            hsp = Approach(hsp, 0, friction * Time.deltaTime);
+
+            //clamp to
+            hsp = Clamp(hsp, -hspMaxFinal, hspMaxFinal);
+            vsp = Clamp(vsp, -vspMaxFinal, vspMaxFinal);
+
+            if (diving || long_jump) {
+                if (Math.Sign(hsp) != Math.Sign(walljump_lock)) {
+                    hsp *= -1;
+                }
+            }
+
+            if (spinning > 0) {
+                vsp = 0;
+            }
+
+            controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
+
+            //david animation stuff
+            animator.SetFloat("Player_hsp", hsp);
+            animator.SetFloat("Player_vsp", vsp);
+            animator.SetBool("isSliding", sliding);
+            animator.SetFloat("knockdownTimer", knockdown);
+
+        }
+    }
+    
+
+    void HandleInput() {
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+        jumpHeld = Input.GetButton("Jump");
+        jumpPressed = Input.GetButtonDown("Jump");
+        spinPressed = Input.GetButtonDown("Spin");
+        diveHeld = Input.GetButton("Dive");
+        divePressed = Input.GetButtonDown("Dive");
+    }
+
+    int StateBasedActions() {
             //this needs to run on all client's copy of this object.
             //a command into a ClientRpc method is probably the way to go.
             if (intangibility < 0 && !intangibilityEnded) {
@@ -240,20 +336,19 @@ public class Player : NetworkBehaviour {
             onGround = controller.collisions.below;
             int onWall;
 
-            if(controller.collisions.left) {
+            if (controller.collisions.left) {
                 onWall = -1;
-            } else if (controller.collisions.right) {
+            }
+            else if (controller.collisions.right) {
                 onWall = 1;
-            } else {
+            }
+            else {
                 onWall = 0;
             }
-
 
             if (Math.Sign(onWall) != Math.Sign(horizontalInput) || onGround) {
                 onWall = 0;
             }
-
-
 
             if (onWall != 0 || onGround) {
                 walljump_lock = 0;
@@ -262,12 +357,12 @@ public class Player : NetworkBehaviour {
                 spinning = 0.0f;
             }
 
-            if(diving && onGround) {
+            if (diving && onGround) {
                 diving = false;
                 sliding = true;
             }
 
-            if(diving && onWall != 0) {
+            if (diving && onWall != 0) {
                 diving = false;
             }
 
@@ -282,18 +377,18 @@ public class Player : NetworkBehaviour {
             goombaJumpCoyoteTime -= Time.deltaTime;
 
 
-            if(onGround) {
+            if (onGround) {
                 coyoteTime = COYOTE_TIME;
                 backflip = false;
             }
 
-            if(onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall)) {
+            if (onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall)) {
                 coyoteTime_Wall = COYOTE_TIME;
                 lastWall = onWall;
                 backflip = false;
             }
 
-            if(!onGround && onWall == 0 && jumpPressed) {
+            if (!onGround && onWall == 0 && jumpPressed) {
                 jumpBuffer = COYOTE_TIME;
             }
 
@@ -321,7 +416,7 @@ public class Player : NetworkBehaviour {
                 }
             }
 
-            if(knockdown > 0) {
+            if (knockdown > 0) {
                 horizontalInput = 0;
             }
 
@@ -363,110 +458,7 @@ public class Player : NetworkBehaviour {
                 }
             }
 
-
-
-
-
-            if(knockdown > 0) {
-            } else if (sliding) {
-                SlideState(onGround);
-            } else if (groundPoundWindup > 0) {
-                GroundPoundWindupState();
-            } else if (groundPound) {
-                GroundPoundState();
-            } else if (groundPoundLag > 0) {
-                GroundPoundLagState();
-            } else if (walljump_lock != 0) {
-                WallJumpState();
-            } else if (crouching) {
-                CrouchState();
-            } else {
-            NormalState(onGround, onWall);
-            }
-
-            float moveSpeed = AIR_SPEED;
-            if (onGround) { moveSpeed = WALK_SPEED; }
-            if (crouching) { moveSpeed = CROUCH_SPEED; }
-            if (!sliding && !groundPound && groundPoundWindup < 0 && groundPoundLag < 0) {
-                hsp += moveSpeed * horizontalInput * Time.deltaTime;
-            }
-
-
-            if (onGround && diveHeld && !sliding && groundPoundLag < 0) {
-                crouching = true;
-                if (collider.size != crouchColliderSize) {
-                    collider.size = crouchColliderSize;
-                    collider.offset = crouchColliderOffset;
-                    controller.CalculateRaySpacing();
-                }
-            } else if (!GetComponent<Controller2D>().wallAbove) {
-                crouching = false;
-            }
-
-
-
-
-            //apply gravity
-            float gravity = GRAVITY;
-            if(jumpHeld && vsp > 0) {gravity = GRAVITY_HELD;}
-            if (groundPoundWindup < 0) {
-                vsp -= gravity * Time.deltaTime;
-            }
-
-            float vspMaxFinal = VSP_MAX;
-            if (onWall != 0 && Math.Sign(horizontalInput) == Math.Sign(onWall) && vsp <= 0) { vspMaxFinal = VSP_MAX_WALL; }
-            if(groundPound) {
-                vspMaxFinal = VSP_GROUNDPOUND;
-            }
-            float hspMaxFinal = HSP_MAX;
-            if(sliding) {hspMaxFinal = HSP_MAX_SLIDE; }
-            if (crouching) { hspMaxFinal = HSP_MAX_CROUCH; }
-            if (long_jump || diving) { hspMaxFinal = HSP_MAX_LONGJUMP; }
-
-            //apply friction
-            float friction = HSP_FRIC_AIR;
-            if(onGround) {friction = HSP_FRIC_GROUND;}
-            if(sliding) { friction = HSP_FRIC_SLIDE; }
-            if(walljump_lock != 0) { friction = HSP_FRIC_WALLJUMP; }
-
-            hsp = Approach(hsp, 0, friction * Time.deltaTime);
-
-            //clamp to
-            hsp = Clamp(hsp, -hspMaxFinal , hspMaxFinal);
-            vsp = Clamp(vsp, -vspMaxFinal , vspMaxFinal);
-
-            if(diving || long_jump) {
-                if (Math.Sign(hsp) != Math.Sign(walljump_lock)) {
-                    hsp *= -1;
-                }
-            }
-
-            if(spinning > 0) {
-                vsp = 0;
-            }
-
-
-            controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
-
-
-            //david animation stuff
-            animator.SetFloat("Player_hsp", hsp);
-            animator.SetFloat("Player_vsp", vsp);
-            animator.SetBool("isSliding", sliding);
-            animator.SetFloat("knockdownTimer", knockdown);
-
-
-        }
-    }
-
-    void HandleInput() {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-        jumpHeld = Input.GetButton("Jump");
-        jumpPressed = Input.GetButtonDown("Jump");
-        spinPressed = Input.GetButtonDown("Spin");
-        diveHeld = Input.GetButton("Dive");
-        divePressed = Input.GetButtonDown("Dive");
+        return onWall;
     }
 
 
@@ -478,10 +470,6 @@ public class Player : NetworkBehaviour {
         if (horizontalInput != 0 && onGround) {
             UpdateFacing(Math.Sign(horizontalInput));
         }
-
-
-
-
         //ground jump
         if (jumpPressed && coyoteTime > 0) {
             vsp = JUMP_HEIGHT;
@@ -569,11 +557,9 @@ public class Player : NetworkBehaviour {
     void SlideState(bool onGround) {
         if(coyoteTime <= 0.0f || Math.Abs(hsp) < 0.0015f ) {
             sliding = false;
-
             if(GetComponent<Controller2D>().wallAbove) {
                 crouching = true;
             }
-
             return;
         }
         //long jump
@@ -589,17 +575,22 @@ public class Player : NetworkBehaviour {
         if (hsp != 0) {
             UpdateFacing(Math.Sign(hsp));
         }
-
         if (jumpPressed && !GetComponent<Controller2D>().wallAbove ) {
             backflip = true;
             hsp = -facing * BACKFLIP_LENGTH;
             vsp = BACKFLIP_HEIGHT;
             walljump_lock = Math.Sign(hsp);
         }
-
-
     }
 
+    private void OnDestroy() {
+        if (myMapObject != null) {
+            Destroy(myMapObject);
+        }
+        if (Camera.main != null) {
+            Camera.main.GetComponent<CameraFollow>().hasTarget = false;
+        }
+    }
 
     public void Death() {
         GetComponent<SpriteRenderer>().enabled = false;
@@ -617,7 +608,6 @@ public class Player : NetworkBehaviour {
         GetComponent<SpriteRenderer>().enabled = true;
         //GetComponent<Rigidbody2D>().simulated = true;
     }
-
 
     [ClientRpc]
     public void RpcKnockdown() {
@@ -703,10 +693,6 @@ public class Player : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcSetTeams(int toSet, List<Color> colors) {
-
-        Debug.Log("toSet is: " + toSet);
-
-
         if (toSet < colors.Count && toSet > -1) {
             GetComponent<SpriteRenderer>().color = colors[toSet];
             myMapObject.GetComponent<Image>().color = colors[toSet];
@@ -714,13 +700,10 @@ public class Player : NetworkBehaviour {
         }
     }
 
-
-
     [ClientRpc]
     void RpcSetStars(int newStars) {
         stars = newStars;
     }
-
 
 
     [Command(requiresAuthority = false)]
@@ -735,10 +718,6 @@ public class Player : NetworkBehaviour {
         intangibility = -1;
         knockdown = -1;
     }
-
-
-
-
 
     public override void OnStartClient() {
         if (isServer) {
@@ -758,6 +737,7 @@ public class Player : NetworkBehaviour {
         StartCoroutine(WaitAndSetUI(time));
     }
 
+    //attaches player objects to their appropriate star counters
     IEnumerator WaitAndSetUI(float seconds) {
         yield return new WaitForSeconds(seconds);
         List<GameObject> childList = GameObject.Find("Canvas").GetComponent<TextChildArray>().myChildren;
@@ -766,7 +746,6 @@ public class Player : NetworkBehaviour {
             childList[i].GetComponent<StarUI>().attachedPlayer = playerArray[i].GetComponent<Player>();
         }
     }
-
 
     public static float Approach(float argument0, float argument1, float argument2) {
         if (argument0 < argument1) {
@@ -789,8 +768,5 @@ public class Player : NetworkBehaviour {
         }
         return value;
     }
-
-
-
 
 }
