@@ -17,6 +17,8 @@ public class Player : NetworkBehaviour {
     bool diveHeld;
     bool spinPressed;
 
+    public bool pauseInputs = false;
+
     private System.Random rand;
 
     public int stars;
@@ -312,13 +314,23 @@ public class Player : NetworkBehaviour {
     
 
     void HandleInput() {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-        jumpHeld = Input.GetButton("Jump");
-        jumpPressed = Input.GetButtonDown("Jump");
-        spinPressed = Input.GetButtonDown("Spin");
-        diveHeld = Input.GetButton("Dive");
-        divePressed = Input.GetButtonDown("Dive");
+        if(pauseInputs) {
+            horizontalInput = 0;
+            verticalInput = 0;
+            jumpHeld = false;
+            jumpPressed = false;
+            spinPressed = false;
+            diveHeld = false;
+            divePressed = false;
+        } else {
+            horizontalInput = Input.GetAxis("Horizontal");
+            verticalInput = Input.GetAxis("Vertical");
+            jumpHeld = Input.GetButton("Jump");
+            jumpPressed = Input.GetButtonDown("Jump");
+            spinPressed = Input.GetButtonDown("Spin");
+            diveHeld = Input.GetButton("Dive");
+            divePressed = Input.GetButtonDown("Dive");
+        }
     }
 
     int StateBasedActions() {

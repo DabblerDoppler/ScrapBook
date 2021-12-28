@@ -13,6 +13,8 @@ TagManager:
   - FlySpawn
   - Flying Enemy
   - Collider
+  - InGameCanvas
+  - StarCounter
   layers:
   - Default
   - TransparentFX

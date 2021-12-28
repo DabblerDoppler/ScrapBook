@@ -72,7 +72,7 @@ namespace Mirror
         /// <summary>The maximum number of concurrent network connections to support.</summary>
         [FormerlySerializedAs("m_MaxConnections")]
         [Tooltip("Maximum number of concurrent connections.")]
-        public int maxConnections = 100;
+        public int maxConnections = 8;
 
         // Deprecated 2021-05-10
         [Obsolete("Transport is responsible for timeouts.")]
@@ -325,8 +325,7 @@ namespace Mirror
         /// <summary>Starts the client, connects it to the server with networkAddress.</summary>
         public void StartClient()
         {
-            if (NetworkClient.active)
-            {
+            if (NetworkClient.active) {
                 Debug.LogWarning("Client already started.");
                 return;
             }
@@ -338,8 +337,7 @@ namespace Mirror
             if (runInBackground)
                 Application.runInBackground = true;
 
-            if (authenticator != null)
-            {
+            if (authenticator != null) {
                 authenticator.OnStartClient();
                 authenticator.OnClientAuthenticated.AddListener(OnClientAuthenticated);
             }

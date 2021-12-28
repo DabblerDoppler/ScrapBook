@@ -26,37 +26,29 @@ namespace Mirror
             manager = GetComponent<NetworkManager>();
         }
 
-        void OnGUI()
-        {
+        void OnGUI() {
 #pragma warning disable 618
             if (!showGUI) return;
 #pragma warning restore 618
 
             GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, 215, 9999));
-            if (!NetworkClient.isConnected && !NetworkServer.active)
-            {
+            if (!NetworkClient.isConnected && !NetworkServer.active) {
                 StartButtons();
-            }
-            else
-            {
+            } else {
                 StatusLabels();
             }
 
             // client ready
-            if (NetworkClient.isConnected && !NetworkClient.ready)
-            {
-                if (GUILayout.Button("Client Ready"))
-                {
+            if (NetworkClient.isConnected && !NetworkClient.ready) {
+                if (GUILayout.Button("Client Ready")) {
                     NetworkClient.Ready();
-                    if (NetworkClient.localPlayer == null)
-                    {
+                    if (NetworkClient.localPlayer == null) {
                         NetworkClient.AddPlayer();
                     }
                 }
             }
 
             StopButtons();
-
             GUILayout.EndArea();
         }
 
@@ -75,26 +67,21 @@ namespace Mirror
 
                 // Client + IP
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Client"))
-                {
+                if (GUILayout.Button("Client")) {
                     manager.StartClient();
                 }
+
                 manager.networkAddress = GUILayout.TextField(manager.networkAddress);
                 GUILayout.EndHorizontal();
 
                 // Server Only
-                if (Application.platform == RuntimePlatform.WebGLPlayer)
-                {
+                if (Application.platform == RuntimePlatform.WebGLPlayer) {
                     // cant be a server in webgl build
                     GUILayout.Box("(  WebGL cannot be server  )");
-                }
-                else
-                {
+                } else {
                     if (GUILayout.Button("Server Only")) manager.StartServer();
                 }
-            }
-            else
-            {
+            } else {
                 // Connecting
                 GUILayout.Label("Connecting to " + manager.networkAddress + "..");
                 if (GUILayout.Button("Cancel Connection Attempt"))
@@ -104,8 +91,7 @@ namespace Mirror
             }
         }
 
-        void StatusLabels()
-        {
+        void StatusLabels() {
             // host mode
             // display separately because this always confused people:
             //   Server: ...

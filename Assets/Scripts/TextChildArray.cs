@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,7 @@ public class TextChildArray : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         myChildren = new List<GameObject>();
-        foreach(Transform child in transform) {
-            myChildren.Add(child.gameObject);
-        }
+        myChildren = Enumerable.ToList(GameObject.FindGameObjectsWithTag("StarCounter"));
     }
 
 

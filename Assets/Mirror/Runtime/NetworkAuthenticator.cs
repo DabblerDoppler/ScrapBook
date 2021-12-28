@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Mirror
 {
@@ -33,9 +34,9 @@ namespace Mirror
             OnServerAuthenticated.Invoke(conn);
         }
 
-        protected void ServerReject(NetworkConnection conn)
-        {
+        protected void ServerReject(NetworkConnection conn) {
             conn.Disconnect();
+            SceneManager.LoadScene("Level1", LoadSceneMode.Single);
         }
 
         /// <summary>Called when client starts, used to register message handlers if needed.</summary>

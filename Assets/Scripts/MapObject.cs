@@ -14,7 +14,7 @@ public class MapObject : MonoBehaviour {
 
 
     private void Awake() {
-        transform.parent = GameObject.Find("Canvas").transform;
+        transform.parent = GameObject.Find("InGame").transform;
     }
 
     // Start is called before the first frame update
