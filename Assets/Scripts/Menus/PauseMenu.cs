@@ -8,17 +8,23 @@ public class PauseMenu : NetworkBehaviour {
 
     public GameObject inGameCanvas;
     public GameObject mainMenuCanvas;
-    public Scene mainMenu;
     
     void Start() {
         gameObject.SetActive(false);
     }
 
+    public void Resume() {
+        NetworkClient.localPlayer.GetComponent<Player>().pauseInputs = false;
+    }
+
+
     public void Quit() {
         if(NetworkClient.isConnected) {
             NetworkClient.Disconnect();
             NetworkClient.Shutdown();
-        } else if (NetworkServer.active) {
+        } 
+        
+        if (NetworkServer.active) {
             NetworkServer.Shutdown();
         }
 

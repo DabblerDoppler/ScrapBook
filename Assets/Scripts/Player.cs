@@ -694,11 +694,27 @@ public class Player : NetworkBehaviour {
         facing = newFacing;
     }
 
-
+    public void SetTeam(int toSet) {
+                //set team with appropraite networking
+        if (isLocalPlayer) {
+            if (isServer) {
+                RpcSetTeams(toSet, colors);
+            }
+            else {
+                CmdSetTeam(colors, toSet);
+            }
+        }
+    }
 
     [Command(requiresAuthority = false)]
     public void CmdSetTeams(List<Color> colors) {
         int toSet = (GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4);
+        GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
+        RpcSetTeams(toSet, colors);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetTeam(List<Color> colors, int toSet) {
         GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
         RpcSetTeams(toSet, colors);
     }
