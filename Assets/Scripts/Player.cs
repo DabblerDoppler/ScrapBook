@@ -291,11 +291,7 @@ public class Player : NetworkBehaviour {
             hsp = Clamp(hsp, -hspMaxFinal, hspMaxFinal);
             vsp = Clamp(vsp, -vspMaxFinal, vspMaxFinal);
 
-            if (diving || long_jump) {
-                if (Math.Sign(hsp) != Math.Sign(walljump_lock)) {
-                    hsp *= -1;
-                }
-            }
+
 
             if (spinning > 0) {
                 vsp = 0;
@@ -409,22 +405,33 @@ public class Player : NetworkBehaviour {
             }
 
 
+            //testing
             if (walljump_lock != 0) {
-                if (vsp > 0) {
+                if (vsp >= 0) {
                     if (Math.Sign(horizontalInput) == Math.Sign(walljump_lock)) {
-                        horizontalInput *= 0.2f;
+                        horizontalInput *= 0.3f;
                     }
                     else {
-                        horizontalInput *= 0.05f;
+                        horizontalInput *= 0.15f;
                     }
                 }
-                else {
+                else  {
                     if (Math.Sign(horizontalInput) == Math.Sign(walljump_lock)) {
-                        horizontalInput *= 0.4f;
+                        horizontalInput *= 0.3f;
                     }
                     else {
-                        horizontalInput *= 0.2f;
+                        horizontalInput *= 0.15f;
                     }
+                }
+            }
+
+            if (backflip) {
+                horizontalInput *= 0.6f;
+            }
+
+            if (diving || long_jump) {
+                if (Math.Sign(hsp) != Math.Sign(walljump_lock) && Math.Sign(walljump_lock) != Math.Sign(horizontalInput) ) {
+                    horizontalInput *= 0.6f;
                 }
             }
 

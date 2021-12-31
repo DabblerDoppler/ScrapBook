@@ -11,8 +11,13 @@ public class HostScript : NetworkBehaviour {
 
     //this is not an ideal implementation, but since the custom host function needs to get
     //objects in the scene, we load the scene, wait a second, then host.
-    public void Host() {
+    public void HostLevel1() {
         SceneManager.LoadSceneAsync("Level1", LoadSceneMode.Single);
+        StartCoroutine(HostAfterSecond());
+    }
+
+    public void HostLevel2() {
+        SceneManager.LoadSceneAsync("Level2", LoadSceneMode.Single);
         StartCoroutine(HostAfterSecond());
     }
 
