@@ -7,6 +7,10 @@ using UnityEngine.SceneManagement;
 public class HostScript : NetworkBehaviour {
 
     public NetworkManager networkManager;
+
+    public GameObject lobbyMenu;
+    public GameObject mainMenu;
+
     public Canvas canvas;
 
     //this is not an ideal implementation, but since the custom host function needs to get
@@ -19,6 +23,13 @@ public class HostScript : NetworkBehaviour {
     public void HostLevel2() {
         SceneManager.LoadSceneAsync("Level2", LoadSceneMode.Single);
         StartCoroutine(HostAfterSecond());
+    }
+
+    public void StopHost() {
+        networkManager.StopHost();
+        mainMenu.SetActive(true);
+        lobbyMenu.SetActive(false);
+
     }
 
     public IEnumerator HostAfterSecond() {

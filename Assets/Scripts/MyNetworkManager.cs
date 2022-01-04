@@ -14,11 +14,63 @@ public class MyNetworkManager : NetworkManager {
 
     public int teams = 1;
 
+    [SerializeField] private Scene menuScene;
+
+    [Header("Room")]
+    [SerializeField] private NetworkRoomPlayerLobby roomPlayerPrefab;
+
+    public static event Action OnClientConnected;
+    public static event Action OnClientDisconnected;
+
+
+
+    public override void OnClientConnect(NetworkConnection conn) {
+        base.OnClientConnect(conn);
+        OnClientConnected.Invoke();
+    }
+
+    
+    public override void OnClientDisconnect(NetworkConnection conn) {
+        base.OnClientDisconnect(conn);
+        OnClientDisconnected.Invoke();
+    }
+
+    public override void OnServerConnect(NetworkConnection conn) {
+        base.OnServerConnect(conn);
+
+        if(numPlayers >= maxConnections) {
+            conn.Disconnect();
+            return;
+        } 
+
+/*
+        //this prevents people from joining mid-match 
+        if(SceneManager.GetActiveScene() != menuScene) {
+            conn.Disconnect();
+            return;
+        }
+        
+    */
+    }
+    
+
+    public override void OnServerAddPlayer(NetworkConnection conn) {
+        base.OnServerAddPlayer(conn);
+
+        if(SceneManager.GetActiveScene() == menuScene) {
+            NetworkRoomPlayerLobby roomPlayerInstance = Instantiate(roomPlayerPrefab);
+            NetworkServer.AddPlayerForConnection(conn, roomPlayerInstance.gameObject);
+        }
+
+    }
+
 
     public override void OnStartServer() {
 
         base.OnStartServer();
 
+        //this stuff should happen when we move from lobby to game
+        /*
         GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("Respawn");
 
         foreach (GameObject spawn in playerSpawns) {
@@ -62,12 +114,13 @@ public class MyNetworkManager : NetworkManager {
             spawn.GetComponent<EnemySpawner>().endPoint = new Vector3(spawn.GetComponent<EnemySpawner>().endPoint.x, spawn.GetComponent<EnemySpawner>().endPoint.y, 0);
             NetworkServer.Spawn(spawn);
         }
-
+        */
 
 
     }
 
-
+    //this stuff should happen when we move from lobby to game
+    /*
     public override void OnServerAddPlayer(NetworkConnection conn) {
         Transform startPos = GetStartPosition();
         GameObject player = startPos != null
@@ -86,7 +139,7 @@ public class MyNetworkManager : NetworkManager {
         base.OnServerConnect(conn);
         GameObject.Find("WinScreen").GetComponent<Text>().text = "";
     }
-
+    */
 
     
 }

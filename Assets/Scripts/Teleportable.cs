@@ -11,6 +11,7 @@ public class Teleportable : MonoBehaviour {
     public LayerMask teleporterCollisionMask;
     const float SKIN_WIDTH = 0.0125f;
     RaycastOrigins raycastOrigins;
+    
     public Collider2D collider;
 
     private void Awake() {

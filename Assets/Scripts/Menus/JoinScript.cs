@@ -16,19 +16,7 @@ public class JoinScript : NetworkBehaviour {
 
 
     public void Join() {
-        SceneManager.LoadScene("Level1", LoadSceneMode.Single);
         networkManager.StartClient();
-        StartCoroutine(JoinAfterSecond());
     }
-
-    public IEnumerator JoinAfterSecond() {
-        yield return new WaitForSeconds(1.0f);
-        if(!NetworkClient.isConnected) {
-            networkManager.StopClient();
-            SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
-        } else {
-        canvas.gameObject.SetActive(false);
-        }
-    } 
 
 }

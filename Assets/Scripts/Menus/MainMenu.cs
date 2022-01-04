@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class MainMenu : MonoBehaviour
-{
+public class MainMenu : MonoBehaviour {
+
+    public GameObject lobby;
+    public GameObject mainMenu;
+    public GameObject joinMenu;
+
+
+    public NetworkManager networkManager;
+
     public void Host() {
-
-    }
-
-    public void Join() {
-
-    }
-
-    public void Settings() {
-
+        lobby.SetActive(true);
+        networkManager.StartHost();
+        joinMenu.SetActive(false);
+        mainMenu.SetActive(false);
     }
 
     public void Quit() {
