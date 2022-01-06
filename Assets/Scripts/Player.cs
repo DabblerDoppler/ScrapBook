@@ -75,6 +75,19 @@ public class Player : NetworkBehaviour {
 
     List<Color> colors;
 
+    [SyncVar]
+    public string displayName;
+
+    private MyNetworkManager room;
+    private MyNetworkManager Room {
+        get {
+            if(room != null) {return room;}
+            return room = NetworkManager.singleton as MyNetworkManager;
+        }
+    }
+
+    public Animator animator;
+
     const float HSP_FRIC_GROUND = 0.00015f * 500;
     const float HSP_FRIC_SLIDE = 0.00009f * 500;
     const float HSP_FRIC_AIR = 0.000035f * 500;
@@ -118,14 +131,34 @@ public class Player : NetworkBehaviour {
     const int LAYER_FLOOR = 6;
     const int LAYER_WALL = 7;
 
-    public Animator animator;
+    public override void OnStartClient() {
+        Room.GamePlayers.Add(this);
+
+        if (isServer) {
+            RpcSetUI(0.2f);
+        } else {
+            CmdSetUI(0.2f);
+        }
+    }
+
+    public override void OnStopClient() {
+        Room.GamePlayers.Remove(this);
+        
+       if (isServer) {
+            RpcSetUI(0.0f);
+        } else {
+            CmdSetUI(0.0f);
+        }
+    }
+
+    [Server]
+    public void SetDisplayName(string displayName) {
+        this.displayName = displayName;
+    }
 
     private void Awake() {
         myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
         myMapObject.GetComponent<MapObject>().associatedTransform = transform;
-
-
-
     }
 
     private void Start() {
@@ -184,7 +217,6 @@ public class Player : NetworkBehaviour {
         groundPoundLag = 0.0f;
         intangibility = 0f;
         knockdown = 0f;
-
     }
 
     private void Update() {
@@ -754,13 +786,6 @@ public class Player : NetworkBehaviour {
         knockdown = -1;
     }
 
-    public override void OnStartClient() {
-        if (isServer) {
-            RpcSetUI(0.2f);
-        } else {
-            CmdSetUI(0.2f);
-        }
-    }
 
     [Command(requiresAuthority = false)]
     void CmdSetUI(float time) {

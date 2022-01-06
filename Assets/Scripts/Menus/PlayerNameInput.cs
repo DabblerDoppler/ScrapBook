@@ -10,7 +10,8 @@ public class PlayerNameInput : MonoBehaviour {
 [SerializeField] private Button continueButton = null;
 
 public static string DisplayName;
-private const string PLAYER_PREFS_NAME_KEY = "PlayerName";
+public const string PLAYER_PREFS_NAME_KEY = "PlayerName";
+private const string DEFAULT_NAME = "Gamer";
 
 
     // Start is called before the first frame update
@@ -19,7 +20,11 @@ private const string PLAYER_PREFS_NAME_KEY = "PlayerName";
     }
 
     private void SetUpInputField() {
-        if(!PlayerPrefs.HasKey(PLAYER_PREFS_NAME_KEY)) { return; }
+        if(!PlayerPrefs.HasKey(PLAYER_PREFS_NAME_KEY)) { 
+
+            PlayerPrefs.SetString(PLAYER_PREFS_NAME_KEY, DEFAULT_NAME);
+
+        }
 
         string defaultName = PlayerPrefs.GetString(PLAYER_PREFS_NAME_KEY);
 
@@ -30,6 +35,11 @@ private const string PLAYER_PREFS_NAME_KEY = "PlayerName";
     }
 
     public void SetPlayerName(string name) {
+        if(name.Length > 11 || name.Length == 0) {
+            continueButton.interactable = false;
+        } else {
+            continueButton.interactable = true;
+        }
     }
 
     public void SavePlayerName() {

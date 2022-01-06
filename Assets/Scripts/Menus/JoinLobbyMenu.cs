@@ -18,12 +18,12 @@ public class JoinLobbyMenu : MonoBehaviour {
 
     private void OnEnable() {
         MyNetworkManager.OnClientConnected += HandleClientConnected;
-        MyNetworkManager.OnClientDisconnected += HandleClientDisconnected;
+        MyNetworkManager.ClientDisconnected += HandleClientDisconnected;
     }
 
     private void OnDisable() {
         MyNetworkManager.OnClientConnected -= HandleClientDisconnected;
-        MyNetworkManager.OnClientDisconnected -= HandleClientDisconnected;
+        MyNetworkManager.ClientDisconnected -= HandleClientDisconnected;
     }
 
     public void JoinLobby() {
@@ -43,6 +43,13 @@ public class JoinLobbyMenu : MonoBehaviour {
         joinButton.interactable = true;
 
         lobbyMenu.SetActive(true);
+
+        if(NetworkServer.active) {
+            lobbyMenu.GetComponent<HostScript>().SetServer();
+        } else {
+        lobbyMenu.GetComponent<HostScript>().SetClient();
+        }
+
         mainMenu.SetActive(false);
         joinScreen.SetActive(false);
     }
