@@ -59,7 +59,11 @@ public class Player : NetworkBehaviour {
     private GameObject myMapObject;
 
     //physics
+
+    //syncVar's not working??
+    //syncvars only work from server>client, so these need to be handled with commands
     public float hsp;
+
     public float vsp;
 
     //yo, what do you think is behind that door marked pirate? Do you think a pirate lives in there?
@@ -329,6 +333,9 @@ public class Player : NetworkBehaviour {
                 vsp = 0;
             }
 
+
+
+            //actually move
             controller.Move(new Vector3(hsp, vsp) * Time.deltaTime * 600);
 
             //david animation stuff
@@ -437,7 +444,6 @@ public class Player : NetworkBehaviour {
             }
 
 
-            //testing
             if (walljump_lock != 0) {
                 if (vsp >= 0) {
                     if (Math.Sign(horizontalInput) == Math.Sign(walljump_lock)) {
@@ -473,10 +479,14 @@ public class Player : NetworkBehaviour {
 
             if (controller.collisions.above || controller.collisions.below) { vsp = 0; }
             if (controller.collisions.left || controller.collisions.right) { hsp = 0; }
+            
 
 
             //if (controller.playerCollisions.above || controller.playerCollisions.below) { vsp = 0; }
+            
+            //testing
             //if ((controller.playerCollisions.left || controller.playerCollisions.right) && !controller.playerCollisions.below) { hsp = 0; }
+            if (controller.playerCollisions.left || controller.playerCollisions.right) { hsp = 0; }
 
             //goomba stomp
             if (controller.playerCollisions.below || controller.enemyCollisions.below) {

@@ -21,6 +21,8 @@ public class Controller2D : RaycastController {
     public CollisionInfo enemyCollisions;
     public Boolean wallAbove;
 
+    public float velocityX;
+
     const float WALL_ABOVE_RAY_LENGTH = 0.5f;
 
 
@@ -42,6 +44,16 @@ public class Controller2D : RaycastController {
         playerCollisions.Reset();
         enemyCollisions.Reset();
 
+
+        //update velocity so other players can see it
+        velocityX = velocity.x;
+
+        if(isServer) {
+            RpcSetVelocity(velocity.x);
+        } else {
+            CmdSetVelocity(velocity.x);
+        }
+
         HorizontalCollisions(ref velocity);
         //HorizontalCollisions_Players(ref velocity);
         //HorizontalCollisions_Spikes(ref velocity);
@@ -60,7 +72,7 @@ public class Controller2D : RaycastController {
         }
 
         VerticalCollisions_Players(ref velocity);
-        //HorizontalCollisions_Players(ref velocity);
+        HorizontalCollisions_Players(ref velocity);
         HorizontalCollisions_Enemies(ref velocity);
 
         if (knockdownPlayer != null && knockdownPlayer.team != GetComponent<Player>().team) {
@@ -284,24 +296,38 @@ public class Controller2D : RaycastController {
         }
     }
 
-    /*
+    //testing
     void HorizontalCollisions_Players(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
         for (int i = 0; i < horizontalRayCount; i++) {
             Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
             rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength * 2.0f, playerCollisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, playerCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
             if (hit) {
-                velocity.x += (hit.distance - SKIN_WIDTH) * directionX;
-                rayLength = hit.distance;
+                //float otherHsp = hit.collider.GetComponent<Controller2D>().velocityX;
+                float otherHsp = 0.0f;
+                velocity.x += ((hit.distance - (1.5f * SKIN_WIDTH) )  * directionX) - (otherHsp);
+                if(Math.Sign(hit.distance) == Math.Sign(otherHsp)){
+                    rayLength = hit.distance + otherHsp;
+                } else {
+                    rayLength = hit.distance - otherHsp;
+                }
                 playerCollisions.left = directionX == -1;
                 playerCollisions.right = directionX == 1;
+
+                //knockback other
+                if(GetComponent<Player>().sliding || GetComponent<Player>().long_jump) {
+                    if(isServer) {
+                        RpcKnockbackPlayer(hit.collider.GetComponent<Player>(), directionX);
+                    } else {
+                        CmdKnockbackPlayer(hit.collider.GetComponent<Player>(), directionX);
+                    }
+                }
             }
         }
     }
-    */
 
     void HorizontalCollisions_Enemies(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
@@ -374,6 +400,16 @@ public class Controller2D : RaycastController {
         player.RpcKnockdown3();
     }
 
+    //WIP
+    [Command(requiresAuthority = false)]
+    public void CmdKnockbackPlayer(Player player, int direction) {
+
+    }
+
+    [ClientRpc]
+    public void RpcKnockbackPlayer(Player player, int direction) {
+
+    }
 
     [Command(requiresAuthority = false)]
     public void CmdKillEnemy(GameObject enemy) {
@@ -385,4 +421,16 @@ public class Controller2D : RaycastController {
         Debug.Log("Server Destroying: " + enemy);
         Destroy(enemy);
     }
+
+    [Command(requiresAuthority =false)]
+    public void CmdSetVelocity(float velocity) {
+        RpcSetVelocity(velocity);
+    }
+
+    [ClientRpc]
+    public void RpcSetVelocity(float velocity) {
+        velocityX = velocity;
+    }
+
+
 }
