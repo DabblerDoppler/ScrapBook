@@ -46,17 +46,20 @@ public class HostScript : MonoBehaviour {
 
     }
 
+
+    /*
     public IEnumerator HostAfterSecond() {
         yield return new WaitForSeconds(0.25f);
         networkManager.StartHost();
         canvas.gameObject.SetActive(false);
     }
+    */
 
-    //[Command(requiresAuthority = false)]
     public void StartGame() {
         Debug.Log("Game Starting...");
         GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().StartGame();
         mainMenuCanvas.SetActive(false);
+        NetworkClient.localPlayer.gameObject.GetComponent<NetworkRoomPlayerLobby>().RpcDisableCanvas(mainMenuCanvas);
     }
 
 }

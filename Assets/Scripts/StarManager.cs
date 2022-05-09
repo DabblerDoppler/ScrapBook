@@ -24,24 +24,27 @@ public class StarManager : NetworkBehaviour {
             }
         }
         GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
+        GameObject associatedSpawn = starList[rnd.Next(0, starList.Count)];
+        currentStar.transform.position = associatedSpawn.GetComponent<Transform>().position;
+        currentStar.transform.SetParent(associatedSpawn.transform);
         NetworkServer.Spawn(currentStar);
-        currentStar.transform.position = starList[rnd.Next(0, starList.Count)].GetComponent<Transform>().position;
     }
 
     public IEnumerator SpawnAfterSeconds(Vector3 position) {
-        yield return new WaitForSeconds(UnityEngine.Random.Range(1.0f, 4.0f));
+        yield return new WaitForSeconds(UnityEngine.Random.Range(0.5f, 2.0f));
         CmdPickNewStar(position);
     }
 
 
     [Command(requiresAuthority = false)]
     void CmdPickNewStar(Vector3 position) {
-        Vector3 temp = starList[rnd.Next(0, starList.Count)].transform.position;
-        while (position == temp) {
-            temp = starList[rnd.Next(0, starList.Count)].transform.position;
+        Transform temp = starList[rnd.Next(0, starList.Count)].transform;
+        while (position == temp.position) {
+            temp = starList[rnd.Next(0, starList.Count)].transform;
         }
         GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
-        currentStar.transform.position = temp;
+        currentStar.transform.position = temp.position;
+        currentStar.transform.SetParent(temp);
         NetworkServer.Spawn(currentStar);
     }
 

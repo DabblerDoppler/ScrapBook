@@ -925,6 +925,8 @@ namespace Mirror
             NetworkServer.isLoadingScene = false;
             NetworkClient.isLoadingScene = false;
 
+            
+
             // host mode?
             if (mode == NetworkManagerMode.Host)
             {
@@ -1015,6 +1017,11 @@ namespace Mirror
             // debug message is very important. if we ever break anything then
             // it's very obvious to notice.
             Debug.Log("Finished loading scene in client-only mode.");
+
+            if(SceneManager.GetActiveScene().name != "MainMenu") {
+                //GameObject.Find("MainMenuCanvas").SetActive(false);
+                //GameObject.Find("LobbyPlayer").SetActive(false);
+            }
 
             if (clientReadyConnection != null)
             {

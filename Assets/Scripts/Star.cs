@@ -33,18 +33,42 @@ public class Star : NetworkBehaviour {
     //When called (from a player), send a command to the server.
     public void playerTouch() {
         if (isServer) {
-            GameObject.Find("StarManager").GetComponent<StarManager>().StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(transform.position));
+            //make cage
+            Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
+            MakeCage(cage);
             DestroySelf();
         } else {
+            //make cage
+            CmdMakeCage();
             CmdDestroySelf();
             Destroy(gameObject);
         }
     }
 
-    [Command(requiresAuthority =false)]
+    [Command(requiresAuthority = false)]
     public void CmdDestroySelf() {
-        GameObject.Find("StarManager").GetComponent<StarManager>().StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(transform.position));
         DestroySelf();
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdMakeCage() {
+        /*
+        Debug.Log("Making Cage");
+        Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
+        cage.timeRemaining = cage.timeMaximum;
+        cage.starPosition = transform;
+        cage.hasDisappeared = false;
+        */
+        Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
+        MakeCage(cage);
+    }
+
+    [ClientRpc]
+    private void MakeCage(Cage cage) {
+        Debug.Log("Making Cage");
+        cage.timeRemaining = cage.timeMaximum;
+        cage.starPosition = transform.position;
+        cage.hasDisappeared = false;
     }
 
 

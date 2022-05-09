@@ -318,11 +318,11 @@ public class Controller2D : RaycastController {
                 playerCollisions.right = directionX == 1;
 
                 //knockback other
-                if(GetComponent<Player>().sliding || GetComponent<Player>().long_jump) {
+                if(GetComponent<Player>().diving || GetComponent<Player>().long_jump) {
                     if(isServer) {
-                        RpcKnockbackPlayer(hit.collider.GetComponent<Player>(), directionX);
+                        RpcKnockbackPlayer(hit.collider.GetComponent<Player>(), Math.Sign(directionX));
                     } else {
-                        CmdKnockbackPlayer(hit.collider.GetComponent<Player>(), directionX);
+                        CmdKnockbackPlayer(hit.collider.GetComponent<Player>(), Math.Sign(directionX));
                     }
                 }
             }

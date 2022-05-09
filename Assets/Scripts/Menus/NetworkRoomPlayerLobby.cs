@@ -105,6 +105,11 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
         isReady = !isReady;
         //Room.NotifyPlayersOfReadyState();
     }
+
+    [ClientRpc]
+    public void RpcDisableCanvas(GameObject myCanvas) {
+        myCanvas.SetActive(false);
+    }
     
 
 }

@@ -73,9 +73,7 @@ public class MyNetworkManager : NetworkManager {
 
 
     public override void OnStartServer() {
-
         base.OnStartServer();
-
     }
 
 
@@ -145,11 +143,16 @@ public class MyNetworkManager : NetworkManager {
         ServerChangeScene(levels[levelSelect.value]);
     }
 
+
     //something isn't working here
     public override void ServerChangeScene(string newSceneName) {
+
+        //both of these are probably wrong, base.ServerChangeScene likely has methods that happen asynchronously that I should be 
+        //individually overriding.
         base.ServerChangeScene(newSceneName);
 
         Debug.Log("Calling spawn after load");
+        
         StartCoroutine(SpawnAfterLoad());
     }
 
