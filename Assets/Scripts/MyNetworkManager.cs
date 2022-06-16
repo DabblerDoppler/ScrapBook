@@ -12,6 +12,10 @@ public class MyNetworkManager : NetworkManager {
     GameObject starManager;
     GameObject spawn;
 
+    public static event Action OnClientConnected;
+    public static event Action OnClientDisconnected;
+    public static event Action<NetworkConnection> OnServerReadied;
+
     public int teams = 1;
 
     [SerializeField] private int minPlayers = 1;
@@ -27,9 +31,10 @@ public class MyNetworkManager : NetworkManager {
     [SerializeField] private GameObject mainMenuCanvas;
 
     [Header("Game")]
-    [SerializeField] private Player gamePlayerPrefab;
+    [SerializeField] private GameObject gamePlayerPrefab;
+    [SerializeField] private GameObject spawnSystem;
 
-    public static event Action OnClientConnected = delegate{ };
+    public static event Action ClientConnected = delegate{ };
 
     public static event Action ClientDisconnected = delegate{ };
 
@@ -43,7 +48,12 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnClientConnect(NetworkConnection conn) {
         base.OnClientConnect(conn);
-        OnClientConnected.Invoke();
+
+        if(SceneManager.GetActiveScene().name == "MainMenu") {
+            NetworkClient.AddPlayer();
+        }
+
+        ClientConnected.Invoke();
     }
 
     public override void OnClientDisconnect(NetworkConnection conn) {
@@ -93,26 +103,10 @@ public class MyNetworkManager : NetworkManager {
         }
 
     }
-            //this stuff should happen when we move from lobby to game
-    /*
-        Transform startPos = GetStartPosition();
-        GameObject player = startPos != null
-            ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
-            : Instantiate(playerPrefab);
 
-        // instantiating a "Player" prefab gives it the name "Player(clone)"
-        // => appending the connectionId is WAY more useful for debugging!
-        player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
-        NetworkServer.AddPlayerForConnection(conn, player);
+    public void StartGame() {
+        ServerChangeScene(levels[levelSelect.value]);
     }
-
-    
-
-    public override void OnServerConnect(NetworkConnection conn) {
-        base.OnServerConnect(conn);
-        GameObject.Find("WinScreen").GetComponent<Text>().text = "";
-    }
-    */
 
     public override void OnStopServer() {
         RoomPlayers.Clear();
@@ -137,88 +131,73 @@ public class MyNetworkManager : NetworkManager {
             player.HandleReadyToStart(true);
         }
     }
+    
 
-
-    public void StartGame() {
-        ServerChangeScene(levels[levelSelect.value]);
+    public override void OnClientSceneChanged(NetworkConnection conn) {
+        base.OnClientSceneChanged(conn);
     }
 
 
-    //something isn't working here
     public override void ServerChangeScene(string newSceneName) {
-
-        //both of these are probably wrong, base.ServerChangeScene likely has methods that happen asynchronously that I should be 
-        //individually overriding.
-        base.ServerChangeScene(newSceneName);
-
-        Debug.Log("Calling spawn after load");
-        
-        StartCoroutine(SpawnAfterLoad());
-    }
-
-    IEnumerator SpawnAfterLoad() {
-        Debug.Log("waiting");
-        yield return new WaitForSeconds(0.1f);
-        Debug.Log("done waiting");
-
-
-        GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("Respawn");
-        foreach (GameObject spawn in playerSpawns) {
-            startPositions.Add(spawn.transform);
-        }
-
         for (int i = RoomPlayers.Count - 1; i >= 0; i--) {
                 var conn = RoomPlayers[i].connectionToClient;
                 var gamePlayerInstance = Instantiate(gamePlayerPrefab);
-                gamePlayerInstance.SetDisplayName(RoomPlayers[i].DisplayName);
+                gamePlayerInstance.GetComponent<Player>().SetDisplayName(RoomPlayers[i].DisplayName);
 
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance.gameObject);
-
-                Debug.Log("Player spawned." + gamePlayerInstance.gameObject);
-                gamePlayerInstance.gameObject.transform.position = GetStartPosition().position;
+                Debug.Log("replaced player");
+                Debug.Log("conn is " + conn.identity.name);
         }
-
-
-        starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
-        NetworkServer.Spawn(starManager);
-        starManager.name = "StarManager";
-
-        GameObject[] enemySpawns = GameObject.FindGameObjectsWithTag("EnemySpawn");
-        Debug.Log("Spawn point found: " + enemySpawns[0]);
-        foreach (GameObject spawnPoint in enemySpawns) {
-            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
-            spawn.GetComponent<EnemySpawner>().enemyName = "Enemy1";
-            spawn.transform.position = spawnPoint.transform.position;
-            NetworkServer.Spawn(spawn);
-        }
-
-        GameObject[] platformSpawns = GameObject.FindGameObjectsWithTag("PlatformSpawn");
-
-        foreach(GameObject spawnPoint in platformSpawns) {
-            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "MovingPlatform"));
-            spawn.transform.position = spawnPoint.transform.position;
-            spawn.GetComponent<MovingPlatformController>().startWaypoint = spawnPoint.transform.position;
-            spawn.GetComponent<MovingPlatformController>().startWaypoint = new Vector3(spawn.GetComponent<MovingPlatformController>().startWaypoint.x, spawn.GetComponent<MovingPlatformController>().startWaypoint.y, 0);
-            spawn.GetComponent<MovingPlatformController>().endWaypoint = spawnPoint.transform.GetChild(0).position;
-            spawn.GetComponent<MovingPlatformController>().endWaypoint = new Vector3(spawn.GetComponent<MovingPlatformController>().endWaypoint.x, spawn.GetComponent<MovingPlatformController>().endWaypoint.y, 0);
-            NetworkServer.Spawn(spawn);
-        }
-
-
-        GameObject[] flySpawns = GameObject.FindGameObjectsWithTag("FlySpawn");
-
-        foreach (GameObject spawnPoint in flySpawns) {
-            spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
-            spawn.GetComponent<EnemySpawner>().enemyName = "EnemyFlying";
-            spawn.transform.position = spawnPoint.transform.position;
-
-            spawn.GetComponent<EnemySpawner>().endPoint = spawnPoint.transform.GetChild(0).position;
-            spawn.GetComponent<EnemySpawner>().endPoint = new Vector3(spawn.GetComponent<EnemySpawner>().endPoint.x, spawn.GetComponent<EnemySpawner>().endPoint.y, 0);
-            NetworkServer.Spawn(spawn);
-        }
-
+        base.ServerChangeScene(newSceneName);
     }
+
+    public override void OnServerSceneChanged(string sceneName) {
+        if(sceneName != "MainMenu") {
+            GameObject spawnSystemInstance = Instantiate(spawnSystem);
+            NetworkServer.Spawn(spawnSystemInstance);
+
+            
+            starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
+            NetworkServer.Spawn(starManager);
+            starManager.name = "StarManager";
+
+            GameObject[] enemySpawns = GameObject.FindGameObjectsWithTag("EnemySpawn");
+            Debug.Log("Spawn point found: " + enemySpawns[0]);
+            foreach (GameObject spawnPoint in enemySpawns) {
+                spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
+                spawn.GetComponent<EnemySpawner>().enemyName = "Enemy1";
+                spawn.transform.position = spawnPoint.transform.position;
+                NetworkServer.Spawn(spawn);
+            }
+
+            GameObject[] platformSpawns = GameObject.FindGameObjectsWithTag("PlatformSpawn");
+
+            foreach(GameObject spawnPoint in platformSpawns) {
+                spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "MovingPlatform"));
+                spawn.transform.position = spawnPoint.transform.position;
+                spawn.GetComponent<MovingPlatformController>().startWaypoint = spawnPoint.transform.position;
+                spawn.GetComponent<MovingPlatformController>().startWaypoint = new Vector3(spawn.GetComponent<MovingPlatformController>().startWaypoint.x, spawn.GetComponent<MovingPlatformController>().startWaypoint.y, 0);
+                spawn.GetComponent<MovingPlatformController>().endWaypoint = spawnPoint.transform.GetChild(0).position;
+                spawn.GetComponent<MovingPlatformController>().endWaypoint = new Vector3(spawn.GetComponent<MovingPlatformController>().endWaypoint.x, spawn.GetComponent<MovingPlatformController>().endWaypoint.y, 0);
+                NetworkServer.Spawn(spawn);
+            }
+
+
+            GameObject[] flySpawns = GameObject.FindGameObjectsWithTag("FlySpawn");
+
+            foreach (GameObject spawnPoint in flySpawns) {
+                spawn = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "EnemySpawner"));
+                spawn.GetComponent<EnemySpawner>().enemyName = "EnemyFlying";
+                spawn.transform.position = spawnPoint.transform.position;
+
+                spawn.GetComponent<EnemySpawner>().endPoint = spawnPoint.transform.GetChild(0).position;
+                spawn.GetComponent<EnemySpawner>().endPoint = new Vector3(spawn.GetComponent<EnemySpawner>().endPoint.x, spawn.GetComponent<EnemySpawner>().endPoint.y, 0);
+                NetworkServer.Spawn(spawn);
+            }
+        }
+    }
+
 
 
     public override void OnServerChangeScene(String newSceneName) {
@@ -237,6 +216,12 @@ public class MyNetworkManager : NetworkManager {
 
 
     }
+
+    public override void OnServerReady(NetworkConnection conn) {
+        base.OnServerReady(conn);
+        OnServerReadied?.Invoke(conn);
+    }
+
 }
 
 

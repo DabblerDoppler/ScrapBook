@@ -59,7 +59,6 @@ public class HostScript : MonoBehaviour {
         Debug.Log("Game Starting...");
         GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().StartGame();
         mainMenuCanvas.SetActive(false);
-        NetworkClient.localPlayer.gameObject.GetComponent<NetworkRoomPlayerLobby>().RpcDisableCanvas(mainMenuCanvas);
     }
 
 }

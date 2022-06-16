@@ -755,6 +755,8 @@ namespace Mirror
         // can be called from user code to switch scenes again while the game is
         // in progress. This automatically sets clients to be not-ready during
         // the change and ready again to participate in the new scene.
+
+        //find here
         public virtual void ServerChangeScene(string newSceneName)
         {
             if (string.IsNullOrEmpty(newSceneName))
@@ -778,8 +780,7 @@ namespace Mirror
 
             // ServerChangeScene can be called when stopping the server
             // when this happens the server is not active so does not need to tell clients about the change
-            if (NetworkServer.active)
-            {
+            if (NetworkServer.active) {
                 // notify all clients about the new scene
                 NetworkServer.SendToAll(new SceneMessage { sceneName = newSceneName });
             }

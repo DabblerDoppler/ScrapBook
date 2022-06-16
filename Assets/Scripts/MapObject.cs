@@ -13,6 +13,7 @@ public class MapObject : MonoBehaviour {
 
 
 
+
     private void Awake() {
         transform.SetParent(GameObject.Find("InGame").transform);
     }

@@ -58,44 +58,44 @@ public class Cage : NetworkBehaviour {
 
     // Update is called once per frame
     void Update() {
-        
         if(localPlayer == null) {
             localPlayer = NetworkClient.localPlayer.gameObject;
-        }
-
-        timeRemaining -= Time.deltaTime;
-
-
-        if(localPlayer.transform.position.x > minPosition.x && localPlayer.transform.position.x < maxPosition.x &&
-           localPlayer.transform.position.y > minPosition.y && localPlayer.transform.position.y < maxPosition.y) {
-               containsPlayer = true;
         } else {
-            containsPlayer = false;
-        }
 
-        if(containsPlayer && timeRemaining > 0 && !hasAppeared) {
-            Debug.Log("Appearing");
-            hasAppeared = true;
-            //appear
-            foreach(Transform wall in walls) {
-                wall.gameObject.SetActive(true);
-            }
-        } 
-        
-        if(!hasDisappeared && timeRemaining <= 0) {
-            Debug.Log("Disappearing");
-            //make walls disappear
-            foreach(Transform wall in walls) {
-                wall.gameObject.SetActive(false);
-            }
+            timeRemaining -= Time.deltaTime;
 
-            hasDisappeared = true;
-            hasAppeared = false;
-            //spawn next star
-            if(isServer) {
-                StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(starPosition));
+
+            if(localPlayer.transform.position.x > minPosition.x && localPlayer.transform.position.x < maxPosition.x &&
+            localPlayer.transform.position.y > minPosition.y && localPlayer.transform.position.y < maxPosition.y) {
+                containsPlayer = true;
             } else {
-                CmdSpawnStar(starPosition);
+                containsPlayer = false;
+            }
+
+            if(containsPlayer && timeRemaining > 0 && !hasAppeared) {
+                Debug.Log("Appearing");
+                hasAppeared = true;
+                //appear
+                foreach(Transform wall in walls) {
+                    wall.gameObject.SetActive(true);
+                }
+            } 
+            
+            if(!hasDisappeared && timeRemaining <= 0) {
+                Debug.Log("Disappearing");
+                //make walls disappear
+                foreach(Transform wall in walls) {
+                    wall.gameObject.SetActive(false);
+                }
+
+                hasDisappeared = true;
+                hasAppeared = false;
+                //spawn next star
+                if(isServer) {
+                    StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(starPosition));
+                } else {
+                    CmdSpawnStar(starPosition);
+                }
             }
         }
     }

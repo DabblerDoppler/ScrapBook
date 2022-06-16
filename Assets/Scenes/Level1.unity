@@ -1829,6 +1829,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 269015633}
+  - component: {fileID: 269015634}
   m_Layer: 0
   m_Name: PlayerSpawn
   m_TagString: Respawn
@@ -1850,6 +1851,18 @@ Transform:
   m_Father: {fileID: 169427898}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &269015634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269015632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fb553695f98d44f80cdc27fc2051a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &275081425
 GameObject:
   m_ObjectHideFlags: 0
@@ -2888,6 +2901,7 @@ MonoBehaviour:
   walls: []
   containsPlayer: 0
   hasDisappeared: 0
+  hasAppeared: 0
   timeRemaining: 0
   timeMaximum: 6
 --- !u!114 &359955151
@@ -7307,6 +7321,7 @@ MonoBehaviour:
   walls: []
   containsPlayer: 0
   hasDisappeared: 0
+  hasAppeared: 0
   timeRemaining: 0
   timeMaximum: 6
 --- !u!114 &878779742
@@ -9085,6 +9100,7 @@ MonoBehaviour:
   walls: []
   containsPlayer: 0
   hasDisappeared: 0
+  hasAppeared: 0
   timeRemaining: 0
   timeMaximum: 6
 --- !u!114 &1116658939
@@ -10247,6 +10263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1343376500}
+  - component: {fileID: 1343376501}
   m_Layer: 0
   m_Name: PlayerSpawn (1)
   m_TagString: Respawn
@@ -10268,6 +10285,18 @@ Transform:
   m_Father: {fileID: 169427898}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1343376501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1343376499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fb553695f98d44f80cdc27fc2051a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1382737730
 GameObject:
   m_ObjectHideFlags: 0
@@ -12783,6 +12812,7 @@ MonoBehaviour:
   walls: []
   containsPlayer: 0
   hasDisappeared: 0
+  hasAppeared: 0
   timeRemaining: 0
   timeMaximum: 6
 --- !u!114 &1616675503
@@ -14796,6 +14826,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1948410431}
+  - component: {fileID: 1948410432}
   m_Layer: 0
   m_Name: PlayerSpawn (2)
   m_TagString: Respawn
@@ -14817,6 +14848,18 @@ Transform:
   m_Father: {fileID: 169427898}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1948410432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948410430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fb553695f98d44f80cdc27fc2051a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1951791026
 GameObject:
   m_ObjectHideFlags: 0
@@ -14874,6 +14917,7 @@ MonoBehaviour:
   walls: []
   containsPlayer: 0
   hasDisappeared: 0
+  hasAppeared: 0
   timeRemaining: 0
   timeMaximum: 6
 --- !u!114 &1951791029
@@ -15782,6 +15826,7 @@ MonoBehaviour:
   walls: []
   containsPlayer: 0
   hasDisappeared: 0
+  hasAppeared: 0
   timeRemaining: 0
   timeMaximum: 6
 --- !u!114 &2115600238
@@ -16085,6 +16130,7 @@ MonoBehaviour:
   walls: []
   containsPlayer: 0
   hasDisappeared: 0
+  hasAppeared: 0
   timeRemaining: 0
   timeMaximum: 6
 --- !u!114 &2144179475
@@ -16113,6 +16159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2144339604}
+  - component: {fileID: 2144339605}
   m_Layer: 0
   m_Name: PlayerSpawn (3)
   m_TagString: Respawn
@@ -16134,3 +16181,15 @@ Transform:
   m_Father: {fileID: 169427898}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2144339605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2144339603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fb553695f98d44f80cdc27fc2051a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

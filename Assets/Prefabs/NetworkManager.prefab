@@ -3944,7 +3944,7 @@ MonoBehaviour:
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 5853145338774133378, guid: fe6e7ea15b0bd924fb8728ee9f8fb7cd, type: 3}
-  autoCreatePlayer: 1
+  autoCreatePlayer: 0
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 901124802263979950, guid: 9d45a486e38ffa84f8f880e0e201781d, type: 3}
@@ -3964,7 +3964,8 @@ MonoBehaviour:
   levelSelect: {fileID: 3226052168845108672}
   roomPlayerPrefab: {fileID: 5673200706160966918, guid: fe6e7ea15b0bd924fb8728ee9f8fb7cd, type: 3}
   mainMenuCanvas: {fileID: 4075783117096520129}
-  gamePlayerPrefab: {fileID: 3452332587319694795, guid: 574f378b8b2c45745ae9ee3b132a35c5, type: 3}
+  gamePlayerPrefab: {fileID: 1312475966293565536, guid: 574f378b8b2c45745ae9ee3b132a35c5, type: 3}
+  spawnSystem: {fileID: 2320143719770189986, guid: 361bb2e3d12294e4098c657493870b8a, type: 3}
 --- !u!1 &4075783118478677684
 GameObject:
   m_ObjectHideFlags: 0

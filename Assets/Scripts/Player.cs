@@ -56,7 +56,7 @@ public class Player : NetworkBehaviour {
 
     //map object variables
     public GameObject playerMapObject;
-    private GameObject myMapObject;
+    public GameObject myMapObject;
 
     //physics
 
@@ -161,8 +161,7 @@ public class Player : NetworkBehaviour {
     }
 
     private void Awake() {
-        myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
-        myMapObject.GetComponent<MapObject>().associatedTransform = transform;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start() {
