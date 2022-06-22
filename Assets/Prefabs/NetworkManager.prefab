@@ -3964,8 +3964,10 @@ MonoBehaviour:
   levelSelect: {fileID: 3226052168845108672}
   roomPlayerPrefab: {fileID: 5673200706160966918, guid: fe6e7ea15b0bd924fb8728ee9f8fb7cd, type: 3}
   mainMenuCanvas: {fileID: 4075783117096520129}
+  joinScreen: {fileID: 0}
   gamePlayerPrefab: {fileID: 1312475966293565536, guid: 574f378b8b2c45745ae9ee3b132a35c5, type: 3}
   spawnSystem: {fileID: 2320143719770189986, guid: 361bb2e3d12294e4098c657493870b8a, type: 3}
+  playerMapObject: {fileID: 5961935444989564973, guid: ed5f2b29582478d49ae1006399330fde, type: 3}
 --- !u!1 &4075783118478677684
 GameObject:
   m_ObjectHideFlags: 0

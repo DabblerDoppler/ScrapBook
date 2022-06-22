@@ -35,19 +35,21 @@ public class SpawnSystem : NetworkBehaviour {
 
     [Server]
     public void SpawnPlayer(NetworkConnection conn) {
-        Transform spawn = playerSpawns[nextPlayerIndex];
+        foreach(Player p in GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().GamePlayers) {
+            Transform spawn = playerSpawns[nextPlayerIndex];
 
-        if(spawn == null) {
-            Debug.LogError("Missing spawn point");
-            return;
+            if(spawn == null) {
+                Debug.LogError("Missing spawn point");
+                return;
+            }
+            GameObject playerInstance = p.gameObject;
+            //= conn.identity.gameObject;
+            playerInstance.transform.position = spawn.position;
+            NetworkServer.Spawn(playerInstance, conn);
+            playerInstance.GetComponent<Player>().myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
+            playerInstance.GetComponent<Player>().myMapObject.GetComponent<MapObject>().associatedTransform = playerInstance.transform;
+            nextPlayerIndex++;
         }
-        //GameObject playerInstance = Instantiate(playerPrefab, playerSpawns[nextPlayerIndex].position, playerSpawns[nextPlayerIndex].rotation);
-        GameObject playerInstance = conn.identity.gameObject;
-        playerInstance.transform.position = spawn.position;
-        NetworkServer.Spawn(playerInstance, conn);
-        playerInstance.GetComponent<Player>().myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
-        playerInstance.GetComponent<Player>().myMapObject.GetComponent<MapObject>().associatedTransform = playerInstance.transform;
-        nextPlayerIndex++;
     }
 
 

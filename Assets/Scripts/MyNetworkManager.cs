@@ -27,12 +27,13 @@ public class MyNetworkManager : NetworkManager {
 
     [Header("Room")]
     [SerializeField] private NetworkRoomPlayerLobby roomPlayerPrefab;
-
     [SerializeField] private GameObject mainMenuCanvas;
+    [SerializeField] private GameObject joinScreen;
 
     [Header("Game")]
     [SerializeField] private GameObject gamePlayerPrefab;
     [SerializeField] private GameObject spawnSystem;
+    public GameObject playerMapObject;
 
     public static event Action ClientConnected = delegate{ };
 
@@ -51,8 +52,9 @@ public class MyNetworkManager : NetworkManager {
 
         if(SceneManager.GetActiveScene().name == "MainMenu") {
             NetworkClient.AddPlayer();
-        }
 
+        }
+        joinScreen.GetComponent<JoinLobbyMenu>().HandleClientConnected();
         ClientConnected.Invoke();
     }
 
@@ -133,16 +135,17 @@ public class MyNetworkManager : NetworkManager {
     }
     
 
-    public override void OnClientSceneChanged(NetworkConnection conn) {
-        base.OnClientSceneChanged(conn);
-    }
+
 
 
     public override void ServerChangeScene(string newSceneName) {
         for (int i = RoomPlayers.Count - 1; i >= 0; i--) {
                 var conn = RoomPlayers[i].connectionToClient;
                 var gamePlayerInstance = Instantiate(gamePlayerPrefab);
+
                 gamePlayerInstance.GetComponent<Player>().SetDisplayName(RoomPlayers[i].DisplayName);
+
+                GamePlayers.Add(gamePlayerInstance.GetComponent<Player>());
 
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance.gameObject);
@@ -152,10 +155,33 @@ public class MyNetworkManager : NetworkManager {
         base.ServerChangeScene(newSceneName);
     }
 
+    public override void OnClientSceneChanged(NetworkConnection conn) {
+        mainMenuCanvas.SetActive(false);
+
+        foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
+            player.GetComponent<Player>().myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
+            player.GetComponent<Player>().myMapObject.GetComponent<MapObject>().associatedTransform = player.gameObject.transform;
+        }
+
+        base.OnClientSceneChanged(conn);
+    }
+
     public override void OnServerSceneChanged(string sceneName) {
         if(sceneName != "MainMenu") {
-            GameObject spawnSystemInstance = Instantiate(spawnSystem);
-            NetworkServer.Spawn(spawnSystemInstance);
+
+            //we spawn players in ServerChangeScene, and then move them to start positions here
+            GameObject[] playerSpawns = GameObject.FindGameObjectsWithTag("Respawn");
+            foreach (GameObject spawn in playerSpawns) {
+                startPositions.Add(spawn.transform);
+            }
+
+            for (int i = GamePlayers.Count - 1; i >= 0; i--) {
+                var player = GamePlayers[i];
+                player.gameObject.transform.position = GetStartPosition().position;
+                player.myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
+                player.myMapObject.GetComponent<MapObject>().associatedTransform = player.gameObject.transform;
+            }
+
 
             
             starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
@@ -196,6 +222,7 @@ public class MyNetworkManager : NetworkManager {
                 NetworkServer.Spawn(spawn);
             }
         }
+        base.OnServerSceneChanged(sceneName);
     }
 
 

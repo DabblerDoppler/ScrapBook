@@ -166,8 +166,8 @@ MonoBehaviour:
   syncRotation: 1
   syncScale: 0
   interpolatePosition: 0
-  interpolateRotation: 1
-  interpolateScale: 1
+  interpolateRotation: 0
+  interpolateScale: 0
   bufferTimeMultiplier: 3
   bufferSizeLimit: 64
   catchupThreshold: 6

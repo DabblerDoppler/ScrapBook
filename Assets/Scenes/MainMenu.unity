@@ -198,6 +198,10 @@ PrefabInstance:
       propertyPath: showGUI
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4075783118458880401, guid: 5fc134eb6171acd45b36a42f67de9187, type: 3}
+      propertyPath: joinScreen
+      value: 
+      objectReference: {fileID: 2051128692}
     - target: {fileID: 4075783118458880402, guid: 5fc134eb6171acd45b36a42f67de9187, type: 3}
       propertyPath: m_Name
       value: NetworkManager
@@ -354,3 +358,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98d23c27b738c6743a3d87ef38d29ca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2051128692 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4075783118820319938, guid: 5fc134eb6171acd45b36a42f67de9187, type: 3}
+  m_PrefabInstance: {fileID: 1170941797}
+  m_PrefabAsset: {fileID: 0}

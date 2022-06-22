@@ -39,7 +39,9 @@ public class JoinLobbyMenu : MonoBehaviour {
         joinButton.interactable = false;
     }
 
-    private void HandleClientConnected() {
+    public void HandleClientConnected() {
+
+        Debug.Log("client connected");
         joinButton.interactable = true;
 
         lobbyMenu.SetActive(true);

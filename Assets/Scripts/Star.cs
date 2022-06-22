@@ -34,11 +34,13 @@ public class Star : NetworkBehaviour {
     public void playerTouch() {
         if (isServer) {
             //make cage
+            Debug.Log("PlayerTouch Called for server");
             Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
             MakeCage(cage);
             DestroySelf();
         } else {
             //make cage
+            Debug.Log("PlayerTouch Called for client");
             CmdMakeCage();
             CmdDestroySelf();
             Destroy(gameObject);
@@ -74,6 +76,7 @@ public class Star : NetworkBehaviour {
 
     [ClientRpc]
     private void DestroySelf() {
+        Debug.Log("Destorying Self");
         Destroy(gameObject);
     }
 

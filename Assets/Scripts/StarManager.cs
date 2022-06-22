@@ -25,9 +25,11 @@ public class StarManager : NetworkBehaviour {
         }
         GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
         GameObject associatedSpawn = starList[rnd.Next(0, starList.Count)];
+        NetworkServer.Spawn(currentStar);
         currentStar.transform.position = associatedSpawn.GetComponent<Transform>().position;
         currentStar.transform.SetParent(associatedSpawn.transform);
-        NetworkServer.Spawn(currentStar);
+
+
     }
 
     public IEnumerator SpawnAfterSeconds(Vector3 position) {
