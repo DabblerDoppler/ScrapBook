@@ -36,14 +36,15 @@ public class Star : NetworkBehaviour {
             //make cage
             Debug.Log("PlayerTouch Called for server");
             Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
-            MakeCage(cage);
+            RpcMakeCage(cage);
             DestroySelf();
         } else {
             //make cage
             Debug.Log("PlayerTouch Called for client");
-            CmdMakeCage();
+            Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
+            CmdMakeCage(cage);
             CmdDestroySelf();
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
@@ -53,20 +54,16 @@ public class Star : NetworkBehaviour {
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdMakeCage() {
-        /*
+    public void CmdMakeCage(Cage cage) {
         Debug.Log("Making Cage");
-        Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
         cage.timeRemaining = cage.timeMaximum;
-        cage.starPosition = transform;
+        cage.starPosition = transform.position;
         cage.hasDisappeared = false;
-        */
-        Cage cage = gameObject.transform.parent.gameObject.transform.Find("Cage").GetComponent<Cage>();
-        MakeCage(cage);
+        RpcMakeCage(cage);
     }
 
     [ClientRpc]
-    private void MakeCage(Cage cage) {
+    private void RpcMakeCage(Cage cage) {
         Debug.Log("Making Cage");
         cage.timeRemaining = cage.timeMaximum;
         cage.starPosition = transform.position;
@@ -79,6 +76,5 @@ public class Star : NetworkBehaviour {
         Debug.Log("Destorying Self");
         Destroy(gameObject);
     }
-
 
 }

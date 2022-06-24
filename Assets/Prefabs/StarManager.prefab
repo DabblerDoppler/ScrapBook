@@ -46,7 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  starList: []
 --- !u!114 &901124802263979949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  serverOnly: 1
+  serverOnly: 0
   visible: 0
   m_AssetId: 9d45a486e38ffa84f8f880e0e201781d
   hasSpawned: 0

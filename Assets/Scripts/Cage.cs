@@ -94,7 +94,7 @@ public class Cage : NetworkBehaviour {
                 if(isServer) {
                     StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(starPosition));
                 } else {
-                    CmdSpawnStar(starPosition);
+                    //CmdSpawnStar(starPosition);
                 }
             }
         }

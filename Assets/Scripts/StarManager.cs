@@ -6,30 +6,33 @@ using Mirror;
 using UnityEngine;
 
 public class StarManager : NetworkBehaviour {
-    public List<GameObject> starList;
-    public System.Random rnd;
+    
 
     //When spawned (which only happens on the server), make a list of all the star spawn points. 
     //Then, spawn the first star (using mirror's spawning syntax) and set its position to a random
     //spawn point from our list.
     [Server]
-    void Start() {
-        rnd = new System.Random();
-        starList = FindObjectsOfType<GameObject>().ToList<GameObject>();
-        for (int i = 0; i < starList.Count; i++) {
-            if (starList[i].tag != "StarSpawn") {
-                Debug.Log("Removed" + starList[i]);
-                starList.RemoveAt(i);
-                i -= 1;
-            }
-        }
-        GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
-        GameObject associatedSpawn = starList[rnd.Next(0, starList.Count)];
-        NetworkServer.Spawn(currentStar);
+    public void Begin() {
+        MyNetworkManager networkManager = GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>();
+        GameObject currentStar = Instantiate(networkManager.spawnPrefabs.Find(prefab => prefab.name == "Star"));
+        int chosen = networkManager.rnd.Next(0, networkManager.starList.Count);
+        GameObject associatedSpawn = networkManager.starList[chosen];
         currentStar.transform.position = associatedSpawn.GetComponent<Transform>().position;
         currentStar.transform.SetParent(associatedSpawn.transform);
+        currentStar.name = "FirstStar";
+        NetworkServer.Spawn(currentStar);
+        Debug.Log("Calling RpcSetParent");
+        RpcSetParent(currentStar, chosen);
+    }
 
 
+    [ClientRpc]
+    private void RpcSetParent(GameObject currentStar, int chosen) {
+        Debug.Log("Chosen is " + chosen);
+        GameObject associatedSpawn = GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().starList[chosen];
+        currentStar.transform.position = associatedSpawn.GetComponent<Transform>().position;
+        currentStar.transform.SetParent(associatedSpawn.transform);
+        Debug.Log("Moved star to " + associatedSpawn);
     }
 
     public IEnumerator SpawnAfterSeconds(Vector3 position) {
@@ -40,14 +43,16 @@ public class StarManager : NetworkBehaviour {
 
     [Command(requiresAuthority = false)]
     void CmdPickNewStar(Vector3 position) {
-        Transform temp = starList[rnd.Next(0, starList.Count)].transform;
-        while (position == temp.position) {
-            temp = starList[rnd.Next(0, starList.Count)].transform;
+        MyNetworkManager networkManager = GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>();
+        int temp = networkManager.rnd.Next(0, networkManager.starList.Count);
+        while (position == networkManager.starList[networkManager.rnd.Next(0, networkManager.starList.Count)].transform.position) {
+            temp = networkManager.rnd.Next(0, networkManager.starList.Count);
         }
-        GameObject currentStar = Instantiate(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().spawnPrefabs.Find(prefab => prefab.name == "Star"));
-        currentStar.transform.position = temp.position;
-        currentStar.transform.SetParent(temp);
+        GameObject currentStar = Instantiate(networkManager.spawnPrefabs.Find(prefab => prefab.name == "Star"));
+        currentStar.transform.position = networkManager.starList[networkManager.rnd.Next(0, networkManager.starList.Count)].transform.position;
+        currentStar.transform.SetParent(networkManager.starList[networkManager.rnd.Next(0, networkManager.starList.Count)].transform);
         NetworkServer.Spawn(currentStar);
+        RpcSetParent(currentStar, temp);
     }
 
 

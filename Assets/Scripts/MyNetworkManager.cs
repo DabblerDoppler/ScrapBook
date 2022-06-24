@@ -34,6 +34,8 @@ public class MyNetworkManager : NetworkManager {
     [SerializeField] private GameObject gamePlayerPrefab;
     [SerializeField] private GameObject spawnSystem;
     public GameObject playerMapObject;
+    public List<GameObject> starList;
+    public System.Random rnd;
 
     public static event Action ClientConnected = delegate{ };
 
@@ -157,7 +159,14 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnClientSceneChanged(NetworkConnection conn) {
         mainMenuCanvas.SetActive(false);
-
+            starList = FindObjectsOfType<GameObject>().ToList<GameObject>();
+            for (int i = 0; i < starList.Count; i++) {
+                if (starList[i].tag != "StarSpawn") {
+                    Debug.Log("Removed" + starList[i]);
+                    starList.RemoveAt(i);
+                    i -= 1;
+                }
+            }
         foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
             player.GetComponent<Player>().myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
             player.GetComponent<Player>().myMapObject.GetComponent<MapObject>().associatedTransform = player.gameObject.transform;
@@ -183,10 +192,9 @@ public class MyNetworkManager : NetworkManager {
             }
 
 
-            
-            starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
-            NetworkServer.Spawn(starManager);
-            starManager.name = "StarManager";
+
+
+
 
             GameObject[] enemySpawns = GameObject.FindGameObjectsWithTag("EnemySpawn");
             Debug.Log("Spawn point found: " + enemySpawns[0]);
@@ -221,11 +229,32 @@ public class MyNetworkManager : NetworkManager {
                 spawn.GetComponent<EnemySpawner>().endPoint = new Vector3(spawn.GetComponent<EnemySpawner>().endPoint.x, spawn.GetComponent<EnemySpawner>().endPoint.y, 0);
                 NetworkServer.Spawn(spawn);
             }
+
+            starList = FindObjectsOfType<GameObject>().ToList<GameObject>();
+            for (int i = 0; i < starList.Count; i++) {
+                if (starList[i].tag != "StarSpawn") {
+                    Debug.Log("Removed" + starList[i]);
+                    starList.RemoveAt(i);
+                    i -= 1;
+                }
+            }
+
+            rnd = new System.Random();
+            starManager = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "StarManager"));
+            NetworkServer.Spawn(starManager);
+            starManager.name = "StarManager";
         }
+
+        StartCoroutine(BeginGame());
+
+
         base.OnServerSceneChanged(sceneName);
     }
 
-
+    public IEnumerator BeginGame() {
+        yield return new WaitForSeconds(2.0f);
+        GameObject.Find("StarManager").GetComponent<StarManager>().Begin();
+    }
 
     public override void OnServerChangeScene(String newSceneName) {
 
