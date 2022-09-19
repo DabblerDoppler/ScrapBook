@@ -17,13 +17,10 @@ public class LavaWall : NetworkBehaviour {
     // Update is called once per frame
     void Update() {
         if(isFloor) {
-            tag = "Untagged";
-            gameObject.layer = LayerMask.NameToLayer("Floor");
-            GetComponent<SpriteRenderer>().color = Color.white;
+            GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<BoxCollider2D>().enabled = false;
         } else {
-            tag = "Spike";
-            gameObject.layer = LayerMask.NameToLayer("Spike");
-            GetComponent<SpriteRenderer>().color = Color.red;
+            GetComponent<SpriteRenderer>().enabled = true;
         }
 
         if(isServer) {

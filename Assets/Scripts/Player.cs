@@ -124,6 +124,8 @@ public class Player : NetworkBehaviour {
     const float SPIN_TIME = 0.20f;
     const float KNOCKDOWN_TIME = 1.0f;
     const float INTANGIBILITY_TIME = 1.35f;
+    const float SPIKE_KNOCKDOWN_TIME = 0.8f;
+    const float SPIKE_INTANGIBILITY_TIME = 1.5f;
     public const float CROUCH_PERCENT = 0.5f;
 
     const float DEADZONE = 0.2f;
@@ -675,6 +677,20 @@ public class Player : NetworkBehaviour {
             DropStars(1);
             knockdown = KNOCKDOWN_TIME;
             intangibility = INTANGIBILITY_TIME;
+            vsp = 0;
+            //vsp = VSP_KNOCKDOWN;
+            hsp = HSP_KNOCKDOWN;
+            //GetComponent<Rigidbody2D>().simulated = false;
+            intangibilityEnded = false;
+        }
+    }
+
+    [ClientRpc]
+    public void RpcKnockdown_Spike() {
+        if (intangibility < 0) {
+            DropStars(1);
+            knockdown = SPIKE_KNOCKDOWN_TIME;
+            intangibility = SPIKE_INTANGIBILITY_TIME;
             vsp = 0;
             //vsp = VSP_KNOCKDOWN;
             hsp = HSP_KNOCKDOWN;

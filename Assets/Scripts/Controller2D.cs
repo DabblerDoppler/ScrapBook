@@ -7,6 +7,7 @@ public class Controller2D : RaycastController {
 
     public bool incrementStars;
     bool killPlayer;
+    bool spikeDamage;
     GameObject destroyEnemy;
     Player knockdownPlayer;
     Collider2D lastStarHit;
@@ -14,6 +15,7 @@ public class Controller2D : RaycastController {
     public LayerMask playerCollisionMask;
     public LayerMask starCollisionMask;
     public LayerMask spikeCollisionMask;
+    public LayerMask lavaCollisionMask;
     public LayerMask teleporterCollisionMask;
     public LayerMask enemyCollisionMask;
     public CollisionInfo collisions;
@@ -33,12 +35,14 @@ public class Controller2D : RaycastController {
         starCollisionMask = LayerMask.GetMask("Star", "FallenStar");
         enemyCollisionMask = LayerMask.GetMask("Enemies");
         spikeCollisionMask = LayerMask.GetMask("Spike");
+        lavaCollisionMask = LayerMask.GetMask("Lava");
         teleporterCollisionMask = LayerMask.GetMask("Teleporter");
     }
 
     public void Move(Vector3 velocity) {
         UpdateRaycastOrigins();
         killPlayer = false;
+        spikeDamage = false;
         knockdownPlayer = null;
         collisions.Reset();
         playerCollisions.Reset();
@@ -58,10 +62,12 @@ public class Controller2D : RaycastController {
         //HorizontalCollisions_Players(ref velocity);
         //HorizontalCollisions_Spikes(ref velocity);
         HorizontalCollisions_Teleporters(ref velocity);
+        HorizontalCollisions_Spikes(ref velocity);
         
         if (velocity.y != 0) {
-            VerticalCollisions(ref velocity);
             VerticalCollisions_Spikes(ref velocity);
+            VerticalCollisions(ref velocity);
+            VerticalCollisions_Lava(ref velocity);
             VerticalCollisions_Enemies(ref velocity);
         }
 
@@ -117,6 +123,14 @@ public class Controller2D : RaycastController {
         //this is to kill the associated player if you step in lava.
         if (killPlayer) {
             GetComponent<Player>().Death();
+        }
+
+        if(spikeDamage) {
+            if(isServer) {
+                GetComponent<Player>().RpcKnockdown_Spike();
+            } else {
+                CmdKnockdownPlayer_Spike(GetComponent<Player>());
+            }
         }
 
         transform.position += velocity;
@@ -245,7 +259,26 @@ public class Controller2D : RaycastController {
         Camera.main.cullingMask = -1;
     }
 
-    void VerticalCollisions_Spikes(ref Vector3 velocity) {
+    void VerticalCollisions_Lava(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, lavaCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit) {
+                velocity.y = (hit.distance - SKIN_WIDTH) * directionY;
+                rayLength = hit.distance;
+                collisions.below = directionY == -1;
+                collisions.above = directionY == 1;
+                killPlayer = true;
+                
+            }
+        }
+    }
+
+        void VerticalCollisions_Spikes(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
         for (int i = 0; i < verticalRayCount; i++) {
@@ -258,7 +291,7 @@ public class Controller2D : RaycastController {
                 rayLength = hit.distance;
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
-                killPlayer = true;
+                spikeDamage = true;
                 
             }
         }
@@ -348,7 +381,25 @@ public class Controller2D : RaycastController {
         }
     }
 
-    void HorizontalCollisions_Spikes(ref Vector3 velocity) {
+    void HorizontalCollisions_Lava(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < horizontalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, lavaCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit) {
+                velocity.x = (hit.distance - SKIN_WIDTH) * directionX;
+                rayLength = hit.distance;
+                collisions.left = directionX == -1;
+                collisions.right = directionX == 1;
+                killPlayer = true;
+            }
+        }
+    }
+
+        void HorizontalCollisions_Spikes(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
         for (int i = 0; i < horizontalRayCount; i++) {
@@ -361,10 +412,11 @@ public class Controller2D : RaycastController {
                 rayLength = hit.distance;
                 collisions.left = directionX == -1;
                 collisions.right = directionX == 1;
-                GetComponent<Player>().Death();
+                spikeDamage = true;
             }
         }
     }
+
 
     void HorizontalCollisions_Teleporters(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
@@ -392,6 +444,12 @@ public class Controller2D : RaycastController {
     public void CmdKnockdownPlayer(Player player) {
         Debug.Log("CmdKnockdownPlayer run. Trying to call RpcKnockdown.");
         player.RpcKnockdown();
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdKnockdownPlayer_Spike(Player player) {
+        Debug.Log("CmdKnockdownPlayer run. Trying to call RpcKnockdown.");
+        player.RpcKnockdown_Spike();
     }
 
     [Command(requiresAuthority = false)]
