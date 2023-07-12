@@ -3,7 +3,9 @@ guid: c6f6906ecd9a9c64490063115e8122eb
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - collider: {instanceID: 0}
+  - bumpHitboxPrefab: {fileID: 1490200830293154589, guid: 942fbf94e6cfcf643a88b87087e1b850, type: 3}
   executionOrder: 1200
   icon: {instanceID: 0}
   userData: 

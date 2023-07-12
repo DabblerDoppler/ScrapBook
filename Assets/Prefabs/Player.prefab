@@ -122,6 +122,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   horizontalInput: 0
+  pauseInputs: 0
   stars: 0
   sliding: 0
   spun: 0
@@ -143,9 +144,11 @@ MonoBehaviour:
   knockdown: 0
   intangibility: 0
   playerMapObject: {fileID: 5961935444989564973, guid: ed5f2b29582478d49ae1006399330fde, type: 3}
+  myMapObject: {fileID: 0}
   hsp: 0
   vsp: 0
   team: 0
+  displayName: 
   animator: {fileID: 4672524869821813398}
 --- !u!114 &2234132032890095562
 MonoBehaviour:
@@ -234,13 +237,21 @@ MonoBehaviour:
   spikeCollisionMask:
     serializedVersion: 2
     m_Bits: 0
+  lavaCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   teleporterCollisionMask:
     serializedVersion: 2
     m_Bits: 0
   enemyCollisionMask:
     serializedVersion: 2
     m_Bits: 0
+  bumpCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   wallAbove: 0
+  bumpHitboxPrefab: {fileID: 1490200830293154589, guid: 942fbf94e6cfcf643a88b87087e1b850, type: 3}
+  velocityX: 0
 --- !u!95 &4672524869821813398
 Animator:
   serializedVersion: 3
