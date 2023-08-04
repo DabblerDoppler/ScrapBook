@@ -19,6 +19,7 @@ public class Controller2D : RaycastController {
     public LayerMask teleporterCollisionMask;
     public LayerMask enemyCollisionMask;
     public LayerMask bumpCollisionMask;
+    public LayerMask bumpHitboxCollisionMask;
     public CollisionInfo collisions;
     public CollisionInfo playerCollisions;
     public CollisionInfo enemyCollisions;
@@ -38,6 +39,7 @@ public class Controller2D : RaycastController {
         playerCollisionMask = LayerMask.GetMask("Players");
         collisionMask = LayerMask.GetMask("Floor");
         bumpCollisionMask = LayerMask.GetMask("BumpBlock");
+        bumpHitboxCollisionMask = LayerMask.GetMask("BumpHitbox");
         starCollisionMask = LayerMask.GetMask("Star", "FallenStar");
         enemyCollisionMask = LayerMask.GetMask("Enemies");
         spikeCollisionMask = LayerMask.GetMask("Spike");
@@ -180,7 +182,8 @@ public class Controller2D : RaycastController {
                         GameObject hitbox = Instantiate(bumpHitboxPrefab);
                         hitbox.transform.position = hit.transform.position + new Vector3(0.0f, 0.25f, 0.0f);
                         NetworkServer.Spawn(hitbox);
-
+                    } else {
+                        CmdSpawnBumpHitbox(hit.transform.position + new Vector3(0.0f, 0.25f, 0.0f));
                     }
                 } else {
                     if(transform.GetComponent<Player>().groundPound) {
@@ -190,6 +193,8 @@ public class Controller2D : RaycastController {
                             hitbox.transform.position = hit.transform.position;
                             //should change rotation here too
                             NetworkServer.Spawn(hitbox);
+                        } else {
+                            CmdSpawnBumpHitbox(hit.transform.position);
                         }
                     }
                 }
@@ -243,6 +248,21 @@ public class Controller2D : RaycastController {
             }
         }
     }
+
+        void VerticalCollisions_BumpHitbox(ref Vector3 velocity) {
+        float directionY = Mathf.Sign(velocity.y);
+        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, bumpHitboxCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (hit && GetComponent<Player>().intangibility <= 0 && !GetComponent<Player>().onGround) {
+                spikeDamage = true;
+            }
+        }
+    }
+
 
     void CrouchCollisions(ref Vector3 velocity) {
         float directionY = 1;
@@ -445,6 +465,20 @@ public class Controller2D : RaycastController {
         }
     }
 
+    void HorizontalCollisions_BumpHitbox(ref Vector3 velocity) {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
+        for (int i = 0; i < verticalRayCount; i++) {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (verticalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength * 2, bumpHitboxCollisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (hit && GetComponent<Player>().intangibility <= 0) {
+                spikeDamage = true;
+            }
+        }
+    }
+
     void HorizontalCollisions_Lava(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
@@ -502,6 +536,14 @@ public class Controller2D : RaycastController {
             lastStarHit = col;
             incrementStars = true;
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSpawnBumpHitbox(Vector3 spawnPosition) {
+        GameObject hitbox = Instantiate(bumpHitboxPrefab);
+        hitbox.transform.position = spawnPosition;
+        //should change rotation here too
+        NetworkServer.Spawn(hitbox);
     }
 
     [Command(requiresAuthority = false)]

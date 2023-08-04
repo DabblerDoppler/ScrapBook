@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1490200830293154579}
   - component: {fileID: 1490200830293154588}
   - component: {fileID: 2261449774043948713}
-  m_Layer: 8
+  m_Layer: 16
   m_Name: BumpBlockHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 648078691da793049be98a61aa8d6f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!61 &1490200830293154588
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MapObject : MonoBehaviour {
 
@@ -10,7 +11,6 @@ public class MapObject : MonoBehaviour {
     public float levelSize;
     public float leftTellyBound;
     public float rightTellyBound;
-
 
 
 
@@ -44,7 +44,12 @@ public class MapObject : MonoBehaviour {
         if(associatedTransform != null) {
             float newXPosition = (mapStart + ((associatedTransform.position.x - leftTellyBound) / levelSize) * mapSize);
             Vector3 localPosition = GetComponent<RectTransform>().localPosition;
-            GetComponent<RectTransform>().localPosition =  new Vector3(newXPosition  , localPosition.y , localPosition.z)  ;
+            GetComponent<RectTransform>().localPosition =  new Vector3(newXPosition  , localPosition.y , localPosition.z);
+            if(associatedTransform.GetComponent<Player>() != null) {
+                transform.GetComponent<Image>().color = associatedTransform.GetComponent<SpriteRenderer>().color;
+            }
+        } else {
+            Destroy(gameObject);
         }
     }
 }

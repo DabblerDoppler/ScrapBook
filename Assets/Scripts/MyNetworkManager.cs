@@ -170,6 +170,7 @@ public class MyNetworkManager : NetworkManager {
         foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
             player.GetComponent<Player>().myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
             player.GetComponent<Player>().myMapObject.GetComponent<MapObject>().associatedTransform = player.gameObject.transform;
+            player.GetComponent<Player>().myMapObject.GetComponent<Image>().color = player.GetComponent<Player>().colors[player.GetComponent<Player>().team];
         }
 
         base.OnClientSceneChanged(conn);
@@ -189,6 +190,8 @@ public class MyNetworkManager : NetworkManager {
                 player.gameObject.transform.position = GetStartPosition().position;
                 player.myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
                 player.myMapObject.GetComponent<MapObject>().associatedTransform = player.gameObject.transform;
+                player.GetComponent<Player>().myMapObject.GetComponent<Image>().color = player.GetComponent<Player>().colors[player.GetComponent<Player>().team];
+
             }
 
 

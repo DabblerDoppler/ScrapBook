@@ -32,7 +32,7 @@ TagManager:
   - EnemyWalls
   - Lava
   - BumpBlock
-  - 
+  - BumpHitbox
   - 
   - 
   - 

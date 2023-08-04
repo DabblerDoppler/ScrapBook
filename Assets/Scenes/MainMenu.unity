@@ -202,6 +202,14 @@ PrefabInstance:
       propertyPath: joinScreen
       value: 
       objectReference: {fileID: 2051128692}
+    - target: {fileID: 4075783118458880401, guid: 5fc134eb6171acd45b36a42f67de9187, type: 3}
+      propertyPath: spawnPrefabs.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4075783118458880401, guid: 5fc134eb6171acd45b36a42f67de9187, type: 3}
+      propertyPath: spawnPrefabs.Array.data[8]
+      value: 
+      objectReference: {fileID: 1490200830293154589, guid: 942fbf94e6cfcf643a88b87087e1b850, type: 3}
     - target: {fileID: 4075783118458880402, guid: 5fc134eb6171acd45b36a42f67de9187, type: 3}
       propertyPath: m_Name
       value: NetworkManager
