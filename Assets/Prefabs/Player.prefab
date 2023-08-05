@@ -148,6 +148,7 @@ MonoBehaviour:
   hsp: 0
   vsp: 0
   team: 0
+  colors: []
   displayName: 
   animator: {fileID: 4672524869821813398}
 --- !u!114 &2234132032890095562
@@ -249,9 +250,13 @@ MonoBehaviour:
   bumpCollisionMask:
     serializedVersion: 2
     m_Bits: 0
+  bumpHitboxCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   wallAbove: 0
   bumpHitboxPrefab: {fileID: 1490200830293154589, guid: 942fbf94e6cfcf643a88b87087e1b850, type: 3}
   velocityX: 0
+  velocityY: 0
 --- !u!95 &4672524869821813398
 Animator:
   serializedVersion: 3

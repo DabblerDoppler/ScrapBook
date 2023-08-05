@@ -7,7 +7,7 @@ public class Controller2D : RaycastController {
 
     public bool incrementStars;
     bool killPlayer;
-    bool spikeDamage;
+    public bool spikeDamage;
     GameObject destroyEnemy;
     Player knockdownPlayer;
     Collider2D lastStarHit;
@@ -75,6 +75,7 @@ public class Controller2D : RaycastController {
         //HorizontalCollisions_Spikes(ref velocity);
         HorizontalCollisions_Teleporters(ref velocity);
         HorizontalCollisions_Spikes(ref velocity);
+        //Collisions_BumpHitbox(ref velocity);
         
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
@@ -92,7 +93,7 @@ public class Controller2D : RaycastController {
 
         VerticalCollisions_Players(ref velocity);
         HorizontalCollisions_Players(ref velocity);
-        HorizontalCollisions_Enemies(ref velocity);
+        //HorizontalCollisions_Enemies(ref velocity);
 
         if (knockdownPlayer != null && knockdownPlayer.team != GetComponent<Player>().team) {
             if (isServer) {
@@ -180,21 +181,21 @@ public class Controller2D : RaycastController {
                     //bump block up
                     if(isServer) {
                         GameObject hitbox = Instantiate(bumpHitboxPrefab);
-                        hitbox.transform.position = hit.transform.position + new Vector3(0.0f, 0.25f, 0.0f);
+                        hitbox.transform.position = hit.transform.position + new Vector3(0.0f, 0.5f, 0.0f);
                         NetworkServer.Spawn(hitbox);
                     } else {
-                        CmdSpawnBumpHitbox(hit.transform.position + new Vector3(0.0f, 0.25f, 0.0f));
+                        CmdSpawnBumpHitbox(hit.transform.position + new Vector3(0.0f, 0.5f, 0.0f));
                     }
                 } else {
                     if(transform.GetComponent<Player>().groundPound) {
                         //bump block down
                         if(isServer) {
                             GameObject hitbox = Instantiate(bumpHitboxPrefab);
-                            hitbox.transform.position = hit.transform.position;
+                            hitbox.transform.position = hit.transform.position - new Vector3(0.0f, 0.5f, 0.0f);
                             //should change rotation here too
                             NetworkServer.Spawn(hitbox);
                         } else {
-                            CmdSpawnBumpHitbox(hit.transform.position);
+                            CmdSpawnBumpHitbox(hit.transform.position - new Vector3(0.0f, 0.5f, 0.0f));
                         }
                     }
                 }
@@ -249,19 +250,25 @@ public class Controller2D : RaycastController {
         }
     }
 
-        void VerticalCollisions_BumpHitbox(ref Vector3 velocity) {
-        float directionY = Mathf.Sign(velocity.y);
-        float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
-        for (int i = 0; i < verticalRayCount; i++) {
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, bumpHitboxCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-            if (hit && GetComponent<Player>().intangibility <= 0 && !GetComponent<Player>().onGround) {
-                spikeDamage = true;
+    void Collisions_BumpHitbox(ref Vector3 velocity) {
+        float distance = Mathf.Pow(Mathf.Sqrt(velocity.x) + Mathf.Sqrt(velocity.y), 2.0f);
+        RaycastHit2D hit;
+        if(velocity.x == 0 && velocity.y == 0) {
+            hit = Physics2D.BoxCast(collider.bounds.center, collider.size, 0.0f, new Vector2(1, 0), 0.05f, bumpHitboxCollisionMask);
+            if(!hit) {
+                hit = Physics2D.BoxCast(collider.bounds.center, collider.size, 0.0f, new Vector2(-1, 0), 0.05f, bumpHitboxCollisionMask);
             }
+        } else {
+        hit = Physics2D.BoxCast(collider.bounds.center, collider.size, 0.0f, new Vector2(velocity.x, velocity.y), 0.05f, bumpHitboxCollisionMask);
+        }
+        if (hit && GetComponent<Player>().intangibility <= 0) {
+            Debug.Log(hit);
+            spikeDamage = true;
         }
     }
+
+
+
 
 
     void CrouchCollisions(ref Vector3 velocity) {
@@ -446,6 +453,7 @@ public class Controller2D : RaycastController {
         }
     }
 
+    /*
     void HorizontalCollisions_Enemies(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
@@ -464,20 +472,8 @@ public class Controller2D : RaycastController {
             }
         }
     }
+    */
 
-    void HorizontalCollisions_BumpHitbox(ref Vector3 velocity) {
-        float directionX = Mathf.Sign(velocity.x);
-        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
-        for (int i = 0; i < verticalRayCount; i++) {
-            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
-            rayOrigin += Vector2.up * (verticalRaySpacing * i);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength * 2, bumpHitboxCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
-            if (hit && GetComponent<Player>().intangibility <= 0) {
-                spikeDamage = true;
-            }
-        }
-    }
 
     void HorizontalCollisions_Lava(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
@@ -532,10 +528,9 @@ public class Controller2D : RaycastController {
 
     void OnTriggerEnter2D(Collider2D col) {
         if (col.gameObject.tag == "Star") {
-            Debug.Log("Trigger");
             lastStarHit = col;
             incrementStars = true;
-        }
+        } 
     }
 
     [Command(requiresAuthority = false)]

@@ -18,7 +18,27 @@ public class BumpBlockHitbox : NetworkBehaviour {
         framesRemaining -= Time.deltaTime;
         if(framesRemaining <= 0) {
             CmdDestroySelf();
-            if (!isServer) { Destroy(gameObject); }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D col) {
+        if(col.GetComponent<Player>()){
+            if(col.GetComponent<Player>().intangibility <= 0.0f) {
+                Debug.Log("Trigger");
+                if(isServer) {
+                    col.GetComponent<Player>().RpcKnockdown_Spike();
+                } 
+            }
+        }
+    }
+    void OnTriggerStay2D(Collider2D col) {
+        if(col.GetComponent<Player>()){
+            if(col.GetComponent<Player>().intangibility <= 0.0f) {
+                Debug.Log("Trigger");
+                if(isServer) {
+                    col.GetComponent<Player>().RpcKnockdown_Spike();
+                } 
+            }
         }
     }
 
@@ -32,4 +52,6 @@ public class BumpBlockHitbox : NetworkBehaviour {
     private void RpcDestroySelf() {
         Destroy(gameObject);
     }
+
+
 }

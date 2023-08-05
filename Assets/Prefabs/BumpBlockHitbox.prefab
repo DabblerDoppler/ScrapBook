@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1490200830293154579}
   - component: {fileID: 1490200830293154588}
   - component: {fileID: 2261449774043948713}
+  - component: {fileID: -740737700790301515}
   m_Layer: 16
   m_Name: BumpBlockHitbox
   m_TagString: Untagged
@@ -142,3 +143,24 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 942fbf94e6cfcf643a88b87087e1b850
   hasSpawned: 0
+--- !u!50 &-740737700790301515
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490200830293154589}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
