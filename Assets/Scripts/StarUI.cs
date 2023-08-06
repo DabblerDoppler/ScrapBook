@@ -6,6 +6,7 @@ using Mirror;
 
 public class StarUI : MonoBehaviour {
     public bool isYours;
+
     public Player attachedPlayer;
     public string myText;
     public int playerNumber;

@@ -137,15 +137,6 @@ public class Player : NetworkBehaviour {
     const int LAYER_FLOOR = 6;
     const int LAYER_WALL = 7;
 
-    public override void OnStartClient() {
-        Room.GamePlayers.Add(this);
-
-        if (isServer) {
-            RpcSetUI(0.2f);
-        } else {
-            CmdSetUI(0.2f);
-        }
-    }
 
     public override void OnStopClient() {
         Room.GamePlayers.Remove(this);
@@ -167,6 +158,9 @@ public class Player : NetworkBehaviour {
     }
 
     private void Start() {
+
+        Room.GamePlayers.Add(this);
+        StartCoroutine(WaitAndSetUI(0.2f));
 
         //create a list of colors containing the colors from the 4 teams.
         colors = new List<Color>();
@@ -721,8 +715,7 @@ public class Player : NetworkBehaviour {
         if (stars >= numToDrop) {
             //CmdSetStars spawns stars.
             CmdSetStars(stars - numToDrop, transform);
-        }
-        else {
+        } else {
             DropStars(numToDrop - 1);
         }
     }
@@ -762,7 +755,7 @@ public class Player : NetworkBehaviour {
     }
 
     public void SetTeam(int toSet) {
-                //set team with appropriate networking
+        //set team with appropriate networking
         if (isLocalPlayer) {
             if (isServer) {
                 team = toSet;
@@ -822,6 +815,7 @@ public class Player : NetworkBehaviour {
     //attaches player objects to their appropriate star counters
     IEnumerator WaitAndSetUI(float seconds) {
         yield return new WaitForSeconds(seconds);
+        Debug.Log("Setting UI");
         List<GameObject> childList = GameObject.Find("Canvas").GetComponent<TextChildArray>().myChildren;
         GameObject[] playerArray = GameObject.FindGameObjectsWithTag("Player");
         for (int i = 0; i < playerArray.Length; i++) {
