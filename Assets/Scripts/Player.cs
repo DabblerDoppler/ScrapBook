@@ -818,8 +818,9 @@ public class Player : NetworkBehaviour {
         Debug.Log("Setting UI");
         List<GameObject> childList = GameObject.Find("Canvas").GetComponent<TextChildArray>().myChildren;
         GameObject[] playerArray = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < playerArray.Length; i++) {
-            childList[i].GetComponent<StarUI>().attachedPlayer = playerArray[i].GetComponent<Player>();
+        for (int i = playerArray.Length - 1; i >= 0 ; i--) {
+            childList[playerArray.Length - 1 - i].GetComponent<StarUI>().attachedPlayer = playerArray[i].GetComponent<Player>();
+            childList[playerArray.Length - 1 - i].GetComponent<Text>().color = playerArray[i].GetComponent<SpriteRenderer>().color;
         }
     }
 
