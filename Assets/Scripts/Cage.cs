@@ -26,7 +26,7 @@ public class Cage : NetworkBehaviour {
     public float timeRemaining;
 
 
-    public float timeMaximum = 8.0f;
+    public float timeMaximum = 6.0f;
 
     // Start is called before the first frame update
 

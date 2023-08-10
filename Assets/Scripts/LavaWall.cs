@@ -21,6 +21,7 @@ public class LavaWall : NetworkBehaviour {
             GetComponent<BoxCollider2D>().enabled = false;
         } else {
             GetComponent<SpriteRenderer>().enabled = true;
+            GetComponent<BoxCollider2D>().enabled = true;
         }
 
         if(isServer) {
@@ -36,4 +37,26 @@ public class LavaWall : NetworkBehaviour {
             }
         }
     }
+
+    void OnTriggerEnter2D(Collider2D col) {
+        if(col.GetComponent<Player>()){
+            if(col.GetComponent<Player>().intangibility <= 0.0f) {
+                Debug.Log("Trigger");
+                if(isServer) {
+                    col.GetComponent<Player>().RpcKnockdown_Spike();
+                } 
+            }
+        }
+    }
+    void OnTriggerStay2D(Collider2D col) {
+        if(col.GetComponent<Player>()){
+            if(col.GetComponent<Player>().intangibility <= 0.0f) {
+                Debug.Log("Trigger");
+                if(isServer) {
+                    col.GetComponent<Player>().RpcKnockdown_Spike();
+                } 
+            }
+        }
+    }
+
 }
