@@ -250,23 +250,6 @@ public class Controller2D : RaycastController {
         }
     }
 
-    void Collisions_BumpHitbox(ref Vector3 velocity) {
-        float distance = Mathf.Pow(Mathf.Sqrt(velocity.x) + Mathf.Sqrt(velocity.y), 2.0f);
-        RaycastHit2D hit;
-        if(velocity.x == 0 && velocity.y == 0) {
-            hit = Physics2D.BoxCast(collider.bounds.center, collider.size, 0.0f, new Vector2(1, 0), 0.05f, bumpHitboxCollisionMask);
-            if(!hit) {
-                hit = Physics2D.BoxCast(collider.bounds.center, collider.size, 0.0f, new Vector2(-1, 0), 0.05f, bumpHitboxCollisionMask);
-            }
-        } else {
-        hit = Physics2D.BoxCast(collider.bounds.center, collider.size, 0.0f, new Vector2(velocity.x, velocity.y), 0.05f, bumpHitboxCollisionMask);
-        }
-        if (hit && GetComponent<Player>().intangibility <= 0) {
-            Debug.Log(hit);
-            spikeDamage = true;
-        }
-    }
-
 
 
 
@@ -442,12 +425,8 @@ public class Controller2D : RaycastController {
                 playerCollisions.right = directionX == 1;
 
                 //knockback other
-                if(GetComponent<Player>().diving || GetComponent<Player>().long_jump) {
-                    if(isServer) {
-                        RpcKnockbackPlayer(hit.collider.GetComponent<Player>(), Math.Sign(directionX));
-                    } else {
-                        CmdKnockbackPlayer(hit.collider.GetComponent<Player>(), Math.Sign(directionX));
-                    }
+                if(GetComponent<Player>().sliding) {
+                    knockdownPlayer = hit.collider.GetComponent<Player>();
                 }
             }
         }
