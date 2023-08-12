@@ -27,10 +27,11 @@ public class PauseMenu : NetworkBehaviour {
         if (NetworkServer.active) {
             NetworkServer.Shutdown();
         }
-
+        Destroy(GameObject.Find("NetworkManager"));
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+
         mainMenuCanvas.SetActive(true);
-        inGameCanvas.SetActive(false);
+        //inGameCanvas.SetActive(false);
 
     }
 

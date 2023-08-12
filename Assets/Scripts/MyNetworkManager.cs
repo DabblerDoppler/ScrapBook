@@ -16,7 +16,8 @@ public class MyNetworkManager : NetworkManager {
     public static event Action OnClientDisconnected;
     public static event Action<NetworkConnection> OnServerReadied;
 
-    public int teams = 1;
+
+    public int teams = 0;
 
     [SerializeField] private int minPlayers = 1;
 
@@ -162,7 +163,6 @@ public class MyNetworkManager : NetworkManager {
             starList = FindObjectsOfType<GameObject>().ToList<GameObject>();
             for (int i = 0; i < starList.Count; i++) {
                 if (starList[i].tag != "StarSpawn") {
-                    Debug.Log("Removed" + starList[i]);
                     starList.RemoveAt(i);
                     i -= 1;
                 }
@@ -236,7 +236,6 @@ public class MyNetworkManager : NetworkManager {
             starList = FindObjectsOfType<GameObject>().ToList<GameObject>();
             for (int i = 0; i < starList.Count; i++) {
                 if (starList[i].tag != "StarSpawn") {
-                    Debug.Log("Removed" + starList[i]);
                     starList.RemoveAt(i);
                     i -= 1;
                 }
@@ -255,7 +254,7 @@ public class MyNetworkManager : NetworkManager {
     }
 
     public IEnumerator BeginGame() {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
         GameObject.Find("StarManager").GetComponent<StarManager>().Begin();
     }
 

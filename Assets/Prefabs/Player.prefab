@@ -226,6 +226,7 @@ MonoBehaviour:
   horizontalRayCount: 4
   verticalRayCount: 4
   incrementStars: 0
+  spikeDamage: 0
   collisionMask:
     serializedVersion: 2
     m_Bits: 64
@@ -234,13 +235,13 @@ MonoBehaviour:
     m_Bits: 8
   starCollisionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   spikeCollisionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   lavaCollisionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16384
   teleporterCollisionMask:
     serializedVersion: 2
     m_Bits: 0

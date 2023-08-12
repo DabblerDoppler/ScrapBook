@@ -77,6 +77,9 @@ public class Player : NetworkBehaviour {
     [SyncVar]
     public int team;
 
+    int teamToSet;
+
+
     public List<Color> colors;
 
     [SyncVar]
@@ -122,10 +125,10 @@ public class Player : NetworkBehaviour {
     const float GROUNDPOUND_WINDUP = 0.20f;
     const float GROUNDPOUND_LAG = 0.20f;
     const float SPIN_TIME = 0.20f;
-    const float KNOCKDOWN_TIME = 1.0f;
-    const float INTANGIBILITY_TIME = 1.35f;
-    const float SPIKE_KNOCKDOWN_TIME = 0.8f;
-    const float SPIKE_INTANGIBILITY_TIME = 1.5f;
+    const float KNOCKDOWN_TIME = 1.5f;
+    const float INTANGIBILITY_TIME = 2.0f;
+    const float SPIKE_KNOCKDOWN_TIME = 1.3f;
+    const float SPIKE_INTANGIBILITY_TIME = 1.8f;
     public const float CROUCH_PERCENT = 0.5f;
 
     const float DEADZONE = 0.2f;
@@ -188,7 +191,9 @@ public class Player : NetworkBehaviour {
         }
         */
 
-        SetTeam(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams % 4);
+        
+        teamToSet = GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams;
+        SetTeam(teamToSet % 4);
 
         stars = 0;
 
@@ -756,30 +761,26 @@ public class Player : NetworkBehaviour {
 
     public void SetTeam(int toSet) {
         //set team with appropriate networking
-        if (isLocalPlayer) {
-            if (isServer) {
-                team = toSet;
-                RpcSetTeams(toSet);
-            }
-            else {
-                CmdSetTeam(toSet);
-            }
+        if (isServer) {
+            team = toSet;
+            RpcSetTeams(toSet);
+            GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
         }
     }
 
-
+    /*
     [Command(requiresAuthority = false)]
     public void CmdSetTeam(int toSet) {
+        Debug.Log("Teams is " + GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams);
+        GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
         RpcSetTeams(toSet);
     }
+    */
+
 
     [ClientRpc]
     public void RpcSetTeams(int toSet) {
-        if (toSet < colors.Count && toSet > -1) {
             myMapObject.GetComponent<Image>().color = colors[toSet];
-                team = toSet;
-        GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams += 1;
-        }
     }
 
     [ClientRpc]
@@ -799,6 +800,15 @@ public class Player : NetworkBehaviour {
         intangibilityEnded = true;
         intangibility = -1;
         knockdown = -1;
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdGetTeam() {
+        RpcGetTeam(GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams);
+    }
+
+    void RpcGetTeam(int team) {
+        teamToSet = team;
     }
 
 
