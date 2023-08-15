@@ -165,6 +165,9 @@ public class Player : NetworkBehaviour {
         Room.GamePlayers.Add(this);
         StartCoroutine(WaitAndSetUI(0.2f));
 
+        pauseInputs = true;
+        StartCoroutine(UnpauseInputs(3.0f));
+
         //create a list of colors containing the colors from the 4 teams.
         colors = new List<Color>();
 
@@ -836,6 +839,11 @@ public class Player : NetworkBehaviour {
             childList[i].GetComponent<StarUI>().attachedPlayer = playerArray[playerArray.Length-1-i].GetComponent<Player>();
             childList[i].GetComponent<Text>().color = playerArray[playerArray.Length-1-i].GetComponent<SpriteRenderer>().color;
         }
+    }
+
+    IEnumerator UnpauseInputs(float seconds) {
+        yield return new WaitForSeconds(seconds);
+        pauseInputs = false;
     }
 
     public static float Approach(float argument0, float argument1, float argument2) {

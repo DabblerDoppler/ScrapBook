@@ -28,10 +28,15 @@ public class Cage : NetworkBehaviour {
 
     public float timeMaximum = 6.0f;
 
+    private Material transparent;
+    private Material solid;
+
     // Start is called before the first frame update
 
     
     void Awake() {
+        transparent = Resources.Load("TransparentWall", typeof(Material)) as Material;
+        solid = Resources.Load("Wall", typeof(Material)) as Material;
         containsPlayer = false;
         hasDisappeared = true;
         hasAppeared = false;
@@ -72,29 +77,35 @@ public class Cage : NetworkBehaviour {
                 containsPlayer = false;
             }
 
-            if(containsPlayer && timeRemaining > 0 && !hasAppeared) {
+            if(timeRemaining > 0 && !hasAppeared) {
                 Debug.Log("Appearing");
                 hasAppeared = true;
                 //appear
                 foreach(Transform wall in walls) {
                     wall.gameObject.SetActive(true);
+                    //set layer to transparentFX
+                    wall.gameObject.layer = 1;
+                    wall.gameObject.GetComponent<SpriteRenderer>().material = transparent;
                 }
-            } 
-            
-            if(!hasDisappeared && timeRemaining <= 0) {
+            } else if (containsPlayer && timeRemaining > 0 ) {
+                Debug.Log("Appearing");
+                hasAppeared = true;
+                //appear
+                foreach(Transform wall in walls) {
+                    wall.gameObject.layer = 6;
+                    wall.gameObject.GetComponent<SpriteRenderer>().material = solid;
+                }
+            } else if(!hasDisappeared && timeRemaining <= 0) {
                 Debug.Log("Disappearing");
                 //make walls disappear
                 foreach(Transform wall in walls) {
                     wall.gameObject.SetActive(false);
                 }
-
                 hasDisappeared = true;
                 hasAppeared = false;
                 //spawn next star
                 if(isServer) {
                     StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(starPosition));
-                } else {
-                    //CmdSpawnStar(starPosition);
                 }
             }
         }

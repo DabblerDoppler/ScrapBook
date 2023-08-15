@@ -71,11 +71,8 @@ public class Controller2D : RaycastController {
 
         HorizontalCollisions(ref velocity);
         HorizontalCollisions_Bump(ref velocity);
-        //HorizontalCollisions_Players(ref velocity);
-        //HorizontalCollisions_Spikes(ref velocity);
         HorizontalCollisions_Teleporters(ref velocity);
         HorizontalCollisions_Spikes(ref velocity);
-        //Collisions_BumpHitbox(ref velocity);
         
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
@@ -177,7 +174,7 @@ public class Controller2D : RaycastController {
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, bumpCollisionMask);
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
             if (hit) {
-                if(velocity.y > 0.01) {
+                if(velocity.y > 0.0001f) {
                     //bump block up
                     if(isServer) {
                         GameObject hitbox = Instantiate(bumpHitboxPrefab);
@@ -454,23 +451,6 @@ public class Controller2D : RaycastController {
     */
 
 
-    void HorizontalCollisions_Lava(ref Vector3 velocity) {
-        float directionX = Mathf.Sign(velocity.x);
-        float rayLength = Mathf.Abs(velocity.x) + SKIN_WIDTH;
-        for (int i = 0; i < horizontalRayCount; i++) {
-            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
-            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, lavaCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
-            if (hit) {
-                velocity.x = (hit.distance - SKIN_WIDTH) * directionX;
-                rayLength = hit.distance;
-                collisions.left = directionX == -1;
-                collisions.right = directionX == 1;
-                killPlayer = true;
-            }
-        }
-    }
 
         void HorizontalCollisions_Spikes(ref Vector3 velocity) {
         float directionX = Mathf.Sign(velocity.x);
