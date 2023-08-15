@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using UnityEngine.PlayerLoop;
 
 public class NetworkRoomPlayerLobby : NetworkBehaviour {
 
@@ -51,6 +52,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
 
     public override void OnStopClient() {
         Room.RoomPlayers.Remove(this);
+        CmdDestroySelf();
         UpdateDisplay();
     }
 
@@ -106,11 +108,18 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
         //Room.NotifyPlayersOfReadyState();
     }
 
+    [Command]
+    public void CmdDestroySelf() {
+        Destroy(gameObject);
+        UpdateDisplay();
+    }
+
     /*
     [ClientRpc]
     public void RpcDisableCanvas(GameObject myCanvas) {
         myCanvas.SetActive(false);
     }
     */
+
 
 }

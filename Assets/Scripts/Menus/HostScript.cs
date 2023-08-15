@@ -40,6 +40,7 @@ public class HostScript : MonoBehaviour {
     //objects in the scene, we load the scene, wait a second, then host.
 
     public void StopHost() {
+
         networkManager.StopHost();
         mainMenu.SetActive(true);
         lobbyMenu.SetActive(false);

@@ -63,7 +63,12 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnClientDisconnect(NetworkConnection conn) {
         base.OnClientDisconnect(conn);
+
+        GameObject.Find("NetworkManager/MainMenuCanvas/MainMenu").SetActive(true);
+        GameObject.Find("NetworkManager/MainMenuCanvas/LobbyMenu").SetActive(false);        
+
         ClientDisconnected.Invoke();
+        
     }
 
     public override void OnServerConnect(NetworkConnection conn) {
@@ -120,8 +125,10 @@ public class MyNetworkManager : NetworkManager {
     public override void OnServerDisconnect(NetworkConnection conn) {
         if(conn.identity != null) {
             var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
+            
 
             RoomPlayers.Remove(player);
+            Destroy(conn.identity.gameObject);
 
             NotifyPlayersOfReadyState();
         }
@@ -272,8 +279,8 @@ public class MyNetworkManager : NetworkManager {
             mainMenuCanvas.SetActive(false);
         }
 
-
     }
+
 
     public override void OnServerReady(NetworkConnection conn) {
         base.OnServerReady(conn);

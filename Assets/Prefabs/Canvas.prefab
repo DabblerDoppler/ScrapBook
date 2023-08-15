@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8591366699477817704}
   - component: {fileID: 8591366699477817705}
   - component: {fileID: 8591366699477819030}
+  - component: {fileID: 8956362443779962793}
   m_Layer: 5
   m_Name: Text
   m_TagString: StarCounter
@@ -96,6 +97,21 @@ MonoBehaviour:
   attachedPlayer: {fileID: 0}
   myText: 'Your Stars: '
   playerNumber: 1
+--- !u!114 &8956362443779962793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591366699477819028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &8591366699478192506
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,6 +848,7 @@ GameObject:
   - component: {fileID: 8591366699845310528}
   - component: {fileID: 8591366699845310529}
   - component: {fileID: 5527657736214911518}
+  - component: {fileID: 2083939185528391921}
   m_Layer: 5
   m_Name: WinScreen
   m_TagString: Untagged
@@ -912,6 +929,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86ccea9cbf0d3d849a01039950fda0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2083939185528391921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591366699845310543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &8591366699854201965
 GameObject:
   m_ObjectHideFlags: 0
@@ -2485,6 +2517,7 @@ GameObject:
   - component: {fileID: 8591366700674914709}
   - component: {fileID: 8591366700674914706}
   - component: {fileID: 8591366700674914707}
+  - component: {fileID: 5419380458680130324}
   m_Layer: 5
   m_Name: Text (3)
   m_TagString: StarCounter
@@ -2569,6 +2602,21 @@ MonoBehaviour:
   attachedPlayer: {fileID: 0}
   myText: 'Player 4 Stars: '
   playerNumber: 4
+--- !u!114 &5419380458680130324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591366700674914705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &8591366700702735987
 GameObject:
   m_ObjectHideFlags: 0
@@ -2581,6 +2629,7 @@ GameObject:
   - component: {fileID: 8591366700702735991}
   - component: {fileID: 8591366700702735988}
   - component: {fileID: 8591366700702735989}
+  - component: {fileID: 1042473487574550333}
   m_Layer: 5
   m_Name: Text (1)
   m_TagString: StarCounter
@@ -2665,6 +2714,21 @@ MonoBehaviour:
   attachedPlayer: {fileID: 0}
   myText: 'Player 2 Stars: '
   playerNumber: 2
+--- !u!114 &1042473487574550333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591366700702735987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &8591366700722695023
 GameObject:
   m_ObjectHideFlags: 0
@@ -2828,6 +2892,7 @@ GameObject:
   - component: {fileID: 8591366700891916747}
   - component: {fileID: 8591366700891916744}
   - component: {fileID: 8591366700891916745}
+  - component: {fileID: 10774708256839625}
   m_Layer: 5
   m_Name: Text (2)
   m_TagString: StarCounter
@@ -2912,6 +2977,21 @@ MonoBehaviour:
   attachedPlayer: {fileID: 0}
   myText: 'Player 3 Stars: '
   playerNumber: 3
+--- !u!114 &10774708256839625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591366700891916791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &8591366700893349186
 GameObject:
   m_ObjectHideFlags: 0
