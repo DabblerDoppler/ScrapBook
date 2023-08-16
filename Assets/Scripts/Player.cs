@@ -30,6 +30,8 @@ public class Player : NetworkBehaviour {
     [SyncVar]
     int facing;
 
+    public int onWall;
+
     public bool spun;
     public bool long_jump;
     public bool crouching;
@@ -257,7 +259,7 @@ public class Player : NetworkBehaviour {
             }
             HandleInput();
 
-            int onWall = StateBasedActions();
+            onWall = StateBasedActions();
 
             if (knockdown > 0) {
             }
@@ -840,6 +842,8 @@ public class Player : NetworkBehaviour {
         for (int i = 0; i < playerArray.Length ; i++) {
             childList[i].GetComponent<StarUI>().attachedPlayer = playerArray[playerArray.Length-1-i].GetComponent<Player>();
             childList[i].GetComponent<Text>().color = playerArray[playerArray.Length-1-i].GetComponent<SpriteRenderer>().color;
+            childList[i].transform.GetChild(0).GetComponent<Text>().text = playerArray[playerArray.Length-1-i].GetComponent<Player>().displayName;
+            childList[i].transform.GetChild(0).GetComponent<Text>().color = playerArray[playerArray.Length-1-i].GetComponent<SpriteRenderer>().color;
         }
     }
 
@@ -869,5 +873,12 @@ public class Player : NetworkBehaviour {
         }
         return value;
     }
+
+    void OnApplicationQuit() {
+        if(isServer) {
+            NetworkServer.Shutdown();
+        }
+    }
+
 
 }

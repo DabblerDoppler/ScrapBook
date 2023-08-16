@@ -150,6 +150,11 @@ public class MovingPlatformController : RaycastController {
     [ClientRpc]
     private void RpcMovePlayer(Transform player, float pushX, float pushY) {
         player.Translate(new Vector3(pushX, pushY));
+        /*
+        if(player.position.y > transform.position.y && player.GetComponent<Player>().onWall == 0) {
+            player.GetComponent<Player>().onGround = true;
+        }
+        */
     }
 
 

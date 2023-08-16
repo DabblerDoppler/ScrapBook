@@ -13,10 +13,14 @@ public class MainMenu : MonoBehaviour {
     public NetworkManager networkManager;
 
     public void Host() {
-        lobby.SetActive(true);
-        networkManager.StartHost();
-        joinMenu.SetActive(false);
-        mainMenu.SetActive(false);
+        if(!NetworkServer.active) {
+            networkManager.StartHost();
+        }
+        if(NetworkServer.active) {
+            lobby.SetActive(true);
+            joinMenu.SetActive(false);
+            mainMenu.SetActive(false);
+        }
     }
 
     public void Quit() {

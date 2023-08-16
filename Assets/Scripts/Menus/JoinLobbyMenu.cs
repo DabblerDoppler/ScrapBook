@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using kcp2k;
 
 public class JoinLobbyMenu : MonoBehaviour {
 
@@ -37,6 +38,10 @@ public class JoinLobbyMenu : MonoBehaviour {
         networkManager.StartClient();
 
         joinButton.interactable = false;
+    }
+
+    public void BackButton() {
+        GameObject.Find("NetworkManager").GetComponent<KcpConnection>().Disconnect();
     }
 
     public void HandleClientConnected() {

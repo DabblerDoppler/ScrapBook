@@ -4,15 +4,19 @@ using UnityEngine;
 using Mirror;
 
 public class PauseManager : MonoBehaviour {
-
+    
+    [SerializeField]
     public GameObject inGameObject;
+    [SerializeField]
     public GameObject pauseObject;
-
+    [SerializeField]
     public GameObject settingsObject;
+    [SerializeField]
     public GameObject teamsObject;
 
 
     void Start() {
+
     }
     void Update() {
         if(Input.GetButtonDown("Start")) {

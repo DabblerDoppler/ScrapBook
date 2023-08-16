@@ -39,6 +39,10 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start() {
+        startGameButton = GameObject.Find("NetworkManager/MainMenuCanvas/LobbyMenu/StartButton").GetComponent<Button>();
+    }
+
     public override void OnStartAuthority() {
         Debug.Log("authority started, isLeader = " + isLeader);
         CmdSetDisplayName(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREFS_NAME_KEY));

@@ -64,8 +64,10 @@ public class MyNetworkManager : NetworkManager {
     public override void OnClientDisconnect(NetworkConnection conn) {
         base.OnClientDisconnect(conn);
 
-        GameObject.Find("NetworkManager/MainMenuCanvas/MainMenu").SetActive(true);
-        GameObject.Find("NetworkManager/MainMenuCanvas/LobbyMenu").SetActive(false);        
+        if(!GameObject.Find("NetworkManager/MainMenuCanvas/JoinScreen").activeInHierarchy) {
+            GameObject.Find("NetworkManager/MainMenuCanvas/MainMenu").SetActive(true);
+            GameObject.Find("NetworkManager/MainMenuCanvas/LobbyMenu").SetActive(false);      
+        }  
 
         ClientDisconnected.Invoke();
         

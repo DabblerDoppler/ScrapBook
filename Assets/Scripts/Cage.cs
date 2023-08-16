@@ -23,6 +23,8 @@ public class Cage : NetworkBehaviour {
 
     public bool hasAppeared;
 
+    private bool hasActivated;
+
     public float timeRemaining;
 
 
@@ -40,6 +42,7 @@ public class Cage : NetworkBehaviour {
         containsPlayer = false;
         hasDisappeared = true;
         hasAppeared = false;
+        hasActivated = false;
         area = gameObject.transform.Find("Area").GetComponent<RectTransform>();
         
         Vector3[] areaCorners = new Vector3[4];
@@ -87,15 +90,19 @@ public class Cage : NetworkBehaviour {
                     wall.gameObject.layer = 1;
                     wall.gameObject.GetComponent<SpriteRenderer>().material = transparent;
                 }
-            } else if (containsPlayer && timeRemaining > 0 ) {
-                Debug.Log("Appearing");
-                hasAppeared = true;
-                //appear
+            } 
+            
+            if (containsPlayer && timeRemaining > 0 && !hasActivated) {
+                Debug.Log("Activating");
+                hasActivated = true;
+                //activate
                 foreach(Transform wall in walls) {
                     wall.gameObject.layer = 6;
                     wall.gameObject.GetComponent<SpriteRenderer>().material = solid;
                 }
-            } else if(!hasDisappeared && timeRemaining <= 0) {
+            } 
+            
+            if(!hasDisappeared && timeRemaining <= 0) {
                 Debug.Log("Disappearing");
                 //make walls disappear
                 foreach(Transform wall in walls) {
@@ -103,6 +110,7 @@ public class Cage : NetworkBehaviour {
                 }
                 hasDisappeared = true;
                 hasAppeared = false;
+                hasActivated = false;
                 //spawn next star
                 if(isServer) {
                     StartCoroutine(GameObject.Find("StarManager").GetComponent<StarManager>().SpawnAfterSeconds(starPosition));
