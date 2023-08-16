@@ -230,14 +230,12 @@ public class Controller2D : RaycastController {
     void VerticalCollisions_Enemies(ref Vector3 velocity) {
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + SKIN_WIDTH;
-        for (int i = 0; i < verticalRayCount; i++) {
+        for (int i = 0; i < verticalRayCount + 2; i++) {
             Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            rayOrigin += Vector2.right * (verticalRaySpacing * (i-1) + velocity.x);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength * 2, enemyCollisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
             if (hit && GetComponent<Player>().intangibility <= 0 && !GetComponent<Player>().onGround) {
                 enemyCollisions.below = directionY == -1;
-                enemyCollisions.above = directionY == 1;
                 if (enemyCollisions.below && transform.position.y > hit.transform.position.y) {
                     //knockdown
                     Debug.Log("enemy hit: " + hit.collider.gameObject);
