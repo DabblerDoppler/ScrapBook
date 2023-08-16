@@ -349,6 +349,8 @@ public class Player : NetworkBehaviour {
             animator.SetFloat("Player_vsp", vsp);
             animator.SetBool("isSliding", sliding);
             animator.SetFloat("knockdownTimer", knockdown);
+            animator.SetBool("isGrounded", onGround);
+            animator.SetBool("jumpPressed", jumpPressed);
 
         }
     }
