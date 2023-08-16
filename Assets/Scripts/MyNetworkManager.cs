@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using kcp2k;
 using Mirror;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -49,6 +51,12 @@ public class MyNetworkManager : NetworkManager {
 
     [SerializeField]
     
+    public override void Start() {
+        base.Start();
+        if(PlayerPrefs.HasKey("Port")) {
+            GetComponent<KcpTransport>().Port = (ushort)PlayerPrefs.GetInt("Port");
+        }
+    }
 
     public override void OnClientConnect(NetworkConnection conn) {
         base.OnClientConnect(conn);
