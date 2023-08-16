@@ -5,6 +5,7 @@ using System.Linq;
 using kcp2k;
 using Mirror;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -48,6 +49,8 @@ public class MyNetworkManager : NetworkManager {
     
     public List<Player> GamePlayers { get; } = new List<Player>();
 
+    public int[] playerSpots = new int[7];
+
 
     [SerializeField]
     
@@ -89,14 +92,14 @@ public class MyNetworkManager : NetworkManager {
             return;
         } 
 
-/*
+
         //this prevents people from joining mid-match 
-        if(SceneManager.GetActiveScene() != menuScene) {
+        if(SceneManager.GetActiveScene().path != menuScene) {
             conn.Disconnect();
             return;
         }
         
-    */
+    
     }
     
 
@@ -109,17 +112,23 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnServerAddPlayer(NetworkConnection conn) {
         //base.OnServerAddPlayer(conn);
-
         if(SceneManager.GetActiveScene().path == menuScene) {
             bool isLeader = RoomPlayers.Count == 0;
 
             NetworkRoomPlayerLobby roomPlayerInstance = Instantiate(roomPlayerPrefab);
 
-            NetworkServer.Spawn(roomPlayerInstance.gameObject, conn);
+            //NetworkServer.Spawn(roomPlayerInstance.gameObject, conn);
 
+            for (int i = 0; i < playerSpots.Length; i++) {
+                if(playerSpots[i] == 0) {
+                    playerSpots[i] = conn.connectionId;
+                }
+            }
             roomPlayerInstance.isLeader = isLeader;
 
             NetworkServer.AddPlayerForConnection(conn, roomPlayerInstance.gameObject);
+        } else {
+
         }
 
     }
@@ -130,17 +139,38 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnStopServer() {
         RoomPlayers.Clear();
+        Array.Clear(playerSpots, 0, 7);
     }
 
     public override void OnServerDisconnect(NetworkConnection conn) {
         if(conn.identity != null) {
             var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
             
-
             RoomPlayers.Remove(player);
             Destroy(conn.identity.gameObject);
 
-            NotifyPlayersOfReadyState();
+            if(SceneManager.GetActiveScene().path == menuScene) {
+                int playerNumber = 0;
+                for(int i = 0; i < playerSpots.Length; i++) {
+                    if(playerSpots[i] == conn.connectionId) {
+                        playerNumber = i;
+                        break;
+                    }
+                }
+                playerNumber += 2;
+
+                Debug.Log(NetworkClient.localPlayer.gameObject);
+
+                Transform toClear = NetworkClient.localPlayer.gameObject.transform.Find("Canvas/LobbyMenu/Background_p" + playerNumber);
+
+                Debug.Log(toClear);
+
+                toClear.Find("NameText").GetComponent<Text>().text = "";
+                toClear.Find("ReadyText").GetComponent<Text>().text = "";
+
+
+                NotifyPlayersOfReadyState();
+            }
         }
 
         base.OnServerDisconnect(conn);
@@ -167,6 +197,7 @@ public class MyNetworkManager : NetworkManager {
 
                 GamePlayers.Add(gamePlayerInstance.GetComponent<Player>());
 
+                //not the issue
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance.gameObject);
                 Debug.Log("replaced player");
@@ -208,7 +239,6 @@ public class MyNetworkManager : NetworkManager {
                 player.myMapObject = Instantiate(playerMapObject, new Vector3(0, 0, 0), Quaternion.identity);
                 player.myMapObject.GetComponent<MapObject>().associatedTransform = player.gameObject.transform;
                 player.GetComponent<Player>().myMapObject.GetComponent<Image>().color = player.GetComponent<Player>().colors[player.GetComponent<Player>().team];
-
             }
 
 
