@@ -42,7 +42,8 @@ public class StarUI : MonoBehaviour {
             myText_Final = "";
         } else {
             if (GetComponent<Text>().text.Equals("10") && GameObject.Find("WinScreen").GetComponent<Text>().text == "") {
-                GameObject.Find("WinScreen").GetComponent<Text>().text = "Player " + playerNumber + " Wins!";
+                string playerName = attachedPlayer.displayName;
+                GameObject.Find("WinScreen").GetComponent<Text>().text = playerName + " Wins!";
             }
             GetComponent<Text>().text = myText_Final + attachedPlayer.stars.ToString();
         }
