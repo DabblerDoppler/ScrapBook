@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using kcp2k;
 using Mirror;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -74,12 +72,12 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnClientDisconnect(NetworkConnection conn) {
         base.OnClientDisconnect(conn);
-
-        if(!GameObject.Find("NetworkManager/MainMenuCanvas/JoinScreen").activeInHierarchy) {
-            GameObject.Find("NetworkManager/MainMenuCanvas/MainMenu").SetActive(true);
-            GameObject.Find("NetworkManager/MainMenuCanvas/LobbyMenu").SetActive(false);      
-        }  
-
+        if(GameObject.Find("NetworkManager/MainMenuCanvas/JoinScreen")) {
+            if(!GameObject.Find("NetworkManager/MainMenuCanvas/JoinScreen").activeInHierarchy) {
+                GameObject.Find("NetworkManager/MainMenuCanvas/MainMenu").SetActive(true);
+                GameObject.Find("NetworkManager/MainMenuCanvas/LobbyMenu").SetActive(false);      
+            }  
+        }
         ClientDisconnected.Invoke();
         
     }

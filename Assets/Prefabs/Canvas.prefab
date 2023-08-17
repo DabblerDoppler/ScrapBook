@@ -2157,6 +2157,7 @@ MonoBehaviour:
   pauseObject: {fileID: 8591366700893349186}
   settingsObject: {fileID: 8591366700864068995}
   teamsObject: {fileID: 8591366699760769705}
+  winText: {fileID: 8591366699845310543}
 --- !u!1 &8591366700320895465
 GameObject:
   m_ObjectHideFlags: 0

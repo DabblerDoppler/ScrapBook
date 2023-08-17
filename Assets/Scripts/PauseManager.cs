@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 public class PauseManager : MonoBehaviour {
     
@@ -13,6 +14,8 @@ public class PauseManager : MonoBehaviour {
     public GameObject settingsObject;
     [SerializeField]
     public GameObject teamsObject;
+    [SerializeField]
+    public GameObject winText;
 
 
     void Start() {
@@ -27,6 +30,7 @@ public class PauseManager : MonoBehaviour {
                 NetworkClient.localPlayer.GetComponent<Player>().pauseInputs = false;
                 inGameObject.SetActive(true);
             } else {
+                winText.GetComponent<Text>().text = "";
                 pauseObject.SetActive(true);
                 settingsObject.SetActive(false);
                 teamsObject.SetActive(false);
