@@ -844,11 +844,10 @@ public class Player : NetworkBehaviour {
         yield return new WaitForSeconds(seconds);
         Debug.Log("Setting UI");
         List<GameObject> childList = GameObject.Find("Canvas").GetComponent<TextChildArray>().myChildren;
-        childList.Sort((a,b) => a.name.CompareTo(b.name));
 
 
         GameObject[] playerArray = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < playerArray.Length ; i++) {
+        for (int i = 0; i < playerArray.Length; i++) {
             childList[i].GetComponent<StarUI>().attachedPlayer = playerArray[playerArray.Length-1-i].GetComponent<Player>();
             childList[i].GetComponent<Text>().color = playerArray[playerArray.Length-1-i].GetComponent<SpriteRenderer>().color;
             childList[i].transform.GetChild(0).GetComponent<Text>().text = playerArray[playerArray.Length-1-i].GetComponent<Player>().displayName;

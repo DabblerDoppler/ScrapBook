@@ -10,8 +10,6 @@ public class TextChildArray : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        myChildren = new List<GameObject>();
-        myChildren = Enumerable.ToList(GameObject.FindGameObjectsWithTag("StarCounter"));
     }
 
 
