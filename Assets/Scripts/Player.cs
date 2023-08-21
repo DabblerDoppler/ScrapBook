@@ -170,6 +170,7 @@ public class Player : NetworkBehaviour {
         pauseInputs = true;
         StartCoroutine(UnpauseInputs(3.0f));
 
+/*
         //create a list of colors containing the colors from the 4 teams.
         colors = new List<Color>();
 
@@ -180,7 +181,16 @@ public class Player : NetworkBehaviour {
         //yellow
         colors.Add(Color.HSVToRGB(0.136111111f, 0.50f, 0.85f));
         //blue
-        colors.Add(Color.HSVToRGB(0.55833333333f, 0.60f, 0.85f));
+        colors.Add(Color.HSVToRGB(0.55833333333f, 0.60f, 0.85f));      
+        //purple
+        colors.Add(Color.HSVToRGB(0.274f, 0.78f, 0.71f));
+        //orange
+        colors.Add(Color.HSVToRGB(0.36f, 0.91f, 0.88f));
+        //brown
+        colors.Add(new Color(79.0f, 52.0f, 36.0f));
+        //white
+        colors.Add(Color.HSVToRGB(0.0f, 0.0f, 0.86f));
+        */
 
         /*
         //set team with appropraite networking
@@ -198,7 +208,7 @@ public class Player : NetworkBehaviour {
 
         
         teamToSet = GameObject.Find("NetworkManager").GetComponent<MyNetworkManager>().teams;
-        SetTeam(teamToSet % 4);
+        SetTeam(teamToSet % 8);
 
         stars = 0;
 
@@ -246,7 +256,7 @@ public class Player : NetworkBehaviour {
             GetComponent<SpriteRenderer>().flipX = true;
         }
 
-        if (0 <= team && team <= 3) {
+        if (0 <= team && team <= 7) {
             GetComponent<SpriteRenderer>().color = colors[team];
         }
     }
