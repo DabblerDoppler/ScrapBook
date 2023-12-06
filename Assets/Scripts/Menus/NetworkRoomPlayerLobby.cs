@@ -24,7 +24,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
     public bool isLeader;
 
     
-    //figure this out when u got a chance, the problem lies with the room here
     private MyNetworkManager room;
 
     private MyNetworkManager Room {
@@ -41,26 +40,49 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
 
     private void Start() {
         startGameButton = GameObject.Find("NetworkManager/MainMenuCanvas/LobbyMenu/StartButton").GetComponent<Button>();
+
     }
 
     public override void OnStartAuthority() {
         Debug.Log("authority started, isLeader = " + isLeader);
-        CmdSetDisplayName(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREFS_NAME_KEY));
+        if(PlayerPrefs.HasKey(PlayerNameInput.PLAYER_PREFS_NAME_KEY)) {
+            CmdSetDisplayName(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREFS_NAME_KEY));
+        } else {
+            CmdSetDisplayName("Player");
+        }
         lobbyUI.SetActive(true);
     }
 
     public override void OnStartClient() {
         Room.RoomPlayers.Add(this);
         UpdateDisplay();
+        if(isServer) {
+            RpcUpdateDisplay();
+        } else {
+            CmdUpdateDisplay();
+        }
     }
 
     public override void OnStopClient() {
         Room.RoomPlayers.Remove(this);
         CmdDestroySelf();
         UpdateDisplay();
+        if(isServer) {
+            RpcUpdateDisplay();
+        } else {
+            CmdUpdateDisplay();
+        }
     }
 
-    public void HandleReadyStatusChanged(bool oldValue, bool newValue) => UpdateDisplay();
+    public void HandleReadyStatusChanged(bool oldValue, bool newValue) { 
+        UpdateDisplay(); 
+        if(isServer) {
+            RpcUpdateDisplay();
+        } else {
+            CmdUpdateDisplay();
+        }
+        }
+
     public void HandleDisplayNameChanged(string oldValue, string newValue) => UpdateDisplay();
 
     private void UpdateDisplay() {
@@ -98,7 +120,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
     public void HandleReadyToStart(bool readyToStart) {
         if(isLeader) {
             startGameButton.interactable = readyToStart;
-        }
+        } 
     }
 
     [Command]
@@ -115,6 +137,16 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
     [Command]
     public void CmdDestroySelf() {
         Destroy(gameObject);
+        UpdateDisplay();
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateDisplay() {
+        RpcUpdateDisplay();
+    }
+
+    [ClientRpc]
+    public void RpcUpdateDisplay() {
         UpdateDisplay();
     }
 
